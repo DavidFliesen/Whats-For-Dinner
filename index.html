@@ -71,32 +71,35 @@
       
       <!-- EXACT LOGO MATCH: Line 1 What's, Line 2 Fork + Plate D with 4, inner? -->
       <div class="cursor-pointer flex items-center" onclick="app.setTab('discover')">
-        <svg class="h-14 sm:h-16 md:h-20 w-auto" viewBox="0 0 340 135" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Line 1: What's in Bold Navy #1d3557 -->
-          <text x="35" y="46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="46" fill="#1d3557" letter-spacing="-0.8">What’s</text>
+        <svg class="h-12 sm:h-14 md:h-16 w-auto max-w-[240px] sm:max-w-[280px]" viewBox="0 0 340 180" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block; aspect-ratio: 340/180;">
+          <!-- Line 1: What's in Bold Navy -->
+          <text x="110" y="58" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="52" fill="#243c5a" letter-spacing="-0.5">What’s</text>
           
           <!-- Line 2: Monogram 'D' (Fork + Dinner Plate Rim) -->
-          <!-- Fork Vertical Spine -->
+          <!-- Fork Vertical Spine with 3 tines in orange -->
           <g id="logo-fork">
-            <path d="M12 73V98M18 73V98M24 73V98" stroke="#f77f00" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M12 90C12 99 24 99 24 90" stroke="#f77f00" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M18 97V132" stroke="#f77f00" stroke-width="4.5" stroke-linecap="round"/>
-            <path d="M15 130C15 133.5 21 133.5 21 130" stroke="#f77f00" stroke-width="4.5"/>
+            <!-- 3 Tines -->
+            <path d="M48 82V104M55 82V104M62 82V104" stroke="#e67e22" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Tines base curve -->
+            <path d="M48 98C48 108 62 108 62 98" stroke="#e67e22" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Fork handle -->
+            <path d="M55 106V148" stroke="#e67e22" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M52 144C52 150 58 150 58 144" stroke="#e67e22" stroke-width="4"/>
           </g>
 
           <!-- Dinner Plate curved bowl completing D -->
           <g id="logo-plate">
             <!-- Outer bold navy frame -->
-            <path d="M34 71H58C86 71 106 85 106 102.5C106 120 86 134 58 134H34V71Z" fill="#f77f00" fill-opacity="0.1" stroke="#1d3557" stroke-width="6.5" stroke-linejoin="round"/>
-            <!-- Inner plate rim and crescent accent -->
-            <path d="M46 79C68 83 86 92 86 102.5C86 113 68 122 46 126" stroke="#f77f00" stroke-width="6" stroke-linecap="round"/>
+            <path d="M72 82H92C118 82 136 96 136 115C136 134 118 148 92 148H72V82Z" fill="#e67e22" fill-opacity="0.1" stroke="#243c5a" stroke-width="7" stroke-linejoin="round"/>
+            <!-- Inner warm orange plate rim and accent arc -->
+            <path d="M82 92C102 96 118 104 118 115C118 126 102 134 82 138" stroke="#e67e22" stroke-width="6.5" stroke-linecap="round"/>
           </g>
 
-          <!-- Artistic 4 tucked above 'in' -->
-          <text x="135" y="93" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="44" fill="#f77f00">4</text>
+          <!-- Elevated artistic number '4' in orange floating above 'inn' -->
+          <text x="180" y="102" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="48" fill="#e67e22">4</text>
 
           <!-- Completion: 'inner?' in matching Bold Navy -->
-          <text x="116" y="132" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" fill="#1d3557" letter-spacing="-1">inner?</text>
+          <text x="146" y="148" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="52" fill="#243c5a" letter-spacing="-1">inner?</text>
         </svg>
       </div>
 
@@ -250,14 +253,14 @@
     </div>
 
   </main>
-
-  <div id="modal-details" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 modal-backdrop overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto no-scrollbar shadow-2xl border border-stone-200 relative my-auto p-6 space-y-4">
-      <button onclick="app.closeModal()" class="absolute top-4 right-4 p-2 bg-stone-100 hover:bg-stone-200 rounded-full text-slate-600 transition">
-        <i class="ph-bold ph-x text-base"></i>
+  <div id="modal-details" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 modal-backdrop overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto no-scrollbar shadow-2xl border border-stone-200 relative my-auto overflow-hidden">
+      <!-- Floating Close Button -->
+      <button onclick="app.closeModal()" class="absolute top-4 right-4 z-20 p-2.5 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition shadow-lg">
+        <i class="ph-bold ph-x text-lg"></i>
       </button>
 
-      <div id="modal-dynamic-content">
+      <div id="modal-dynamic-content" class="pb-6">
         <!-- Injected via JavaScript -->
       </div>
     </div>
@@ -786,56 +789,111 @@
 
         const content = document.getElementById('modal-dynamic-content');
         content.innerHTML = `
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-orange-600">${item.mode === 'dineout' ? item.venue : 'Healthy Eat In'}</span>
-            <h2 class="text-xl font-extrabold text-brand-navy mt-0.5 leading-snug">${item.title}</h2>
-            <p class="text-xs text-slate-500">${item.location || item.subtitle}</p>
-          </div>
+          <!-- Full-Width Hero Food Banner -->
+          <div class="relative h-60 sm:h-72 w-full overflow-hidden bg-slate-100">
+            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
 
-          <!-- Nutritional Bar -->
-          <div class="grid grid-cols-3 gap-2 bg-stone-100 p-3 rounded-2xl text-center text-xs">
-            <div><span class="text-[10px] text-slate-500 font-bold block">CALORIES</span><span class="text-base font-extrabold text-brand-navy">${item.calories}</span></div>
-            <div><span class="text-[10px] text-slate-500 font-bold block">PROTEIN</span><span class="text-base font-extrabold text-emerald-600">${item.protein}g</span></div>
-            <div><span class="text-[10px] text-slate-500 font-bold block">SODIUM</span><span class="text-base font-extrabold text-sky-600">${item.sodium}mg</span></div>
-          </div>
+            <div class="absolute top-4 left-4 flex gap-2 flex-wrap">
+              ${item.glp1 ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-md flex items-center gap-1.5"><i class="ph-fill ph-shield-check"></i> GLP-1 Certified</span>` : ''}
+              ${item.lowSodium ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-600 text-white shadow-md">&lt;500mg Sodium</span>` : ''}
+            </div>
 
-          <!-- Clinical Satiety & Gastric Note -->
-          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-2.5 text-xs text-emerald-900">
-            <i class="ph-fill ph-check-circle text-emerald-600 text-base shrink-0 mt-0.5"></i>
-            <div>
-              <span class="font-bold">Digestion Profile:</span> ${item.glp1Note || "Optimized for gastric comfort and lean satiety."}
+            <div class="absolute bottom-4 left-5 right-5 text-white">
+              <span class="text-xs font-bold uppercase tracking-widest text-orange-300 drop-shadow">
+                ${item.mode === 'dineout' ? item.venue : 'Healthy Eat In Recipe'}
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight mt-1 drop-shadow-md">${item.title}</h2>
+              <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow flex items-center gap-1">
+                ${item.mode === 'dineout' ? `<i class="ph-bold ph-map-pin text-orange-400"></i> ${item.location}` : `<i class="ph-bold ph-timer text-orange-400"></i> ${item.prepTime} total prep & cook`}
+              </p>
             </div>
           </div>
 
-          ${item.mode === 'dineout' ? `
-            <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl text-xs space-y-1">
-              <span class="font-bold text-amber-900 uppercase block">Exact Server Modification Hack:</span>
-              <p class="text-amber-950 font-medium">${item.orderTip}</p>
-            </div>
-
-            <div class="pt-2">
-              <button onclick="launchGoogleMaps('${item.venue.replace(/'/g, "\\'")}', '${item.address.replace(/'/g, "\\'")}')" class="w-full py-3 bg-brand-navy hover:bg-slate-900 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition">
-                <i class="ph-bold ph-navigation-arrow"></i>
-                <span>Open in Google Maps (${item.address})</span>
-              </button>
-            </div>
-          ` : `
-            <div class="space-y-3 text-xs">
+          <div class="p-6 space-y-6">
+            <!-- Nutrition Callout Ribbon -->
+            <div class="grid grid-cols-3 gap-3 bg-stone-100/90 border border-stone-200 p-4 rounded-2xl text-center">
               <div>
-                <span class="font-bold text-slate-800 uppercase block mb-1.5">Ingredients:</span>
-                <ul class="list-disc pl-4 space-y-1 text-slate-600">
-                  ${item.ingredients.map(i => `<li>${i}</li>`).join('')}
-                </ul>
+                <span class="text-xs text-slate-500 font-bold block">CALORIES</span>
+                <span class="text-xl sm:text-2xl font-black text-brand-navy">${item.calories}</span>
+                <span class="text-[10px] text-slate-400 font-medium block">kcal</span>
               </div>
-
-              <div class="border-t border-stone-100 pt-2">
-                <span class="font-bold text-slate-800 uppercase block mb-1.5">Cooking Instructions:</span>
-                <ol class="list-decimal pl-4 space-y-1 text-slate-600">
-                  ${item.steps.map(s => `<li>${s}</li>`).join('')}
-                </ol>
+              <div class="border-x border-stone-300/80">
+                <span class="text-xs text-slate-500 font-bold block">PROTEIN</span>
+                <span class="text-xl sm:text-2xl font-black text-emerald-600">${item.protein}g</span>
+                <span class="text-[10px] text-slate-400 font-medium block">lean density</span>
+              </div>
+              <div>
+                <span class="text-xs text-slate-500 font-bold block">SODIUM</span>
+                <span class="text-xl sm:text-2xl font-black text-sky-600">${item.sodium}mg</span>
+                <span class="text-[10px] text-slate-400 font-medium block">cardio safe</span>
               </div>
             </div>
-          `}
+
+            <!-- Digestion Profile Banner -->
+            <div class="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-start gap-3">
+              <i class="ph-fill ph-check-circle text-emerald-600 text-xl shrink-0 mt-0.5"></i>
+              <div>
+                <h4 class="text-sm font-bold text-emerald-950">Gastric & Digestion Assessment</h4>
+                <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed mt-0.5">${item.glp1Note || "Formulated to prevent stomach distension, reflux, and nausea on slower gastric emptying regimens."}</p>
+              </div>
+            </div>
+
+            ${item.mode === 'dineout' ? `
+              <!-- Dine Out Ordering Hack (Large, Readable Callout) -->
+              <div class="p-5 bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-300/80 rounded-2xl space-y-2">
+                <div class="flex items-center gap-2 text-amber-900 font-bold text-sm tracking-wide uppercase">
+                  <i class="ph-bold ph-chat-centered-text text-orange-600 text-lg"></i>
+                  <span>Exact Server Modification Hack</span>
+                </div>
+                <blockquote class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed bg-white/80 p-4 rounded-xl border border-amber-200/60 shadow-sm">
+                  “${item.orderTip}”
+                </blockquote>
+                <p class="text-xs text-slate-500 italic pt-1">Tip: Showing this screen to your server ensures no hidden butter or seasoned salt rubs are used.</p>
+              </div>
+
+              <!-- Direct Google Maps Action Button -->
+              <div class="pt-2">
+                <button onclick="launchGoogleMaps('${item.venue.replace(/'/g, "\\'")}', '${item.address.replace(/'/g, "\\'")}')" class="w-full py-4 bg-brand-navy hover:bg-slate-900 text-white font-extrabold rounded-2xl text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg active:scale-[0.99] transition">
+                  <i class="ph-bold ph-navigation-arrow text-xl text-orange-400"></i>
+                  <span>Navigate in Google Maps (${item.address})</span>
+                </button>
+              </div>
+            ` : `
+              <!-- Eat In Ingredients & Recipe Steps (Generous Typography) -->
+              <div class="space-y-6">
+                <div>
+                  <h4 class="text-base font-extrabold text-brand-navy uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <i class="ph-bold ph-fork-knife text-orange-500"></i>
+                    Ingredients List
+                  </h4>
+                  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm sm:text-base text-slate-700">
+                    ${item.ingredients.map(i => `
+                      <li class="flex items-start gap-2 bg-stone-50 border border-stone-200/70 p-2.5 rounded-xl">
+                        <i class="ph-fill ph-check text-emerald-500 text-base shrink-0 mt-0.5"></i>
+                        <span class="font-medium">${i}</span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+
+                <div class="border-t border-stone-200 pt-5">
+                  <h4 class="text-base font-extrabold text-brand-navy uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <i class="ph-bold ph-cooking-pot text-orange-500"></i>
+                    Preparation Steps
+                  </h4>
+                  <ol class="space-y-3">
+                    ${item.steps.map((s, idx) => `
+                      <li class="flex items-start gap-3.5 bg-white border border-stone-200/80 p-3.5 rounded-2xl shadow-sm">
+                        <span class="w-7 h-7 rounded-xl bg-brand-navy text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5 shadow-sm">${idx + 1}</span>
+                        <p class="text-sm sm:text-base text-slate-800 leading-relaxed font-medium">${s}</p>
+                      </li>
+                    `).join('')}
+                  </ol>
+                </div>
+              </div>
+            `}
+          </div>
         `;
 
         document.getElementById('modal-details').classList.remove('hidden');
