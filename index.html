@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>What’s 4 Dinner? | Smart Clinical Nutrition</title>
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#192841">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="What’s 4 Dinner?">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Tailwind CSS & Phosphor Icons CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#192841',
+              dark: '#0f172a',
+              orange: '#f97316',
+              amber: '#fb923c',
+              cream: '#faf8f5',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    body { background-color: #faf8f5; color: #192841; -webkit-tap-highlight-color: transparent; }
+    @keyframes spinWheel { 0% { transform: rotate(0deg); } 100% { transform: rotate(1800deg); } }
+    .spinner-active { animation: spinWheel 3s cubic-bezier(0.15, 0.9, 0.25, 1) forwards; }
+    .modal-backdrop { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  </style>
+</head>
+<body class="bg-brand-cream min-h-screen text-slate-800 flex flex-col font-sans pb-24 md:pb-8">
+
+  <!-- Header with Brand Logo -->
+  <header class="sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b border-stone-200/80 px-4 py-2.5 sm:px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      
+      <!-- Monogram D Logo with elevated 4 -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="app.setTab('discover')">
+        <svg class="h-10 w-auto sm:h-12" viewBox="0 0 260 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Text: What's -->
+          <text x="32" y="24" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="20" fill="#192841" letter-spacing="-0.5">What’s</text>
+          
+          <!-- Elevated Artful '4' -->
+          <text x="106" y="28" font-family="'Playfair Display', serif" font-style="italic" font-weight="700" font-size="26" fill="#f97316">4</text>
+          
+          <!-- Monogram 'D' (Fork + Curved Plate) -->
+          <g transform="translate(32, 28)">
+            <path d="M4 6V19M8 6V19M12 6V19" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M4 14C4 18 12 18 12 14" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M8 18V38" stroke="#f97316" stroke-width="2.6" stroke-linecap="round"/>
+            
+            <path d="M19 6H28C39 6 48 13.5 48 22C48 30.5 39 38 28 38H19V6Z" fill="#f97316" fill-opacity="0.12" stroke="#192841" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M26 11C33 13 38 17 38 22C38 27 33 31 26 33" stroke="#f97316" stroke-width="2.8" stroke-linecap="round"/>
+          </g>
+
+          <!-- Text: inner? -->
+          <text x="86" y="64" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="28" fill="#192841" letter-spacing="-0.8">inner?</text>
+        </svg>
+      </div>
+
+      <!-- Decider Action Button -->
+      <button onclick="app.openRandomizer()" class="flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg active:scale-95 transition-all">
+        <i class="ph-bold ph-sparkle text-base"></i>
+        <span>Decide For Me</span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Main View Area -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 w-full flex-1 pt-4">
+
+    <!-- Hero / Mode Switch -->
+    <div class="bg-gradient-to-br from-brand-navy to-slate-900 rounded-3xl p-5 sm:p-7 text-white shadow-lg mb-6">
+      <div class="max-w-xl">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-orange-300 text-xs font-semibold backdrop-blur mb-3">
+          <i class="ph-fill ph-shield-check"></i> Balanced for GLP-1, Sodium & Calories
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Zero decision fatigue tonight.</h1>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1 mb-5">Select Eat In or Dine Out to get immediate healthy options matching your clinical preferences.</p>
+        
+        <!-- Toggle Switch -->
+        <div class="bg-slate-800/90 p-1.5 rounded-2xl flex items-center gap-1 max-w-xs border border-slate-700">
+          <button id="mode-eatin" onclick="app.setMode('eatin')" class="flex-1 py-2 rounded-xl font-bold text-xs transition bg-orange-500 text-white flex items-center justify-center gap-1.5">
+            <i class="ph-bold ph-pan"></i> Eat In
+          </button>
+          <button id="mode-dineout" onclick="app.setMode('dineout')" class="flex-1 py-2 rounded-xl font-bold text-xs transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5">
+            <i class="ph-bold ph-storefront"></i> Dine Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Dine Out Location Bar -->
+      <div id="dineout-location-bar" class="hidden mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white flex-1 min-w-[220px]">
+          <i class="ph-bold ph-map-pin text-orange-400"></i>
+          <input id="location-input" type="text" value="San Francisco, CA" placeholder="Enter City, ZIP, or Area..." class="bg-transparent text-xs sm:text-sm w-full outline-none text-slate-100">
+          <button onclick="app.detectGeo()" title="Get GPS Location" class="text-orange-400 hover:text-orange-300">
+            <i class="ph-bold ph-crosshair"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Filter Pills -->
+    <div class="space-y-2 mb-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Dietary & Health Profiles</h2>
+        <button onclick="app.resetFilters()" class="text-xs text-orange-600 font-semibold hover:underline">Reset</button>
+      </div>
+
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs">
+        <button data-filter="glp1" onclick="app.toggleFilter('glp1')" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-2xl font-semibold border transition bg-orange-50 border-orange-500 text-orange-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          GLP-1 Friendly
+        </button>
+        <button data-filter="lowSodium" onclick="app.toggleFilter('lowSodium')" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-2xl font-semibold border transition bg-white border-stone-300 text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+          Low Sodium (&lt;500mg)
+        </button>
+        <button data-filter="lowCal" onclick="app.toggleFilter('lowCal')" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-2xl font-semibold border transition bg-white border-stone-300 text-slate-700">
+          <i class="ph-bold ph-flame text-amber-500"></i>
+          Low Calorie (&lt;450 kcal)
+        </button>
+        <button data-filter="highProtein" onclick="app.toggleFilter('highProtein')" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-2xl font-semibold border transition bg-white border-stone-300 text-slate-700">
+          <i class="ph-bold ph-barbell text-orange-500"></i>
+          High Protein (&gt;30g)
+        </button>
+      </div>
+    </div>
+
+    <!-- Meals Card Grid -->
+    <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+  </main>
+
+  <!-- Modal Details -->
+  <div id="modal-details" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-brand-navy/60 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto no-scrollbar p-6 relative shadow-2xl">
+      <button onclick="app.closeModal()" class="absolute top-4 right-4 p-2 bg-stone-100 hover:bg-stone-200 rounded-full text-slate-600 transition">
+        <i class="ph-bold ph-x"></i>
+      </button>
+
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Randomizer Wheel Modal -->
+  <div id="modal-randomizer" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-brand-navy/60 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
+      <button onclick="app.closeRandomizer()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-x"></i>
+      </button>
+      <div class="inline-flex items-center gap-1 text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-xs font-bold uppercase mb-2">
+        <i class="ph-bold ph-sparkle"></i> The Decider
+      </div>
+      <h3 class="text-xl font-extrabold text-brand-navy">What’s 4 Dinner?</h3>
+      <p class="text-xs text-slate-500 mb-6">Balancing nutrition and satiety for tonight...</p>
+
+      <div class="relative w-44 h-44 mx-auto mb-6 flex items-center justify-center">
+        <div id="decision-wheel" class="w-full h-full rounded-full border-4 border-dashed border-orange-400 flex items-center justify-center bg-gradient-to-tr from-amber-50 to-orange-100 shadow-inner">
+          <i id="wheel-icon" class="ph-bold ph-fork-knife text-4xl text-orange-500 animate-bounce"></i>
+        </div>
+      </div>
+
+      <div id="wheel-result-title" class="text-sm font-bold text-brand-navy mb-4 hidden"></div>
+
+      <button id="btn-spin" onclick="app.spinDecider()" class="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-2xl text-sm shadow-md transition">
+        Spin Wheel
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Robust Google Maps Outbound Linking with Fallbacks
+    function openGoogleMapsDirect(query) {
+      const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+      const win = window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+      if (!win || win.closed || typeof win.closed === 'undefined') {
+        window.location.href = mapsUrl;
+      }
+    }
+
+    const MEALS = [
+      {
+        id: '1',
+        mode: 'eatin',
+        title: 'Lemon Poached Salmon & Asparagus',
+        subtitle: 'Slow-poached in Meyer lemon water with crushed cauliflower mash',
+        image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80',
+        calories: 380,
+        protein: 41,
+        sodium: 260,
+        glp1: true,
+        lowSodium: true,
+        lowCal: true,
+        highProtein: true,
+        orderTip: 'Steam asparagus softly to ensure smooth digestion on GLP-1 medications.',
+        prepTime: '20m',
+        steps: [
+          'Gently poach salmon in simmering water seasoned with sliced lemon and fresh dill for 9 minutes.',
+          'Steam cauliflower until very soft, then blend with a small drizzle of extra virgin olive oil.',
+          'Serve with tender steamed asparagus spears and freshly cracked black pepper.'
+        ]
+      },
+      {
+        id: '2',
+        mode: 'eatin',
+        title: 'Warm Ginger Turkey & Zucchini Skillet',
+        subtitle: 'Hydrating low-sodium bone broth reduction',
+        image: 'https://images.unsplash.com/photo-1547496502-affa22d38842?auto=format&fit=crop&w=600&q=80',
+        calories: 340,
+        protein: 38,
+        sodium: 310,
+        glp1: true,
+        lowSodium: true,
+        lowCal: true,
+        highProtein: true,
+        prepTime: '15m',
+        steps: [
+          'Brown 99% lean turkey breast gently in a non-stick pan.',
+          'Add 1 cup low-sodium bone broth and freshly grated ginger; simmer for 5 minutes.',
+          'Toss in spiralized zucchini noodles for 90 seconds until al dente.'
+        ]
+      },
+      {
+        id: '3',
+        mode: 'dineout',
+        restaurant: 'Sweetgreen',
+        title: 'Custom Steelhead & Warm Quinoa Bowl',
+        subtitle: 'Roasted fish on warm grains with light greens',
+        image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80',
+        calories: 430,
+        protein: 36,
+        sodium: 460,
+        glp1: true,
+        lowSodium: true,
+        lowCal: true,
+        highProtein: true,
+        orderHack: 'Order: "Warm bowl base half quinoa, half shredded cabbage. Top with roasted steelhead. Dressing strictly on the side."',
+        mapsQuery: 'Sweetgreen near me'
+      },
+      {
+        id: '4',
+        mode: 'dineout',
+        restaurant: 'True Food Kitchen',
+        title: 'Seared Wild Halibut with Broccolini',
+        subtitle: 'Clean pan-roasted white fish with lemon emulsion',
+        image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80',
+        calories: 410,
+        protein: 42,
+        sodium: 390,
+        glp1: true,
+        lowSodium: true,
+        lowCal: true,
+        highProtein: true,
+        orderHack: 'Ask the kitchen for dry pan-seared halibut (no butter) with sauce served on the side.',
+        mapsQuery: 'True Food Kitchen near me'
+      }
+    ];
+
+    class App {
+      constructor() {
+        this.mode = 'eatin';
+        this.activeFilters = new Set(['glp1']);
+        this.init();
+      }
+
+      init() {
+        this.renderCards();
+      }
+
+      setMode(m) {
+        this.mode = m;
+        const eatinBtn = document.getElementById('mode-eatin');
+        const dineoutBtn = document.getElementById('mode-dineout');
+        const locBar = document.getElementById('dineout-location-bar');
+
+        if (m === 'eatin') {
+          eatinBtn.className = 'flex-1 py-2 rounded-xl font-bold text-xs transition bg-orange-500 text-white flex items-center justify-center gap-1.5';
+          dineoutBtn.className = 'flex-1 py-2 rounded-xl font-bold text-xs transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5';
+          locBar.classList.add('hidden');
+        } else {
+          dineoutBtn.className = 'flex-1 py-2 rounded-xl font-bold text-xs transition bg-orange-500 text-white flex items-center justify-center gap-1.5';
+          eatinBtn.className = 'flex-1 py-2 rounded-xl font-bold text-xs transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5';
+          locBar.classList.remove('hidden');
+        }
+        this.renderCards();
+      }
+
+      toggleFilter(f) {
+        const btn = document.querySelector(`[data-filter="${f}"]`);
+        if (this.activeFilters.has(f)) {
+          this.activeFilters.delete(f);
+          btn.classList.remove('bg-orange-50', 'border-orange-500', 'text-orange-700');
+          btn.classList.add('bg-white', 'border-stone-300', 'text-slate-700');
+        } else {
+          this.activeFilters.add(f);
+          btn.classList.add('bg-orange-50', 'border-orange-500', 'text-orange-700');
+          btn.classList.remove('bg-white', 'border-stone-300', 'text-slate-700');
+        }
+        this.renderCards();
+      }
+
+      resetFilters() {
+        this.activeFilters.clear();
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+          btn.classList.remove('bg-orange-50', 'border-orange-500', 'text-orange-700');
+          btn.classList.add('bg-white', 'border-stone-300', 'text-slate-700');
+        });
+        this.renderCards();
+      }
+
+      getFiltered() {
+        return MEALS.filter(m => {
+          if (m.mode !== this.mode) return false;
+          for (let f of this.activeFilters) {
+            if (!m[f]) return false;
+          }
+          return true;
+        });
+      }
+
+      renderCards() {
+        const list = this.getFiltered();
+        const grid = document.getElementById('cards-grid');
+        
+        if (list.length === 0) {
+          grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400">No items match current filters.</div>';
+          return;
+        }
+
+        grid.innerHTML = list.map(m => `
+          <div class="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+            <div class="h-44 relative bg-stone-100">
+              <img src="${m.image}" alt="${m.title}" class="w-full h-full object-cover">
+              <div class="absolute bottom-2 left-3 bg-black/60 backdrop-blur px-2.5 py-1 rounded-full text-white text-[11px] font-bold">
+                ${m.calories} kcal
+              </div>
+            </div>
+
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-orange-600 mb-1 block">
+                  ${m.mode === 'dineout' ? m.restaurant : m.prepTime + ' prep'}
+                </span>
+                <h3 class="font-bold text-brand-navy text-base leading-snug">${m.title}</h3>
+                <p class="text-xs text-slate-500 mt-1 line-clamp-2">${m.subtitle}</p>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                <div class="flex items-center gap-3 text-xs">
+                  <div><span class="text-[10px] text-slate-400 block font-bold">PROTEIN</span><span class="font-bold">${m.protein}g</span></div>
+                  <div><span class="text-[10px] text-slate-400 block font-bold">SODIUM</span><span class="font-bold text-sky-700">${m.sodium}mg</span></div>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <button onclick="app.openModal('${m.id}')" class="px-3 py-1.5 bg-brand-navy text-white rounded-xl text-xs font-bold transition">
+                    View
+                  </button>
+                  ${m.mode === 'dineout' ? `
+                    <button onclick="openGoogleMapsDirect('${m.mapsQuery || m.restaurant}')" class="p-2 bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 rounded-xl text-xs font-bold transition" title="Open Google Maps">
+                      <i class="ph-bold ph-map-pin"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      openModal(id) {
+        const m = MEALS.find(x => x.id === id);
+        if (!m) return;
+        const container = document.getElementById('modal-content');
+
+        container.innerHTML = `
+          <h2 class="text-xl font-bold text-brand-navy mb-1">${m.title}</h2>
+          <div class="text-xs text-orange-600 font-bold mb-4">${m.mode === 'dineout' ? m.restaurant : 'Home Cooked'}</div>
+          
+          <div class="grid grid-cols-3 gap-2 bg-stone-100 p-3 rounded-2xl text-center text-xs mb-4">
+            <div><span class="text-[10px] text-slate-400 block font-bold">CALORIES</span><span class="font-bold text-sm">${m.calories}</span></div>
+            <div><span class="text-[10px] text-slate-400 block font-bold">PROTEIN</span><span class="font-bold text-sm text-emerald-600">${m.protein}g</span></div>
+            <div><span class="text-[10px] text-slate-400 block font-bold">SODIUM</span><span class="font-bold text-sm text-sky-600">${m.sodium}mg</span></div>
+          </div>
+
+          ${m.mode === 'dineout' ? `
+            <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl mb-4 text-xs">
+              <div class="font-bold text-amber-900 mb-1">Server Custom Order Hack:</div>
+              <p class="text-amber-950">${m.orderHack}</p>
+            </div>
+            <button onclick="openGoogleMapsDirect('${m.mapsQuery || m.restaurant}')" class="w-full py-3 bg-brand-navy text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+              <i class="ph-bold ph-navigation-arrow"></i> Open Google Maps Directions
+            </button>
+          ` : `
+            <div class="space-y-3 text-xs mb-4">
+              <div class="font-bold text-slate-700 uppercase">Preparation Steps:</div>
+              <ol class="list-decimal pl-4 space-y-1.5 text-slate-600">
+                ${m.steps.map(s => `<li>${s}</li>`).join('')}
+              </ol>
+            </div>
+          `}
+        `;
+        document.getElementById('modal-details').classList.remove('hidden');
+      }
+
+      closeModal() { document.getElementById('modal-details').classList.add('hidden'); }
+      
+      openRandomizer() {
+        document.getElementById('modal-randomizer').classList.remove('hidden');
+        document.getElementById('wheel-result-title').classList.add('hidden');
+        document.getElementById('btn-spin').disabled = false;
+        document.getElementById('decision-wheel').classList.remove('spinner-active');
+      }
+      closeRandomizer() { document.getElementById('modal-randomizer').classList.add('hidden'); }
+
+      spinDecider() {
+        const pool = this.getFiltered();
+        if (!pool.length) return;
+        const wheel = document.getElementById('decision-wheel');
+        const title = document.getElementById('wheel-result-title');
+        wheel.classList.add('spinner-active');
+        document.getElementById('btn-spin').disabled = true;
+
+        setTimeout(() => {
+          const pick = pool[Math.floor(Math.random() * pool.length)];
+          wheel.classList.remove('spinner-active');
+          title.innerText = 'Selected: ' + pick.title;
+          title.classList.remove('hidden');
+        }, 3000);
+      }
+
+      detectGeo() {
+        const loc = document.getElementById('location-input');
+        if (navigator.geolocation) {
+          loc.value = "Locating via GPS...";
+          navigator.geolocation.getCurrentPosition(
+            () => { loc.value = "Current Location (GPS Active)"; },
+            () => { loc.value = "San Francisco, CA"; }
+          );
+        }
+      }
+    }
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+
+    const app = new App();
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "What’s 4 Dinner?",
+  "short_name": "What’s 4 Dinner",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#192841",
+  "description": "Smart, clinical dietary dinner decider with GLP-1, Low Sodium, and Dine Out options.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
