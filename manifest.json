@@ -1,24 +1,8 @@
-{
+﻿{
   "name": "What’s 4 Dinner?",
   "short_name": "What’s 4 Dinner",
-  "version": "1.2.0",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fbfaf8",
-  "theme_color": "#1d3557",
-  "description": "Smart Clinical Nutrition & Local Restaurant Decider for Summerville & Charleston.",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "background_color": "#ffffff",
+  "theme_color": "#1d3557"
 }
