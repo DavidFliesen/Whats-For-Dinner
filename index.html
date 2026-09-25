@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>What’s 4 Dinner? | Real Local Lowcountry Dining & Healthy Cooking</title>
 
-  <!-- PWA & Mobile Web App Meta -->
+  <!-- PWA Meta -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="What's 4 Dinner?">
   <meta name="theme-color" content="#1d3557">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <!-- Tailwind CSS & Phosphor Icons CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,9 +27,9 @@
         extend: {
           colors: {
             brand: {
-              navy: '#1d3557',      // Deep navy from user logo
+              navy: '#1d3557',
               dark: '#111d2e',
-              orange: '#f77f00',    // Warm culinary orange from user logo
+              orange: '#f77f00',
               amber: '#f4a261',
               light: '#fbfaf8',
               surface: '#f3ede5'
@@ -64,8 +65,9 @@
     }
   </style>
 </head>
-<body class="bg-[#fbfaf8] min-h-screen text-slate-800 flex flex-col font-sans antialiased pb-24 md:pb-8">
+<body class="bg-[#fbfaf8] min-h-screen text-slate-800 flex flex-col font-sans antialiased pb-20 md:pb-8">
 
+  <!-- Header with EXACT Non-Stretched Reference Logo -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/90 px-4 py-3 sm:px-6 shadow-sm">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
       
@@ -76,22 +78,15 @@
           <text x="110" y="58" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="52" fill="#243c5a" letter-spacing="-0.5">What’s</text>
           
           <!-- Line 2: Monogram 'D' (Fork + Dinner Plate Rim) -->
-          <!-- Fork Vertical Spine with 3 tines in orange -->
           <g id="logo-fork">
-            <!-- 3 Tines -->
             <path d="M48 82V104M55 82V104M62 82V104" stroke="#e67e22" stroke-width="3.5" stroke-linecap="round"/>
-            <!-- Tines base curve -->
             <path d="M48 98C48 108 62 108 62 98" stroke="#e67e22" stroke-width="3.5" stroke-linecap="round"/>
-            <!-- Fork handle -->
             <path d="M55 106V148" stroke="#e67e22" stroke-width="4.5" stroke-linecap="round"/>
             <path d="M52 144C52 150 58 150 58 144" stroke="#e67e22" stroke-width="4"/>
           </g>
 
-          <!-- Dinner Plate curved bowl completing D -->
           <g id="logo-plate">
-            <!-- Outer bold navy frame -->
             <path d="M72 82H92C118 82 136 96 136 115C136 134 118 148 92 148H72V82Z" fill="#e67e22" fill-opacity="0.1" stroke="#243c5a" stroke-width="7" stroke-linejoin="round"/>
-            <!-- Inner warm orange plate rim and accent arc -->
             <path d="M82 92C102 96 118 104 118 115C118 126 102 134 82 138" stroke="#e67e22" stroke-width="6.5" stroke-linecap="round"/>
           </g>
 
@@ -166,39 +161,34 @@
         </div>
       </div>
 
+      <!-- Health Protocols Filter Bar -->
       <section class="space-y-2">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Dietary & Clinical Health Filters</h2>
           <button onclick="app.resetFilters()" class="text-xs text-orange-600 font-bold hover:underline">Reset Filters</button>
         </div>
 
-        <!-- Scrollable filter chips -->
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-          <!-- GLP-1 Friendly -->
           <button data-filter="glp1" onclick="app.toggleFilter('glp1')" class="filter-pill flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap border transition shadow-sm bg-orange-50 border-orange-500 text-orange-700">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             GLP-1 Friendly
           </button>
 
-          <!-- Low Sodium -->
           <button data-filter="lowSodium" onclick="app.toggleFilter('lowSodium')" class="filter-pill flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap border transition shadow-sm bg-white border-stone-300 text-slate-700 hover:border-sky-500">
             <span class="w-2 h-2 rounded-full bg-sky-500"></span>
             Low Sodium (&lt;500mg)
           </button>
 
-          <!-- Low Calorie -->
           <button data-filter="lowCal" onclick="app.toggleFilter('lowCal')" class="filter-pill flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap border transition shadow-sm bg-white border-stone-300 text-slate-700 hover:border-amber-500">
             <span class="w-2 h-2 rounded-full bg-amber-500"></span>
             Low Calorie (&lt;450 kcal)
           </button>
 
-          <!-- High Protein -->
           <button data-filter="highProtein" onclick="app.toggleFilter('highProtein')" class="filter-pill flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap border transition shadow-sm bg-white border-stone-300 text-slate-700 hover:border-purple-500">
             <span class="w-2 h-2 rounded-full bg-purple-500"></span>
             High Protein (&gt;30g)
           </button>
 
-          <!-- Quick Cook (for Eat In) -->
           <button data-filter="quick" onclick="app.toggleFilter('quick')" class="filter-pill flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap border transition shadow-sm bg-white border-stone-300 text-slate-700 hover:border-teal-500">
             <i class="ph-bold ph-timer text-teal-600"></i>
             Under 25 mins
@@ -206,7 +196,7 @@
         </div>
       </section>
 
-      <!-- Search & Count Bar -->
+      <!-- Search & Match Summary -->
       <div class="flex items-center justify-between gap-3 pt-1">
         <div class="text-xs sm:text-sm font-semibold text-slate-600">
           Showing <span id="match-count" class="font-extrabold text-brand-navy">0</span> local recommendations
@@ -214,31 +204,13 @@
 
         <div class="relative w-48 sm:w-64">
           <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
-          <input id="search-query" oninput="app.renderCards()" type="text" placeholder="Search dish, protein, spot..." class="w-full pl-9 pr-3 py-1.5 bg-white border border-stone-300 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 shadow-sm">
+          <input id="search-query" oninput="app.renderCards()" type="text" placeholder="Search dish, spot, protein..." class="w-full pl-9 pr-3 py-1.5 bg-white border border-stone-300 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 shadow-sm">
         </div>
       </div>
 
-      <!-- Meal Cards Grid -->
-      <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Injected via JavaScript -->
-      </div>
+      <!-- Cards Grid -->
+      <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
-    </div>
-
-    <!-- View: MEAL PLANNER -->
-    <div id="view-mealplan" class="hidden space-y-6">
-      <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h2 class="text-xl font-bold text-brand-navy">7-Day Dinner Schedule</h2>
-            <p class="text-slate-500 text-xs">Curated Lowcountry eating schedule balancing sodium and lean protein.</p>
-          </div>
-          <button onclick="app.autoBalanceSchedule()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-            <i class="ph-bold ph-magic-wand"></i> Auto-Balance
-          </button>
-        </div>
-        <div id="weekly-schedule-list" class="space-y-3"></div>
-      </div>
     </div>
 
     <!-- View: FAVORITES -->
@@ -253,16 +225,15 @@
     </div>
 
   </main>
+
+  <!-- Large Readable Modal with Full Hero Image -->
   <div id="modal-details" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 modal-backdrop overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto no-scrollbar shadow-2xl border border-stone-200 relative my-auto overflow-hidden">
-      <!-- Floating Close Button -->
       <button onclick="app.closeModal()" class="absolute top-4 right-4 z-20 p-2.5 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition shadow-lg">
         <i class="ph-bold ph-x text-lg"></i>
       </button>
 
-      <div id="modal-dynamic-content" class="pb-6">
-        <!-- Injected via JavaScript -->
-      </div>
+      <div id="modal-dynamic-content" class="pb-6"></div>
     </div>
   </div>
 
@@ -311,30 +282,20 @@
     <span id="toast-msg">Action complete</span>
   </div>
 
-  <!-- Mobile Bottom Tab Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 py-2 px-4 md:hidden">
-    <div class="flex items-center justify-around max-w-md mx-auto">
-      <button onclick="app.setTab('discover')" id="nav-discover" class="nav-item flex flex-col items-center gap-0.5 text-orange-600">
-        <i class="ph-fill ph-compass text-2xl"></i>
-        <span class="text-[10px] font-bold">Discover</span>
-      </button>
-
-      <button onclick="app.openRandomizer()" class="flex flex-col items-center gap-0.5 -mt-5">
-        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-400 text-white flex items-center justify-center shadow-lg active:scale-95 transition">
-          <i class="ph-bold ph-sparkle text-2xl"></i>
-        </div>
-        <span class="text-[9px] font-extrabold text-orange-600 mt-0.5">Spin</span>
-      </button>
-
-      <button onclick="app.setTab('favorites')" id="nav-favorites" class="nav-item flex flex-col items-center gap-0.5 text-slate-400">
-        <i class="ph-bold ph-heart text-2xl"></i>
-        <span class="text-[10px] font-bold">Saved</span>
-      </button>
+  <!-- Footer with Prominent Version Number Displayed at Bottom Center -->
+  <footer class="mt-auto py-6 border-t border-stone-200/80 bg-stone-100/60 text-center">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center gap-1.5">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-stone-200 text-slate-600 text-xs shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-bold text-brand-navy">What’s 4 Dinner?</span>
+        <span class="font-mono text-slate-400">•</span>
+        <span class="font-mono font-bold text-orange-600">Version 1.2.0</span>
+      </div>
+      <p class="text-[11px] text-slate-400">Clinical Nutrition & Local Lowcountry Restaurant Decider</p>
     </div>
-  </nav>
+  </footer>
 
   <script>
-    // Direct Google Maps Search Opener (No iframe sandboxing lock)
     function launchGoogleMaps(venue, address) {
       const q = encodeURIComponent(`${venue}, ${address}`);
       const url = `https://www.google.com/maps/search/?api=1&query=${q}`;
@@ -344,9 +305,7 @@
       }
     }
 
-    // AUTHENTIC LOCAL DATASET FOR SUMMERVILLE, NEXTON, & CHARLESTON
     const INITIAL_DATABASE = [
-      // --- DINE OUT: SUMMERVILLE & NEXTON & CHARLESTON ---
       {
         id: "dine-1",
         mode: "dineout",
@@ -468,48 +427,6 @@
         glp1Note: "White fish is extremely digestible for slow-motility patients."
       },
       {
-        id: "dine-7",
-        mode: "dineout",
-        area: "charleston",
-        venue: "Basic Kitchen",
-        location: "Historic Downtown Charleston",
-        address: "82 Wentworth St, Charleston, SC 29401",
-        title: "Wild Caught Fish & Warm Seasonal Roots Bowl",
-        image: "https://images.unsplash.com/photo-1547496502-affa22d38842?auto=format&fit=crop&w=650&q=80",
-        calories: 410,
-        protein: 40,
-        sodium: 360,
-        glp1: true,
-        lowSodium: true,
-        lowCal: true,
-        highProtein: true,
-        quick: false,
-        orderTip: "Request herb pistou on the side; seasoned with clean local farm herbs.",
-        glp1Note: "Gut-health focused kitchen with non-inflammatory cooking oils."
-      },
-      {
-        id: "dine-8",
-        mode: "dineout",
-        area: "charleston",
-        venue: "Huriyali Gardens",
-        location: "Huger St, Downtown Charleston",
-        address: "401 Huger St, Charleston, SC 29403",
-        title: "High-Protein Macro Goddess Bowl with Tofu/Chicken",
-        image: "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=650&q=80",
-        calories: 370,
-        protein: 34,
-        sodium: 280,
-        glp1: true,
-        lowSodium: true,
-        lowCal: true,
-        highProtein: true,
-        quick: true,
-        orderTip: "Opt for extra grilled protein and ask for green goddess dressing on the side.",
-        glp1Note: "Soft fibers, easily absorbed micronutrients."
-      },
-
-      // --- EAT IN: AUTHENTIC CLINICAL RECIPES ---
-      {
         id: "in-1",
         mode: "eatin",
         title: "Meyer Lemon Poached Salmon & Asparagus",
@@ -605,7 +522,7 @@
 
     class DinnerController {
       constructor() {
-        this.mode = 'dineout'; // Default to Dine Out to solve user's immediate question
+        this.mode = 'dineout';
         this.activeFilters = new Set(['glp1']);
         this.activeArea = 'summerville';
         this.database = [...INITIAL_DATABASE];
@@ -643,7 +560,7 @@
       }
 
       detectUserLocation() {
-        this.showToast("GPS Active: Prioritizing Summerville & Nexton dining spots", "ph-crosshair");
+        this.showToast("GPS Active: Prioritizing Summerville & Nexton", "ph-crosshair");
         this.activeArea = 'summerville';
         document.getElementById('local-area-select').value = 'summerville';
         this.renderCards();
@@ -679,25 +596,17 @@
         const query = (document.getElementById('search-query')?.value || '').toLowerCase().trim();
 
         return this.database.filter(item => {
-          // Check Mode
           if (item.mode !== this.mode) return false;
-
-          // Check Area if in dineout mode
           if (this.mode === 'dineout' && this.activeArea !== 'all') {
             if (item.area && item.area !== this.activeArea) return false;
           }
-
-          // Active Dietary Filters
           for (let f of this.activeFilters) {
             if (!item[f]) return false;
           }
-
-          // Keyword Search
           if (query) {
             const txt = (item.title + ' ' + (item.venue || '') + ' ' + (item.location || '') + ' ' + (item.orderTip || '')).toLowerCase();
             if (!txt.includes(query)) return false;
           }
-
           return true;
         });
       }
@@ -712,8 +621,8 @@
           grid.innerHTML = `
             <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-dashed border-stone-300 p-8">
               <i class="ph ph-magnifying-glass text-4xl text-slate-300 mb-2"></i>
-              <h3 class="text-base font-bold text-brand-navy">No spots match current filters</h3>
-              <p class="text-xs text-slate-500 mt-1">Try selecting "All Lowcountry Areas" or resetting dietary filters.</p>
+              <h3 class="text-base font-bold text-brand-navy">No meals match active filters</h3>
+              <p class="text-xs text-slate-500 mt-1">Try resetting dietary filters or changing area.</p>
               <button onclick="app.resetFilters()" class="mt-4 px-4 py-2 bg-orange-500 text-white rounded-xl text-xs font-bold shadow-sm">
                 Reset All Filters
               </button>
@@ -726,8 +635,9 @@
           const isFav = this.favorites.includes(item.id);
           return `
             <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-              <!-- Card Photo & Badges -->
-              <div class="relative h-44 overflow-hidden bg-slate-100">
+              
+              <!-- CLICKABLE IMAGE CONTAINER: Opens Modal Directly -->
+              <div onclick="app.openModal('${item.id}')" class="relative h-44 overflow-hidden bg-slate-100 cursor-pointer" title="Click image to open recipe/order details">
                 <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
@@ -736,7 +646,7 @@
                   ${item.lowSodium ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-600 text-white shadow">&lt;500mg Na</span>` : ''}
                 </div>
 
-                <button onclick="app.toggleFavorite('${item.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow backdrop-blur transition">
+                <button onclick="event.stopPropagation(); app.toggleFavorite('${item.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-700 flex items-center justify-center shadow backdrop-blur transition">
                   <i class="${isFav ? 'ph-fill ph-heart text-red-500' : 'ph-bold ph-heart'} text-base"></i>
                 </button>
 
@@ -748,9 +658,9 @@
                 </div>
               </div>
 
-              <!-- Card Details -->
+              <!-- Card Content Area -->
               <div class="p-4 flex-1 flex flex-col justify-between">
-                <div>
+                <div onclick="app.openModal('${item.id}')" class="cursor-pointer">
                   <div class="text-[11px] font-bold text-orange-600 uppercase tracking-wider mb-1">
                     ${item.mode === 'dineout' ? item.location : 'Home-Cooked Recipe'}
                   </div>
@@ -758,7 +668,6 @@
                   <p class="text-xs text-slate-500 mt-1 line-clamp-2">${item.orderTip || item.subtitle}</p>
                 </div>
 
-                <!-- Macros & Action Buttons -->
                 <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
                   <div class="flex items-center gap-3 text-xs">
                     <div><span class="text-[9px] text-slate-400 font-bold block">PROTEIN</span><span class="font-extrabold text-slate-800">${item.protein}g</span></div>
@@ -771,7 +680,7 @@
                     </button>
 
                     ${item.mode === 'dineout' ? `
-                      <button onclick="launchGoogleMaps('${item.venue.replace(/'/g, "\\'")}', '${item.address.replace(/'/g, "\\'")}')" class="p-2 bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 rounded-xl transition" title="Open directly in Google Maps">
+                      <button onclick="launchGoogleMaps('${item.venue.replace(/'/g, "\\'")}', '${item.address.replace(/'/g, "\\'")}')" class="p-2 bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 rounded-xl transition" title="Open in Google Maps">
                         <i class="ph-bold ph-navigation-arrow text-base"></i>
                       </button>
                     ` : ''}
@@ -789,14 +698,14 @@
 
         const content = document.getElementById('modal-dynamic-content');
         content.innerHTML = `
-          <!-- Full-Width Hero Food Banner -->
-          <div class="relative h-60 sm:h-72 w-full overflow-hidden bg-slate-100">
+          <!-- Full Hero Food Image Banner -->
+          <div class="relative h-64 sm:h-72 w-full overflow-hidden bg-slate-100">
             <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
 
             <div class="absolute top-4 left-4 flex gap-2 flex-wrap">
-              ${item.glp1 ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-md flex items-center gap-1.5"><i class="ph-fill ph-shield-check"></i> GLP-1 Certified</span>` : ''}
-              ${item.lowSodium ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-600 text-white shadow-md">&lt;500mg Sodium</span>` : ''}
+              ${item.glp1 ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow flex items-center gap-1.5"><i class="ph-fill ph-shield-check"></i> GLP-1 Certified</span>` : ''}
+              ${item.lowSodium ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-600 text-white shadow">&lt;500mg Sodium</span>` : ''}
             </div>
 
             <div class="absolute bottom-4 left-5 right-5 text-white">
@@ -811,7 +720,7 @@
           </div>
 
           <div class="p-6 space-y-6">
-            <!-- Nutrition Callout Ribbon -->
+            <!-- Nutrition Ribbon with Large Typography -->
             <div class="grid grid-cols-3 gap-3 bg-stone-100/90 border border-stone-200 p-4 rounded-2xl text-center">
               <div>
                 <span class="text-xs text-slate-500 font-bold block">CALORIES</span>
@@ -830,17 +739,17 @@
               </div>
             </div>
 
-            <!-- Digestion Profile Banner -->
+            <!-- Digestion Profile -->
             <div class="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-start gap-3">
               <i class="ph-fill ph-check-circle text-emerald-600 text-xl shrink-0 mt-0.5"></i>
               <div>
                 <h4 class="text-sm font-bold text-emerald-950">Gastric & Digestion Assessment</h4>
-                <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed mt-0.5">${item.glp1Note || "Formulated to prevent stomach distension, reflux, and nausea on slower gastric emptying regimens."}</p>
+                <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed mt-0.5">${item.glp1Note || "Formulated to prevent nausea, stomach distension, and reflux."}</p>
               </div>
             </div>
 
             ${item.mode === 'dineout' ? `
-              <!-- Dine Out Ordering Hack (Large, Readable Callout) -->
+              <!-- Dine Out Order Hack with Generous Callout Typography -->
               <div class="p-5 bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-300/80 rounded-2xl space-y-2">
                 <div class="flex items-center gap-2 text-amber-900 font-bold text-sm tracking-wide uppercase">
                   <i class="ph-bold ph-chat-centered-text text-orange-600 text-lg"></i>
@@ -852,7 +761,7 @@
                 <p class="text-xs text-slate-500 italic pt-1">Tip: Showing this screen to your server ensures no hidden butter or seasoned salt rubs are used.</p>
               </div>
 
-              <!-- Direct Google Maps Action Button -->
+              <!-- Full Width Google Maps Direction Button -->
               <div class="pt-2">
                 <button onclick="launchGoogleMaps('${item.venue.replace(/'/g, "\\'")}', '${item.address.replace(/'/g, "\\'")}')" class="w-full py-4 bg-brand-navy hover:bg-slate-900 text-white font-extrabold rounded-2xl text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg active:scale-[0.99] transition">
                   <i class="ph-bold ph-navigation-arrow text-xl text-orange-400"></i>
@@ -860,7 +769,7 @@
                 </button>
               </div>
             ` : `
-              <!-- Eat In Ingredients & Recipe Steps (Generous Typography) -->
+              <!-- Eat In Ingredients & Recipe Steps with High Contrast Typography -->
               <div class="space-y-6">
                 <div>
                   <h4 class="text-base font-extrabold text-brand-navy uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -899,9 +808,7 @@
         document.getElementById('modal-details').classList.remove('hidden');
       }
 
-      closeModal() {
-        document.getElementById('modal-details').classList.add('hidden');
-      }
+      closeModal() { document.getElementById('modal-details').classList.add('hidden'); }
 
       openRandomizer() {
         document.getElementById('modal-randomizer').classList.remove('hidden');
@@ -911,9 +818,7 @@
         document.getElementById('decision-wheel').classList.remove('spinner-active');
       }
 
-      closeRandomizer() {
-        document.getElementById('modal-randomizer').classList.add('hidden');
-      }
+      closeRandomizer() { document.getElementById('modal-randomizer').classList.add('hidden'); }
 
       spinDecider() {
         const pool = this.getFilteredList();
@@ -958,10 +863,9 @@
               this.renderCards();
               this.showToast(`Imported ${data.length} new meals from JSON!`, "ph-check-circle");
             } else {
-              this.showToast("JSON file must contain an array of meals", "ph-warning");
+              this.showToast("JSON must contain an array of meals", "ph-warning");
             }
           } catch (err) {
-            console.error(err);
             this.showToast("Invalid JSON file", "ph-x-circle");
           }
         };
@@ -971,7 +875,7 @@
       toggleFavorite(id) {
         if (this.favorites.includes(id)) {
           this.favorites = this.favorites.filter(x => x !== id);
-          this.showToast("Removed from saved list", "ph-heart-break");
+          this.showToast("Removed from saved", "ph-heart-break");
         } else {
           this.favorites.push(id);
           this.showToast("Saved to favorites!", "ph-heart-fill");
@@ -987,7 +891,7 @@
       }
 
       setTab(tab) {
-        ['discover', 'mealplan', 'favorites'].forEach(t => {
+        ['discover', 'favorites'].forEach(t => {
           const el = document.getElementById(`view-${t}`);
           if (el) el.classList.toggle('hidden', t !== tab);
         });
@@ -1003,7 +907,12 @@
       }
     }
 
-    // Initialize application
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+
     const app = new DinnerController();
   </script>
 </body>

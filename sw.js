@@ -1,5 +1,5 @@
-// Service Worker for "What’s 4 Dinner?" PWA
-const CACHE_NAME = 'w4d-cache-v2';
+// What's 4 Dinner? PWA Cache Service Worker v1.2.0
+const CACHE_NAME = 'w4d-cache-v1.2.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -19,21 +19,15 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((k) => {
-          if (k !== CACHE_NAME) return caches.delete(k);
-        })
-      );
-    })
+    caches.keys().then((keys) => Promise.all(
+      keys.map((k) => { if (k !== CACHE_NAME) return caches.delete(k); })
+    ))
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      return cachedResponse || fetch(e.request).catch(() => caches.match('./index.html'));
-    })
+    caches.match(e.request).then((res) => res || fetch(e.request).catch(() => caches.match('./index.html')))
   );
 });

@@ -1,11 +1,12 @@
 {
   "name": "What’s 4 Dinner?",
   "short_name": "What’s 4 Dinner",
+  "version": "1.2.0",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#faf8f5",
-  "theme_color": "#192841",
-  "description": "Smart, clinical dietary dinner decider with GLP-1, Low Sodium, and Dine Out options.",
+  "background_color": "#fbfaf8",
+  "theme_color": "#1d3557",
+  "description": "Smart Clinical Nutrition & Local Restaurant Decider for Summerville & Charleston.",
   "icons": [
     {
       "src": "icons/icon-192.png",
