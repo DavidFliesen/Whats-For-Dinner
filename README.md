@@ -1,5 +1,10 @@
-# What’s 4 Dinner? — Version 2.9.0
+# What’s 4 Dinner? — Version 2.9.1
 An ARTEZIQ app.
+
+## Fixes in 2.9.1
+- **Location suggestions**: typing “Summerville, SC” now puts the town of Summerville, South Carolina first. Typed state abbreviations are understood, towns rank above neighbourhoods, and neighbourhoods show their town (e.g. “Pinehill, Summerville, SC”). Pressing Enter only takes the top suggestion when it matches what you typed; otherwise it looks up exactly what you typed.
+- **“Couldn’t reach the restaurant map”**: restaurant search now uses a lighter query and tries three public OpenStreetMap servers (overpass-api.de, overpass.private.coffee, maps.mail.ru), twice, before giving up. The error message now says whether you’re offline or the map is busy. The retired overpass.kumi.systems server was removed.
+- The notebook uses the same servers and retries.
 
 ## What’s new in 2.9.0
 - **Cuisine picker in Dine Out**, right under the location: pick one or more cuisines (with counts), or “Any”. Built from the restaurants actually nearby, so it works in every country and picks up local styles automatically (e.g. Roman in Rome, Sichuan in China).

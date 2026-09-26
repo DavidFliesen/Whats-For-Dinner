@@ -488,7 +488,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "2.9.0";
+const VERSION = "2.9.1";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -977,14 +977,26 @@ async function loadPlaces(force, scroll){
   }
   const meters = Math.round(state.radius * 1609.34);
   const around = `(around:${meters},${state.loc.lat},${state.loc.lon})`;
-  const q = `[out:json][timeout:25];(nwr["amenity"~"^(restaurant|fast_food)$"]["name"]${around};nwr["amenity"="pub"]["name"]["food"~"^(yes|only)$"]${around};nwr["amenity"="pub"]["name"]["cuisine"]${around};);out center tags 500;`;
+  /* One simple statement is much lighter for the free map servers than several combined ones. */
+  const q = `[out:json][timeout:25];nwr["amenity"~"^(restaurant|fast_food|pub)$"]["name"]${around};out center tags;`;
   state.loading = true; setStatus(`Finding restaurants within ${state.radius} mi…`, "load"); render();
   if (scroll) scrollToResults();
-  const endpoints = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
+  /* Three public OpenStreetMap servers, tried in turn, twice, so one busy server doesn't stop the search. */
+  const endpoints = ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"];
   let data = null, lastErr = null;
-  for (const ep of endpoints){
-    try { data = await fetchJSON(ep, { method: "POST", body: "data=" + encodeURIComponent(q), headers: { "Content-Type": "application/x-www-form-urlencoded" } }); break; }
-    catch (e){ lastErr = e; }
+  search:
+  for (let round = 0; round < 2; round++){
+    for (const ep of endpoints){
+      try {
+        const d = await fetchJSON(ep, { method: "POST", body: "data=" + encodeURIComponent(q), headers: { "Content-Type": "application/x-www-form-urlencoded" } }, 40000);
+        const cutShort = /timed out|runtime error|out of memory/i.test(d.remark || "");
+        if (Array.isArray(d.elements) && !(cutShort && !d.elements.length)){ data = d; break search; }
+        lastErr = new Error(d.remark || "empty answer");
+      } catch (e){ lastErr = e; }
+      if (state.loc && key !== `${state.loc.lat.toFixed(3)},${state.loc.lon.toFixed(3)},${state.radius}`){ state.loading = false; return; } /* user moved on */
+    }
+    setStatus(`The restaurant map is busy — trying again…`, "load");
+    await new Promise(r => setTimeout(r, 2500));
   }
   state.loading = false;
   if (!data){
@@ -992,7 +1004,10 @@ async function loadPlaces(force, scroll){
       state.places = cache.places; state.placesKey = cache.key;
       setStatus("You’re offline or the map service is busy. Showing your last saved search.", "err");
     } else {
-      state.places = []; setStatus("Couldn’t reach the restaurant map. Check your connection and tap Find places to try again.", "err");
+      state.places = [];
+      setStatus(navigator.onLine === false
+        ? "You’re offline. Connect to the internet and tap Find places."
+        : `The free restaurant map (OpenStreetMap) is busy right now. Wait a minute and tap Find places${state.radius > 5 ? ", or try a smaller radius" : ""}.`, "err");
     }
     render(); return;
   }
@@ -1000,6 +1015,7 @@ async function loadPlaces(force, scroll){
   state.places = (data.elements || []).map(el => {
     const t = el.tags || {}, lat = el.lat ?? el.center?.lat, lon = el.lon ?? el.center?.lon;
     if (lat == null || !t.name) return null;
+    if (t.amenity === "pub" && !/^(yes|only)$/i.test(t.food || "") && !t.cuisine) return null; /* pubs only when they serve food */
     const cuisine = (t.cuisine || "").toLowerCase().split(/[;,]/).map(s => s.trim()).filter(Boolean);
     const addr = [[t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "), t["addr:city"]].filter(Boolean).join(", ");
     return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", fast: t.amenity === "fast_food", amenity: t.amenity,
@@ -1601,14 +1617,36 @@ document.querySelectorAll("[data-radius]").forEach(b => b.addEventListener("clic
 /* ---------- Location autocomplete (Photon, OpenStreetMap data, no key) ---------- */
 const US_STATES = {"Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","District of Columbia":"DC","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","Puerto Rico":"PR"};
 const ac = { items: [], active: -1, timer: 0, ctl: null, cache: new Map(), lastQ: "" };
+const PLACE_WEIGHT = { city: 6, town: 6, village: 5, municipality: 5, borough: 4, hamlet: 3, suburb: 3, quarter: 2, county: 2,
+  neighbourhood: 1, locality: 1, isolated_dwelling: 0, farm: 0, state: 1, region: 1, country: 1, postcode: 4 };
+const SMALL_PLACE = /^(suburb|quarter|neighbourhood|locality|hamlet|isolated_dwelling|farm|borough)$/;
+const STATE_NAME = Object.fromEntries(Object.entries(US_STATES).map(([n, a]) => [a, n]));
+const normName = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 function photonToPlace(f){
   const p = f.properties || {}, [lon, lat] = f.geometry.coordinates;
   const cc = (p.countrycode || "").toLowerCase();
   const name = p.name || p.city || p.postcode || "";
   const region = cc === "us" ? (US_STATES[p.state] || p.state || "") : (p.state || p.country || "");
-  const label = [name, region !== name ? region : ""].filter(Boolean).join(", ");
+  const kind = p.osm_value || p.type || "";
+  /* Neighbourhoods and small places also name their town, so "Pine Hill" reads as "Pine Hill, Summerville, SC". */
+  const parent = SMALL_PLACE.test(kind) && p.city && normName(p.city) !== normName(name) ? p.city : "";
+  const label = [name, parent, region !== name ? region : ""].filter(Boolean).join(", ");
   const sub = [...new Set([p.city !== name ? p.city : "", p.county, p.state, p.country].filter(Boolean))].filter(x => x !== name).join(", ");
-  return { label, name, sub, lat, lon, country: cc };
+  return { label, name, sub, lat, lon, country: cc, kind, state: p.state || "" };
+}
+/* Split "Summerville, SC" into the place name and a US state, if one was typed. */
+function parseTyped(q){
+  const parts = q.split(",").map(s => s.trim()).filter(Boolean);
+  const last = (parts[parts.length - 1] || "").toUpperCase();
+  const st = parts.length > 1 && STATE_NAME[last] ? last : (parts.length > 1 && US_STATES[parts[parts.length - 1]] ? US_STATES[parts[parts.length - 1]] : "");
+  return { name: parts[0] || q, state: st, query: st ? [...parts.slice(0, -1), STATE_NAME[st]].join(", ") : q };
+}
+function rankPlace(p, typed){
+  const n = normName(p.name), want = normName(typed.name);
+  let s = PLACE_WEIGHT[p.kind] ?? 1;
+  if (n === want) s += 8; else if (n.startsWith(want)) s += 5; else if (n.includes(want)) s += 2;
+  if (typed.state) s += (US_STATES[p.state] === typed.state) ? 6 : -6;
+  return s;
 }
 async function suggest(q){
   const key = q.toLowerCase();
@@ -1616,13 +1654,16 @@ async function suggest(q){
   if (ac.ctl) ac.ctl.abort();
   ac.ctl = new AbortController();
   const numeric = /\d/.test(q);
-  const url = "https://photon.komoot.io/api/?limit=8&lang=en&q=" + encodeURIComponent(q) + (numeric ? "" : "&osm_tag=place");
+  const typed = parseTyped(q);
+  const url = "https://photon.komoot.io/api/?limit=12&lang=en&q=" + encodeURIComponent(typed.query) + (numeric ? "" : "&osm_tag=place");
   const r = await fetch(url, { signal: ac.ctl.signal });
   if (!r.ok) throw new Error("HTTP " + r.status);
   const data = await r.json();
   const seen = new Set();
   const list = (data.features || []).map(photonToPlace)
-    .filter(p => p.name && !seen.has(p.label + p.sub) && seen.add(p.label + p.sub)).slice(0, 6);
+    .filter(p => p.name && !seen.has(p.label + p.sub) && seen.add(p.label + p.sub))
+    .map(p => ({ ...p, score: rankPlace(p, typed), exact: normName(p.name).startsWith(normName(typed.name)) }))
+    .sort((a, b) => b.score - a.score).slice(0, 6);
   ac.cache.set(key, list);
   return list;
 }
@@ -1636,7 +1677,7 @@ function renderAC(q){
     list.innerHTML = q.length >= 3 ? `<li class="hint">No matches yet — keep typing, or press Find places.</li>` : "";
     list.hidden = q.length < 3; input.setAttribute("aria-expanded", String(!list.hidden)); return;
   }
-  list.innerHTML = ac.items.map((p, i) => `<li role="option" id="ac${i}" data-ac="${i}" aria-selected="${i === ac.active}">${icon("pin")}<span><b>${hl(p.name, q)}</b>${p.sub ? `<small>${esc(p.sub)}</small>` : ""}</span></li>`).join("")
+  list.innerHTML = ac.items.map((p, i) => `<li role="option" id="ac${i}" data-ac="${i}" aria-selected="${i === ac.active}">${icon("pin")}<span><b>${hl(p.name, parseTyped(q).name)}</b>${p.sub ? `<small>${esc(p.sub)}</small>` : ""}</span></li>`).join("")
     + `<li class="attr" aria-hidden="true">Places © OpenStreetMap</li>`;
   list.hidden = false; input.setAttribute("aria-expanded", "true");
   if (ac.active >= 0) input.setAttribute("aria-activedescendant", "ac" + ac.active); else input.removeAttribute("aria-activedescendant");
@@ -1666,7 +1707,11 @@ $("#locInput").addEventListener("keydown", e => {
   if (e.key === "ArrowDown"){ e.preventDefault(); ac.active = (ac.active + 1) % ac.items.length; renderAC(ac.lastQ); }
   else if (e.key === "ArrowUp"){ e.preventDefault(); ac.active = (ac.active - 1 + ac.items.length) % ac.items.length; renderAC(ac.lastQ); }
   else if (e.key === "Escape"){ e.stopPropagation(); closeAC(); }
-  else if (e.key === "Enter"){ e.preventDefault(); chooseAC(Math.max(0, ac.active)); }
+  else if (e.key === "Enter"){
+    const i = Math.max(0, ac.active);
+    if (ac.active > 0 || (ac.items[i] && ac.items[i].exact)){ e.preventDefault(); chooseAC(i); }
+    else { closeAC(); } /* let the form do a full lookup of exactly what was typed */
+  }
 });
 $("#locInput").addEventListener("focus", e => { if (state.loc && e.target.value === state.loc.label) e.target.select(); });
 $("#acList").addEventListener("mousedown", e => e.preventDefault()); /* keep focus so the tap registers */
@@ -1675,7 +1720,8 @@ document.addEventListener("click", e => { if (!e.target.closest(".ac-wrap") && !
 
 $("#locForm").addEventListener("submit", async e => {
   e.preventDefault();
-  if (!$("#acList").hidden && ac.items.length){ chooseAC(Math.max(0, ac.active)); return; }
+  if (!$("#acList").hidden && ac.items.length && (ac.active > 0 || (ac.items[Math.max(0, ac.active)] || {}).exact)){ chooseAC(Math.max(0, ac.active)); return; }
+  closeAC();
   const q = $("#locInput").value.trim(); if (!q) return;
   closeAC();
   const go = $("#locGo"); go.disabled = true;
