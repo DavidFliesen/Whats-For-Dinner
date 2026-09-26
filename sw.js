@@ -1,8 +1,8 @@
-/* What's 4 Dinner? service worker — v2.0.0
+/* What's 4 Dinner? service worker — v2.1.0
    App shell: cache-first (works fully offline after first visit).
-   Google Fonts: stale-while-revalidate.
+   Google Fonts and Unsplash food photos: stale-while-revalidate (photos you have seen work offline).
    Map/geocoding APIs: always network (the app keeps its own saved copy of the last search). */
-const VERSION = "2.0.0";
+const VERSION = "2.1.0";
 const SHELL = "w4d-shell-" + VERSION;
 const RUNTIME = "w4d-runtime-" + VERSION;
 const SHELL_FILES = [
@@ -32,7 +32,7 @@ self.addEventListener("fetch", e => {
   if (/overpass|nominatim\.openstreetmap\.org/.test(url.hostname)) return;
 
   // Fonts: stale-while-revalidate.
-  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
+  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "images.unsplash.com") {
     e.respondWith(caches.open(RUNTIME).then(async cache => {
       const hit = await cache.match(req);
       const net = fetch(req).then(res => { if (res.ok || res.type === "opaque") cache.put(req, res.clone()); return res; }).catch(() => hit);
