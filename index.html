@@ -1,209 +1,354 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>What’s 4 Dinner?</title>
-  <link rel="manifest" href="manifest.json">
+  
+  <!-- PWA Manifest & App Icons -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="What’s 4 Dinner?">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { navy: '#152033', orange: '#f77f00' } } } }
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: { navy: '#0f172a', orange: '#f97316' }
+          }
+        }
+      }
     }
   </script>
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .glass-dark { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-orange-100 selection:text-orange-900">
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-orange-100 selection:text-orange-900">
 
-  <!-- Clean White Header -->
-  <header class="bg-white w-full border-b border-slate-100">
-    <div class="max-w-5xl mx-auto px-4 py-2 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-3 select-none">
-        <svg class="h-14 sm:h-16 w-auto" viewBox="0 0 340 180" preserveAspectRatio="xMidYMid meet" style="aspect-ratio: 340/180;" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="85" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-size="52" font-weight="800" fill="#152033" letter-spacing="-0.5">What’s</text>
-          <text x="245" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="44" font-weight="900" fill="#f77f00">4</text>
-          <path d="M26 155V101M26 101V70C26 66 22 66 22 66V42M26 70C26 66 30 66 30 66V42M26 70V42" stroke="#f77f00" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M19 155C19 159 33 159 33 155V103H19V155Z" fill="#f77f00"/>
-          <path d="M45 44H75C110 44 135 68 135 100C135 132 110 155 75 155H45V44Z" stroke="#152033" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <path d="M60 62C88 68 110 81 110 100C110 119 88 132 60 138" stroke="#f77f00" stroke-width="7" stroke-linecap="round"/>
-          <text x="138" y="152" font-family="'Plus Jakarta Sans', sans-serif" font-size="62" font-weight="800" fill="#152033" letter-spacing="-1">inner?</text>
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Fixed Unstretched Logo (Aspect Ratio 340/180) -->
+      <a href="#" class="flex items-center select-none" style="height: 50px;">
+        <svg viewBox="0 0 340 180" preserveAspectRatio="xMidYMid meet" style="height: 100%; width: auto;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="75" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="40" font-weight="800" fill="#1d3557" letter-spacing="-0.5">What’s</text>
+          <text x="215" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#f77f00">4</text>
+          <path d="M26 120V78M26 78V54C26 51 22 51 22 51V32M26 54C26 51 30 51 30 51V32M26 54V32" stroke="#f77f00" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19 120C19 123 33 123 33 120V80H19V120Z" fill="#f77f00"/>
+          <path d="M40 34H65C92 34 112 52 112 77C112 102 92 120 65 120H40V34Z" stroke="#1d3557" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M52 48C74 52 92 62 92 77C92 92 74 102 52 106" stroke="#f77f00" stroke-width="6" stroke-linecap="round"/>
+          <text x="122" y="118" font-family="'Plus Jakarta Sans', sans-serif" font-size="46" font-weight="800" fill="#1d3557" letter-spacing="-0.5">inner?</text>
         </svg>
       </a>
-      <button id="surpriseBtn" class="flex items-center gap-1.5 px-4 py-2 bg-brand-orange text-white hover:bg-[#e67600] font-bold text-xs sm:text-sm rounded-full transition shadow-md">
-        <i data-lucide="sparkles" class="w-4 h-4"></i><span class="hidden sm:inline">Decide For Me</span>
-      </button>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-3">
+        <button id="surpriseBtn" class="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm rounded-full transition shadow-sm">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Decide For Me</span>
+        </button>
+        
+        <!-- Functional JSON Importer -->
+        <input type="file" id="jsonImporter" accept=".json" class="hidden">
+        <button id="importBtn" class="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-full transition shadow-sm">
+          <i data-lucide="file-json" class="w-4 h-4 text-orange-500"></i>
+          <span>Import JSON</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Dark Navy Control Banner -->
-  <div class="bg-brand-navy w-full px-4 py-8 mb-8 sm:rounded-b-3xl shadow-lg max-w-5xl mx-auto">
-    <p class="text-slate-300 text-sm mb-6 max-w-xl">Select Eat In or Dine Out to get immediate healthy options matching your clinical preferences.</p>
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1 space-y-8">
     
-    <!-- Mode Toggle -->
-    <div class="glass-dark p-1.5 rounded-2xl flex font-bold text-sm max-w-md shadow-inner mb-5">
-      <button id="modeEatIn" class="flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white"><i data-lucide="chef-hat" class="w-4 h-4"></i><span>Eat In</span></button>
-      <button id="modeDineOut" class="flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all bg-brand-orange text-white shadow-md"><i data-lucide="utensils" class="w-4 h-4"></i><span>Dine Out</span></button>
-    </div>
-
-    <!-- Location Bar -->
-    <div id="locationBar" class="glass-dark p-3.5 rounded-xl flex items-center gap-3 max-w-2xl border border-slate-600/50">
-      <i data-lucide="map-pin" class="w-5 h-5 text-brand-orange shrink-0"></i>
-      <input type="text" id="locationInput" value="Global JSON Data Active" readonly class="w-full text-sm font-semibold text-slate-200 focus:outline-none bg-transparent cursor-default">
-      <i data-lucide="crosshair" class="w-5 h-5 text-slate-400 shrink-0"></i>
-    </div>
-  </div>
-
-  <main class="max-w-5xl mx-auto px-4 w-full flex-1">
-    <!-- Dietary Filters -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-3">
-        <span>Dietary & Health Profiles</span><button id="clearFilters" class="text-brand-orange hover:underline normal-case font-semibold">Reset</button>
-      </div>
-      <div class="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar text-xs">
-        <button data-filter="glp1" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold hover:border-emerald-300 transition whitespace-nowrap shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>GLP-1 Friendly</span></button>
-        <button data-filter="lowSodium" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold hover:border-blue-300 transition whitespace-nowrap shadow-sm"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>Low Sodium (<500mg)</span></button>
-        <button data-filter="lowCal" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold hover:border-amber-300 transition whitespace-nowrap shadow-sm"><span class="w-2 h-2 rounded-full bg-amber-500"></span><span>Low Calorie (<450 kcal)</span></button>
-        <button data-filter="highProtein" class="filter-pill flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold hover:border-purple-300 transition whitespace-nowrap shadow-sm"><span class="w-2 h-2 rounded-full bg-purple-500"></span><span>High Protein (>30g)</span></button>
+    <!-- Hero Box -->
+    <div class="bg-brand-navy rounded-3xl p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
+      <div class="relative z-10">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 border border-slate-700 rounded-full text-xs font-semibold text-orange-400 mb-4">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          Lowcountry Verified: GLP-1, Sodium & Calorie Control
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold mb-3">Healthy dining made simple.</h1>
+        <p class="text-slate-300 text-sm sm:text-base max-w-xl mb-8">
+          Explore real restaurants right here in Summerville, Nexton, and Charleston, or cook a fresh digestion-friendly recipe.
+        </p>
+        
+        <div class="flex gap-3">
+          <button id="modeEatIn" class="px-8 py-3 rounded-full bg-orange-500 text-white font-bold flex items-center gap-2 transition text-sm shadow-md">
+            <i data-lucide="chef-hat" class="w-4 h-4"></i> Eat In
+          </button>
+          <button id="modeDineOut" class="px-8 py-3 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 font-bold flex items-center gap-2 transition text-sm shadow-md">
+            <i data-lucide="utensils" class="w-4 h-4"></i> Dine Out
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Results Status -->
-    <div class="flex items-center justify-between px-1 mb-4">
-      <span id="resultsCount" class="text-sm font-semibold text-slate-500">Loading meals...</span>
+    <!-- Filters & Search -->
+    <div class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div class="space-y-3 flex-1">
+          <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Dietary & Clinical Health Filters</span>
+            <button id="clearFilters" class="text-orange-500 hover:underline normal-case font-semibold">Reset Filters</button>
+          </div>
+          <div class="flex gap-2 flex-wrap text-xs">
+            <button data-filter="glp1" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> GLP-1 Friendly
+            </button>
+            <button data-filter="lowSodium" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span> Low Sodium (<500mg)
+            </button>
+            <button data-filter="lowCal" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span> Low Calorie (<450 kcal)
+            </button>
+            <button data-filter="highProtein" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-purple-500"></span> High Protein (>30g)
+            </button>
+            <button data-filter="quick" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
+              <i data-lucide="clock" class="w-3 h-3 text-slate-400"></i> Under 25 mins
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span id="resultsCount" class="text-sm font-semibold text-slate-600">Showing local recommendations</span>
+        <div class="relative w-full sm:w-64">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="searchInput" placeholder="Search dish, spot, protein..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition shadow-sm">
+        </div>
+      </div>
     </div>
 
-    <!-- Meal Grid -->
-    <div id="mealGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-12"></div>
+    <!-- Cards Grid -->
+    <div id="mealGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+      <!-- Generated via JS -->
+    </div>
   </main>
 
-  <footer class="py-8 text-center border-t border-slate-200 bg-slate-100">
-    <span class="text-xs font-bold text-slate-400">What’s 4 Dinner? • Version 1.3.1</span>
+  <!-- Footer Version Stamp -->
+  <footer class="border-t border-slate-200 py-6 text-center">
+    <span class="text-xs font-semibold text-slate-400 tracking-wide">What’s 4 Dinner? • Version 1.2.3</span>
   </footer>
 
-  <!-- Modal -->
-  <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl relative" id="modalContainer">
-      <button id="closeModal" class="absolute top-4 right-4 p-2 bg-white/90 hover:bg-white rounded-full text-slate-900 shadow-md backdrop-blur-md transition z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4 transition-opacity">
+    <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-200">
+      
+      <!-- Pinned Close Button (Fixed during scroll) -->
+      <button id="closeModal" class="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition backdrop-blur-md shadow-lg border border-white/20">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      
       <div id="modalContent"></div>
     </div>
   </div>
 
   <script>
-    let mealsData = [];
-    let currentMode = 'dine-out';
+    // Safe, permanent high-resolution default images
+    const imgSalmon = "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80";
+    const imgBowl = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
+    const imgChicken = "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=800&q=80";
+    const imgHalibut = "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80";
+    const imgDineOutDefault = "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
+
+    // Initial Default Data
+    let mealsData = [
+      {
+        id: '1', type: 'eat-in', image: imgSalmon,
+        title: 'Meyer Lemon Poached Salmon & Asparagus', subtitle: 'Air-crisped tender spears with velvety cauliflower mash',
+        prepTime: '20 mins', timeVal: 20, calories: 380, protein: 36, sodium: 220,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
+        ingredients: ['6 oz Wild Salmon fillet', '1 bunch fresh asparagus', '1 Meyer lemon (sliced)', 'Cauliflower'],
+        instructions: 'Poach salmon gently with lemon slices for 9 mins. Steam asparagus. Mash cauliflower until velvety.'
+      },
+      {
+        id: '2', type: 'eat-in', image: imgBowl,
+        title: 'Warm Ginger Turkey & Zucchini Skillet', subtitle: 'Hydrating low-sodium bone broth reduction with herbs',
+        prepTime: '18 mins', timeVal: 18, calories: 340, protein: 38, sodium: 310,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
+        ingredients: ['6 oz 99% lean ground turkey', '1 cup low-sodium organic bone broth', '1 large spiralized zucchini', 'Fresh ginger'],
+        instructions: 'Brown lean turkey in a non-stick skillet. Add bone broth and ginger; simmer 5 mins. Toss in zucchini ribbons for the final 90 seconds.'
+      },
+      {
+        id: '3', type: 'eat-in', image: imgChicken,
+        title: 'Greek Oregano Chicken Paillard', subtitle: 'Pounded thin for tender digestion with cucumber dill tzatziki',
+        prepTime: '22 mins', timeVal: 22, calories: 390, protein: 42, sodium: 280,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
+        ingredients: ['7 oz chicken breast', 'Oregano & Lemon', '1/4 cup unsweetened Greek yogurt', 'Cucumber'],
+        instructions: 'Pound chicken thin. Grill 3 mins per side. Serve with light garlic cucumber yogurt dip.'
+      },
+      {
+        id: '4', type: 'eat-in', image: imgHalibut,
+        title: 'Pan-Seared Halibut with Greens', subtitle: 'Clean pan-roasted white fish with lemon emulsion',
+        prepTime: '24 mins', timeVal: 24, calories: 320, protein: 34, sodium: 300,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
+        ingredients: ['6 oz Halibut fillet', 'Broccolini', 'Lemon juice', '1 tsp olive oil'],
+        instructions: 'Sear halibut in light olive oil. Steam broccolini. Drizzle with lemon.'
+      }
+    ];
+
+    let currentMode = 'eat-in';
     const activeFilters = new Set();
-    const modeEatIn = document.getElementById('modeEatIn');
-    const modeDineOut = document.getElementById('modeDineOut');
-    const locationBar = document.getElementById('locationBar');
+    let searchQuery = '';
+
     const mealGrid = document.getElementById('mealGrid');
-    const resultsCount = document.getElementById('resultsCount');
-    const filterPills = document.querySelectorAll('.filter-pill');
-    const clearFilters = document.getElementById('clearFilters');
     const detailModal = document.getElementById('detailModal');
     const modalContent = document.getElementById('modalContent');
-    const closeModal = document.getElementById('closeModal');
-
-    // Fetch Global JSON
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const response = await fetch('./meals.json');
-        if (!response.ok) throw new Error("Could not load meals.json");
-        const data = await response.json();
-        
-        // Include default Eat In recipes
-        const eatInDefaults = [
-          {
-            id: 'ei-1', type: 'eat-in', title: 'Lemon Herb Poached Salmon', calories: 380, protein: 38, sodium: 220, glp1: true, lowSodium: true, lowCal: true, highProtein: true,
-            description: 'Gentle on digestion, nutrient-dense, and rich in omega-3s.',
-            instructions: 'Poach salmon gently in simmering water for 9 mins. Serve with fresh lemon.'
-          }
-        ];
-        mealsData = [...eatInDefaults, ...data];
-        renderCards();
-      } catch (err) {
-        mealGrid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400"><p class="font-semibold">Add meals.json to the root folder to view menus.</p></div>';
-        resultsCount.textContent = "0 Options";
-      }
-    });
-
+    
+    // Mode Switcher
     function setMode(mode) {
       currentMode = mode;
-      if (mode === 'eat-in') {
-        modeEatIn.className = 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all bg-white text-brand-navy shadow-sm';
-        modeDineOut.className = 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white';
-        locationBar.classList.add('hidden');
-      } else {
-        modeDineOut.className = 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all bg-brand-orange text-white shadow-md';
-        modeEatIn.className = 'flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white';
-        locationBar.classList.remove('hidden');
-      }
+      document.getElementById('modeEatIn').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='eat-in' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
+      document.getElementById('modeDineOut').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='dine-out' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
       renderCards();
     }
-    modeEatIn.addEventListener('click', () => setMode('eat-in'));
-    modeDineOut.addEventListener('click', () => setMode('dine-out'));
+    document.getElementById('modeEatIn').addEventListener('click', () => setMode('eat-in'));
+    document.getElementById('modeDineOut').addEventListener('click', () => setMode('dine-out'));
 
-    filterPills.forEach(pill => {
+    // Filters
+    document.querySelectorAll('.filter-pill').forEach(pill => {
       pill.addEventListener('click', () => {
-        const filterKey = pill.getAttribute('data-filter');
-        if (activeFilters.has(filterKey)) { 
-          activeFilters.delete(filterKey); 
-          pill.classList.remove('bg-orange-50', 'border-brand-orange', 'text-brand-orange'); 
-          pill.classList.add('bg-white', 'border-slate-200'); 
-        } else { 
-          activeFilters.add(filterKey); 
-          pill.classList.add('bg-orange-50', 'border-brand-orange', 'text-brand-orange'); 
-          pill.classList.remove('bg-white', 'border-slate-200'); 
+        const key = pill.getAttribute('data-filter');
+        if(activeFilters.has(key)) {
+          activeFilters.delete(key);
+          pill.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
+          pill.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+        } else {
+          activeFilters.add(key);
+          pill.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-700');
+          pill.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
         }
         renderCards();
       });
     });
 
-    clearFilters.addEventListener('click', () => {
+    document.getElementById('clearFilters').addEventListener('click', () => {
       activeFilters.clear();
-      filterPills.forEach(p => { p.classList.remove('bg-orange-50', 'border-brand-orange', 'text-brand-orange'); p.classList.add('bg-white', 'border-slate-200'); });
+      document.querySelectorAll('.filter-pill').forEach(p => {
+        p.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
+        p.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
+      });
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
       renderCards();
     });
 
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      renderCards();
+    });
+
+    // JSON File Import Logic
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('jsonImporter').click();
+    });
+
+    document.getElementById('jsonImporter').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          
+          // Clean up imported data and assign default images if none exist
+          const newMeals = imported.map(m => {
+            m.id = "imp_" + Math.random().toString(36).substr(2, 9);
+            if (!m.image) {
+               m.image = m.type === 'dine-out' ? imgDineOutDefault : imgSalmon;
+            }
+            return m;
+          });
+          
+          // Add to data and switch to Dine Out mode automatically
+          mealsData = [...newMeals, ...mealsData];
+          setMode('dine-out');
+          alert(`Successfully loaded ${imported.length} new meals from Colab!`);
+          
+        } catch (err) {
+          alert("Could not load file. Make sure it's a valid meals.json");
+        }
+        e.target.value = ''; // Reset input
+      };
+      reader.readAsText(file);
+    });
+
+    // Launch Map Safely (Clean _blank tab)
     window.launchGoogleMaps = function(venue, location) {
-      const q = encodeURIComponent(`${venue} ${location}`);
-      window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank', 'noopener,noreferrer');
+      const query = encodeURIComponent(`${venue} ${location}`);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+      window.open(mapsUrl, '_blank', 'noopener,noreferrer');
     };
 
     function renderCards() {
-      const filtered = mealsData.filter(item => {
-        if (item.type !== currentMode) return false;
-        for (const f of activeFilters) if (!item[f]) return false;
+      const filtered = mealsData.filter(m => {
+        if(m.type !== currentMode) return false;
+        if(activeFilters.has('glp1') && !m.glp1) return false;
+        if(activeFilters.has('lowSodium') && !m.lowSodium) return false;
+        if(activeFilters.has('lowCal') && !m.lowCal) return false;
+        if(activeFilters.has('highProtein') && !m.highProtein) return false;
+        const tVal = m.timeVal || 99;
+        if(activeFilters.has('quick') && tVal > 25) return false;
+        if(searchQuery && !m.title.toLowerCase().includes(searchQuery) && !(m.venue && m.venue.toLowerCase().includes(searchQuery))) return false;
         return true;
       });
-      resultsCount.textContent = `${filtered.length} healthy option${filtered.length === 1 ? '' : 's'}`;
+
+      document.getElementById('resultsCount').textContent = `Showing ${filtered.length} recommendation${filtered.length === 1 ? '' : 's'}`;
       mealGrid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        mealGrid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-semibold">No options match your criteria. Try adjusting filters or importing a JSON file!</div>`;
+        return;
+      }
 
       filtered.forEach(meal => {
         const card = document.createElement('div');
-        card.className = "bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden cursor-pointer flex flex-col";
+        card.className = "bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer group flex flex-col";
         card.onclick = () => openModal(meal.id);
-        
+
         card.innerHTML = `
-          <div class="h-32 bg-slate-200 relative flex items-center justify-center overflow-hidden">
-             <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
-             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-          </div>
-          <div class="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              ${meal.type === 'dine-out' ? `<div class="text-[10px] text-brand-orange font-extrabold uppercase tracking-wider mb-1">${meal.venue}</div>` : ''}
-              <h3 class="font-extrabold text-slate-900 text-lg leading-snug mb-3">${meal.title}</h3>
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="${meal.image}" alt="${meal.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute top-3 left-3 flex gap-1.5 flex-wrap max-w-[80%]">
+              ${meal.glp1 ? `<span class="bg-emerald-500 text-white rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide shadow"><i data-lucide="check-circle-2" class="w-2.5 h-2.5 inline mb-0.5"></i> GLP-1 OK</span>` : ''}
+              ${meal.lowSodium ? `<span class="bg-blue-500 text-white rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide shadow"><500mg Na</span>` : ''}
             </div>
-            <div class="grid grid-cols-3 gap-1 py-2 px-1 bg-slate-50 rounded-xl text-center border border-slate-100 mt-2">
-              <div><span class="block text-slate-400 text-[9px] font-bold">CAL</span><span class="font-bold text-slate-800 text-sm">${meal.calories}</span></div>
-              <div class="border-x border-slate-200"><span class="block text-slate-400 text-[9px] font-bold">PRO</span><span class="font-bold text-slate-800 text-sm">${meal.protein}g</span></div>
-              <div><span class="block text-slate-400 text-[9px] font-bold">NA+</span><span class="font-bold text-slate-800 text-sm">${meal.sodium}mg</span></div>
+            
+            <div class="absolute bottom-3 left-3 flex items-center gap-1 text-white text-xs font-semibold drop-shadow-md">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i> ${meal.prepTime || 'Dine Out'}
+            </div>
+            <div class="absolute bottom-3 right-3 text-white text-xs font-bold drop-shadow-md">
+              ${meal.calories} kcal
+            </div>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col">
+            <div class="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-2">
+              ${meal.type === 'eat-in' ? 'HOME-COOKED RECIPE' : meal.venue}
+            </div>
+            <h3 class="font-extrabold text-slate-800 text-lg leading-tight mb-1.5">${meal.title}</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-2">${meal.subtitle || meal.location || meal.address}</p>
+            
+            <div class="mt-auto pt-4 border-t border-slate-100 flex gap-6">
+              <div>
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Protein</div>
+                <div class="text-sm font-extrabold text-slate-800">${meal.protein}g</div>
+              </div>
+              <div>
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Sodium</div>
+                <div class="text-sm font-extrabold text-slate-800">${meal.sodium}mg</div>
+              </div>
             </div>
           </div>
         `;
@@ -212,47 +357,84 @@
       lucide.createIcons();
     }
 
-    window.openModal = function(id) {
+    function openModal(id) {
       const meal = mealsData.find(m => m.id === id);
-      if (!meal) return;
+      if(!meal) return;
+      
       modalContent.innerHTML = `
-        <div class="h-48 bg-slate-200 relative flex items-center justify-center rounded-t-3xl overflow-hidden">
-          <i data-lucide="image" class="w-12 h-12 text-slate-300"></i>
+        <div class="h-64 sm:h-72 w-full relative">
+          <img src="${meal.image}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 right-6 text-white drop-shadow-lg">
+            <div class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2">${meal.type === 'eat-in' ? 'Recipe' : meal.venue}</div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">${meal.title}</h2>
+          </div>
         </div>
-        <div class="p-6">
-          <h2 class="text-2xl font-extrabold text-slate-900 mb-1">${meal.title}</h2>
-          ${meal.venue ? `<p class="text-xs font-bold text-brand-orange uppercase mb-4">${meal.venue} •${meal.location}</p>` : ''}
-          
-          <div class="grid grid-cols-3 gap-2 py-3 px-2 bg-orange-50 rounded-2xl text-center text-sm mb-6 border border-orange-100">
-            <div><span class="block text-slate-400 text-[10px] font-bold">CALORIES</span><span class="font-extrabold text-slate-800 text-xl">${meal.calories}</span></div>
-            <div><span class="block text-slate-400 text-[10px] font-bold">PROTEIN</span><span class="font-extrabold text-slate-800 text-xl">${meal.protein}g</span></div>
-            <div><span class="block text-slate-400 text-[10px] font-bold">SODIUM</span><span class="font-extrabold text-slate-800 text-xl">${meal.sodium}mg</span></div>
+        
+        <div class="p-6 sm:p-8 space-y-6">
+          <div class="grid grid-cols-3 gap-2 py-3 px-4 bg-slate-50 rounded-2xl text-center border border-slate-200">
+            <div><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Calories</span><span class="font-extrabold text-slate-800 text-lg">${meal.calories}</span></div>
+            <div class="border-x border-slate-200"><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Protein</span><span class="font-extrabold text-slate-800 text-lg">${meal.protein}g</span></div>
+            <div><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Sodium</span><span class="font-extrabold text-slate-800 text-lg">${meal.sodium}mg</span></div>
           </div>
 
-          ${meal.type === 'dine-out' ? `
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-5">
-              <h4 class="font-bold text-slate-900 text-sm mb-2 flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-brand-orange"></i>Server Hack</h4>
-              <p class="text-slate-700 font-medium text-sm leading-relaxed">"${meal.orderTip}"</p>
+          ${meal.type === 'eat-in' ? `
+            <div>
+              <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">Ingredients</h4>
+              <ul class="space-y-2 text-sm text-slate-600 font-medium">
+                ${meal.ingredients.map(i => `<li class="flex items-center gap-2.5"><i data-lucide="check" class="w-4 h-4 text-orange-500 shrink-0"></i> ${i}</li>`).join('')}
+              </ul>
             </div>
-            <button onclick="launchGoogleMaps('${meal.venue.replace(/'/g, "\\'")}', '${(meal.address||meal.location).replace(/'/g, "\\'")}')" class="w-full py-4 bg-brand-navy hover:bg-slate-800 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-md"><i data-lucide="map-pin" class="w-5 h-5"></i> Navigate in Google Maps</button>
+            <div>
+              <h4 class="font-bold text-slate-900 mb-2 text-sm uppercase tracking-wider">Instructions</h4>
+              <p class="text-sm text-slate-700 leading-relaxed bg-orange-50/70 p-5 rounded-2xl border border-orange-100">${meal.instructions}</p>
+            </div>
           ` : `
-            <div class="space-y-3 mb-4">
-              <p class="text-sm text-slate-600 font-medium">${meal.description}</p>
-              <h4 class="font-bold text-slate-900 text-sm pt-2 border-t border-slate-100">Instructions:</h4>
-              <p class="text-slate-700 font-medium text-sm leading-relaxed">${meal.instructions}</p>
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+              <h4 class="font-bold text-brand-navy mb-2 text-sm uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> Order Modification
+              </h4>
+              <p class="text-sm text-slate-700 leading-relaxed font-medium">"${meal.orderTip}"</p>
             </div>
+            
+            <button onclick="launchGoogleMaps('${meal.venue.replace(/'/g, "\\'")}', '${(meal.address || meal.location).replace(/'/g, "\\'")}')" class="w-full mt-2 py-3.5 bg-brand-navy hover:bg-slate-800 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-md">
+              <i data-lucide="map-pin" class="w-4 h-4 text-orange-400"></i>
+              Navigate in Google Maps
+            </button>
           `}
         </div>
       `;
       detailModal.classList.remove('hidden');
       detailModal.classList.add('flex');
       lucide.createIcons();
-    };
+    }
 
-    closeModal.addEventListener('click', () => { detailModal.classList.add('hidden'); detailModal.classList.remove('flex'); });
-    detailModal.addEventListener('click', (e) => { if (e.target === detailModal) { detailModal.classList.add('hidden'); detailModal.classList.remove('flex'); } });
-    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') { detailModal.classList.add('hidden'); detailModal.classList.remove('flex'); } });
-    lucide.createIcons();
+    document.getElementById('closeModal').addEventListener('click', () => {
+      detailModal.classList.add('hidden');
+      detailModal.classList.remove('flex');
+    });
+
+    document.getElementById('surpriseBtn').addEventListener('click', () => {
+      const available = mealsData.filter(m => m.type === currentMode);
+      if(available.length > 0) openModal(available[Math.floor(Math.random() * available.length)].id);
+    });
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+      });
+    }
+
+    // Modal state cleanup on BFCache back-navigation
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted && detailModal) {
+        detailModal.classList.add('hidden');
+        detailModal.classList.remove('flex');
+      }
+    });
+
+    renderCards();
   </script>
 </body>
 </html>
