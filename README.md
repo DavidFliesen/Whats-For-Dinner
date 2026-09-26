@@ -1,6 +1,11 @@
-# What’s 4 Dinner? — Version 2.2.0
+# What’s 4 Dinner? — Version 2.3.0
 
-## What’s new in 2.2.0
+## What’s new in 2.3.0
+- **Dine Out works worldwide.** Location search is no longer limited to the US — try “Portstewart, Northern Ireland” or “London, England”. GPS works anywhere too.
+- Locations outside the US show as “Town, Region” (e.g. “London, England”).
+- Chain dishes with published nutrition (Chipotle, Chick-fil-A) only appear for US locations, since those numbers are for US menus.
+
+## 2.2.0
 - **Surprise Me wheel**: the header button (and floating button on phones) opens a spinning wheel built from the meals or restaurants that match your current mode, filters and search. Up to 12 random picks per wheel; the pointer lands on the winner, which you can open or spin again.
 
 ## 2.1.0
