@@ -1,484 +1,879 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>What’s 4 Dinner?</title>
-  
-  <!-- PWA Manifest & App Icons -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="What’s 4 Dinner?">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What’s 4 Dinner?</title>
+<meta name="description" content="Pick tonight's dinner: cook at home or find a spot nearby, with low-calorie, low-sodium, high-protein and GLP-1 friendly filters.">
+<meta name="theme-color" content="#FAFAF8">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./icons/favicon-64.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="What’s 4 Dinner">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFAF8; --card:#FFFFFF; --ink:#1F2B3A; --muted:#667085; --line:#E7E4DE;
+  --navy:#2D4058; --navy-2:#243447; --orange:#DC8640; --orange-deep:#B9661F; --orange-soft:#FCEFE3;
+  --pass:#2F6B4A; --pass-bg:#E7F2EB; --miss:#8A8680; --miss-bg:#F2F0EC;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --font:"Lato", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--font);min-height:100vh;display:flex;flex-direction:column}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+img{max-width:100%;display:block}
+svg.i{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 18px}
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+/* Header */
+header.top{position:sticky;top:0;z-index:20;background:rgba(250,250,248,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:var(--sat)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;height:48px}
+.logo img{height:100%;width:auto}
+.hdr-actions{display:flex;gap:6px}
+.icon-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid transparent;background:transparent;color:var(--navy)}
+.icon-btn:hover{background:#EFEDE8}
+.badge{position:absolute;top:4px;right:3px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--orange);color:#fff;font-size:11px;font-weight:900;line-height:18px;text-align:center}
+.badge[hidden]{display:none}
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-          colors: {
-            brand: { navy: '#0f172a', orange: '#f97316' }
-          }
-        }
-      }
-    }
-  </script>
+/* Mode chooser */
+.intro{padding:28px 0 8px}
+.intro h1{font-weight:900;font-size:clamp(28px,6vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 18px;color:var(--navy);max-width:16ch}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mode{display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:var(--r-lg);border:2px solid var(--line);background:var(--card);transition:border-color .15s,box-shadow .15s}
+.mode .glyph{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--miss-bg);color:var(--navy);flex:none}
+.mode .glyph svg{width:24px;height:24px}
+.mode b{display:block;font-weight:900;font-size:18px;color:var(--navy)}
+.mode span{display:block;font-size:14px;color:var(--muted);line-height:1.3}
+.mode[aria-pressed="true"]{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-soft)}
+.mode[aria-pressed="true"] .glyph{background:var(--orange);color:#fff}
+@media (max-width:520px){.mode{flex-direction:column;align-items:flex-start;gap:10px}.mode span{font-size:13px}}
+
+/* Filters */
+.filters{padding:22px 0 6px}
+.filters-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.filters-head h2{margin:0;font-size:15px;font-weight:700;color:var(--ink)}
+.linkish{background:none;border:0;padding:6px 0;color:var(--orange-deep);font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+@media (min-width:760px){.chips{flex-wrap:wrap;overflow:visible}}
+.chip{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap}
+.chip small{font-weight:400;color:var(--muted);font-size:12px}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip[aria-pressed="true"] small{color:#C9D3E0}
+.chip svg.i{width:16px;height:16px}
+.chip[hidden]{display:none}
+
+/* Location */
+.loc{padding:10px 0 4px}
+.loc[hidden]{display:none}
+.loc-row{display:flex;gap:8px;flex-wrap:wrap}
+.field{flex:1 1 260px;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 6px 0 14px;border:1.5px solid var(--line);border-radius:var(--r-md);background:var(--card)}
+.field:focus-within{border-color:var(--orange)}
+.field input{flex:1;min-width:0;border:0;background:transparent;font-size:16px;padding:10px 0}
+.field input:focus{outline:none}
+.field svg.i{color:var(--orange)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:var(--r-md);border:1.5px solid var(--navy);background:var(--navy);color:#fff;font-weight:900;font-size:15px}
+.btn:hover{background:var(--navy-2)}
+.btn.ghost{background:var(--card);color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--navy)}
+.btn.orange{background:var(--orange);border-color:var(--orange)}
+.btn.orange:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
+.btn.small{min-height:40px;padding:0 14px;font-size:14px}
+.btn:disabled{opacity:.55;cursor:wait}
+.radius{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--muted);font-weight:700}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;min-height:36px;padding:0 14px;font-weight:700;font-size:14px;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+
+/* Results */
+.results{padding:14px 0 120px;flex:1}
+.res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
+.res-head p{margin:0;color:var(--muted);font-size:14px;font-weight:700}
+.search{flex:0 1 300px;min-height:42px}
+.group-title{font-size:20px;font-weight:900;color:var(--navy);margin:26px 0 4px}
+.group-note{margin:0 0 14px;color:var(--muted);font-size:14px;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{position:relative;display:flex;flex-direction:column;text-align:left;width:100%;padding:18px 18px 16px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--card)}
+.card:hover{border-color:#D3CFC7}
+.card .open{position:absolute;inset:0;border-radius:inherit;background:transparent;border:0;z-index:1}
+.card .kicker{font-size:13px;font-weight:700;color:var(--orange-deep);margin-bottom:4px;padding-right:44px}
+.card h3{margin:0 0 4px;font-size:18px;line-height:1.25;font-weight:900;color:var(--ink);padding-right:40px}
+.card p.desc{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.45}
+.meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
+.meta span{display:inline-flex;align-items:center;gap:4px}
+.meta svg.i{width:15px;height:15px}
+.fav{position:absolute;top:10px;right:10px;z-index:2}
+.fav[aria-pressed="true"]{color:var(--orange)}
+.fav[aria-pressed="true"] svg{fill:var(--orange)}
+.checks{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--miss-bg);color:var(--miss);font-variant-numeric:tabular-nums}
+.pill.ok{background:var(--pass-bg);color:var(--pass)}
+.pill svg.i{width:13px;height:13px;stroke-width:3}
+.src{font-size:12px;color:var(--muted);margin-top:10px}
+.empty{grid-column:1/-1;padding:28px;border:1.5px dashed var(--line);border-radius:var(--r-lg);text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);margin-bottom:4px}
+.status{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:var(--r-md);background:var(--orange-soft);color:#6B3F16;font-size:14px;font-weight:700;margin:6px 0 4px}
+.status.err{background:#FDECEC;color:#8A1F1F}
+.status[hidden]{display:none}
+.spin{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.place .dist{font-variant-numeric:tabular-nums}
+.more{display:flex;justify-content:center;margin-top:16px}
+
+/* Floating decide button */
+.fab{position:fixed;right:18px;bottom:calc(18px + var(--sab));z-index:15;box-shadow:0 8px 24px rgba(45,64,88,.28);border-radius:999px;min-height:54px;padding:0 22px}
+
+/* Footer */
+footer.foot{border-top:1px solid var(--line);padding:22px 0 calc(90px + var(--sab));color:var(--muted);font-size:13px}
+footer.foot p{margin:0 0 6px;max-width:70ch}
+
+/* Sheets */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(31,43,58,.55)}
+.sheet[hidden]{display:none}
+.panel{position:relative;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;overscroll-behavior:contain;background:var(--card);border-radius:24px 24px 0 0;padding:0 22px calc(24px + var(--sab));animation:up .22s ease-out}
+@media (min-width:700px){.sheet{align-items:center;padding:24px}.panel{border-radius:24px;padding-bottom:26px}}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}.spin{animation-duration:2s}}
+.panel-bar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;padding:12px 0 4px;margin:0 -8px;background:linear-gradient(var(--card) 70%,rgba(255,255,255,0))}
+.panel-bar .icon-btn{background:#EFEDE8}
+.panel h2{margin:0 0 6px;font-size:26px;line-height:1.15;font-weight:900;color:var(--navy);letter-spacing:-.01em}
+.panel h3{margin:22px 0 8px;font-size:16px;font-weight:900;color:var(--ink)}
+.panel p{margin:0 0 10px}
+.kicker-lg{font-size:14px;font-weight:700;color:var(--orange-deep);margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;margin:16px 0 8px}
+.facts div{background:var(--paper);padding:10px 8px;text-align:center}
+.facts b{display:block;font-size:20px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
+.facts span{font-size:12px;color:var(--muted);font-weight:700}
+ul.ing{list-style:none;padding:0;margin:0}
+ul.ing li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px}
+ul.ing li:last-child{border-bottom:0}
+ul.ing svg.i{color:var(--orange);width:18px;height:18px;margin-top:2px}
+ol.steps{padding-left:22px;margin:0}
+ol.steps li{margin-bottom:10px;padding-left:4px}
+.note{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:13.5px;color:var(--muted)}
+.tip{background:var(--orange-soft);border-radius:var(--r-md);padding:14px 16px;margin:0 0 10px}
+.tip b{color:#6B3F16}
+ul.tips{margin:0;padding-left:20px}
+ul.tips li{margin-bottom:6px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.actions .btn{flex:1 1 180px}
+dl.crit{margin:0}
+dl.crit dt{font-weight:900;margin-top:12px}
+dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:15px}
+.list-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.list-item input{width:22px;height:22px;accent-color:var(--navy);flex:none}
+.list-item label{flex:1}
+.list-item.done label{text-decoration:line-through;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--sab));transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;max-width:calc(100% - 36px)}
+.toast[hidden]{display:none}
+</style>
 </head>
-<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-orange-100 selection:text-orange-900">
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 17v4M17 19h4"/></symbol>
+  <symbol id="i-pot" viewBox="0 0 24 24"><path d="M3 11h18M5 11v7a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-7M1 11h2M21 11h2M9 7c0-1 1-1.5 1-2.5S9 3 9 3M13 7c0-1 1-1.5 1-2.5S13 3 13 3"/></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M3 11 22 2l-9 19-2-8Z"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+</svg>
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      
-      <!-- Fixed Unstretched Logo (Aspect Ratio 340/180) -->
-      <a href="#" class="flex items-center select-none" style="height: 50px;">
-        <svg viewBox="0 0 340 180" preserveAspectRatio="xMidYMid meet" style="height: 100%; width: auto;" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="75" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="40" font-weight="800" fill="#1d3557" letter-spacing="-0.5">What’s</text>
-          <text x="215" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#f77f00">4</text>
-          <path d="M26 120V78M26 78V54C26 51 22 51 22 51V32M26 54C26 51 30 51 30 51V32M26 54V32" stroke="#f77f00" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M19 120C19 123 33 123 33 120V80H19V120Z" fill="#f77f00"/>
-          <path d="M40 34H65C92 34 112 52 112 77C112 102 92 120 65 120H40V34Z" stroke="#1d3557" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <path d="M52 48C74 52 92 62 92 77C92 92 74 102 52 106" stroke="#f77f00" stroke-width="6" stroke-linecap="round"/>
-          <text x="122" y="118" font-family="'Plus Jakarta Sans', sans-serif" font-size="46" font-weight="800" fill="#1d3557" letter-spacing="-0.5">inner?</text>
-        </svg>
-      </a>
-
-      <!-- Quick Actions -->
-      <div class="flex items-center gap-3">
-        <button id="surpriseBtn" class="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm rounded-full transition shadow-sm">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
-          <span>Decide For Me</span>
-        </button>
-        
-        <!-- Functional JSON Importer -->
-        <input type="file" id="jsonImporter" accept=".json" class="hidden">
-        <button id="importBtn" class="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-full transition shadow-sm">
-          <i data-lucide="file-json" class="w-4 h-4 text-orange-500"></i>
-          <span>Import JSON</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1 space-y-8">
-    
-    <!-- Hero Box -->
-    <div class="bg-brand-navy rounded-3xl p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
-      <div class="relative z-10">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 border border-slate-700 rounded-full text-xs font-semibold text-orange-400 mb-4">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          Lowcountry Verified: GLP-1, Sodium & Calorie Control
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold mb-3">Healthy dining made simple.</h1>
-        <p class="text-slate-300 text-sm sm:text-base max-w-xl mb-8">
-          Explore real restaurants right here in Summerville, Nexton, and Charleston, or cook a fresh digestion-friendly recipe.
-        </p>
-        
-        <div class="flex gap-3">
-          <button id="modeEatIn" class="px-8 py-3 rounded-full bg-orange-500 text-white font-bold flex items-center gap-2 transition text-sm shadow-md">
-            <i data-lucide="chef-hat" class="w-4 h-4"></i> Eat In
-          </button>
-          <button id="modeDineOut" class="px-8 py-3 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 font-bold flex items-center gap-2 transition text-sm shadow-md">
-            <i data-lucide="utensils" class="w-4 h-4"></i> Dine Out
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Interface Controls (Location, Filters & Search) -->
-    <div class="space-y-4">
-      
-      <!-- Restored Geographic Location Bar (Hidden in Eat-In Mode) -->
-      <div id="locationBar" class="hidden flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-2">
-        <div class="flex items-center gap-2 flex-1 w-full max-w-md bg-slate-50 border border-slate-200 rounded-full px-4 py-2 shadow-sm focus-within:border-orange-400 focus-within:bg-white transition">
-          <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
-          <input type="text" id="locationInput" placeholder="Enter City, Zip, or Neighborhood..." value="Summerville, SC" class="w-full text-sm font-semibold focus:outline-none bg-transparent text-slate-700">
-          <button id="gpsBtn" title="Use current location" class="p-1 hover:bg-slate-200 text-slate-500 rounded-full transition">
-            <i data-lucide="locate-fixed" class="w-4 h-4"></i>
-          </button>
-        </div>
-        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-          <span>Radius:</span>
-          <button class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 hover:bg-orange-200 transition shadow-sm">5 mi</button>
-          <button class="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition shadow-sm">10 mi</button>
-          <button class="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition shadow-sm">20 mi</button>
-        </div>
-      </div>
-
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-        <div class="space-y-3 flex-1">
-          <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            <span>Dietary & Clinical Health Filters</span>
-            <button id="clearFilters" class="text-orange-500 hover:underline normal-case font-semibold">Reset Filters</button>
-          </div>
-          <div class="flex gap-2 flex-wrap text-xs">
-            <button data-filter="glp1" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> GLP-1 Friendly
-            </button>
-            <button data-filter="lowSodium" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
-              <span class="w-2 h-2 rounded-full bg-blue-500"></span> Low Sodium (<500mg)
-            </button>
-            <button data-filter="lowCal" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
-              <span class="w-2 h-2 rounded-full bg-amber-500"></span> Low Calorie (<450 kcal)
-            </button>
-            <button data-filter="highProtein" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
-              <span class="w-2 h-2 rounded-full bg-purple-500"></span> High Protein (>30g)
-            </button>
-            <button data-filter="quick" class="filter-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white font-semibold text-slate-600 hover:border-orange-300 transition shadow-sm">
-              <i data-lucide="clock" class="w-3 h-3 text-slate-400"></i> Under 25 mins
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <span id="resultsCount" class="text-sm font-semibold text-slate-600">Showing local recommendations</span>
-        <div class="relative w-full sm:w-64">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" id="searchInput" placeholder="Search dish, spot, protein..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition shadow-sm">
-        </div>
-      </div>
-    </div>
-
-    <!-- Cards Grid -->
-    <div id="mealGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
-      <!-- Generated via JS -->
-    </div>
-  </main>
-
-  <!-- Footer Version Stamp -->
-  <footer class="border-t border-slate-200 py-6 text-center">
-    <span class="text-xs font-semibold text-slate-400 tracking-wide">What’s 4 Dinner? • Version 1.2.4</span>
-  </footer>
-
-  <!-- Detail Modal -->
-  <div id="detailModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4 transition-opacity">
-    <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-200">
-      
-      <!-- Pinned Close Button (Fixed during scroll) -->
-      <button id="closeModal" class="absolute top-4 right-4 z-50 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition backdrop-blur-md shadow-lg border border-white/20">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      
-      <div id="modalContent"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./" aria-label="What’s 4 Dinner? home"><img src="./assets/logo.png" alt="What’s 4 Dinner?" width="656" height="402"></a>
+    <div class="hdr-actions">
+      <button class="icon-btn" id="listBtn" aria-label="Shopping list"><svg class="i"><use href="#i-list"/></svg><span class="badge" id="listCount" hidden>0</span></button>
+      <button class="icon-btn" id="infoBtn" aria-label="How filters work, import and settings"><svg class="i"><use href="#i-info"/></svg></button>
     </div>
   </div>
+</header>
 
-  <script>
-    // Safe, permanent high-resolution default images
-    const imgSalmon = "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80";
-    const imgBowl = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
-    const imgChicken = "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=800&q=80";
-    const imgHalibut = "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80";
-    const imgDineOutDefault = "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
-    const imgShrimp = "https://images.unsplash.com/photo-1544025162-831e330541cd?auto=format&fit=crop&w=800&q=80";
+<main class="wrap">
+  <section class="intro">
+    <h1>What sounds good tonight?</h1>
+    <div class="modes" role="group" aria-label="Eat in or dine out">
+      <button class="mode" id="modeEatIn" aria-pressed="true">
+        <span class="glyph"><svg class="i"><use href="#i-pot"/></svg></span>
+        <span><b>Eat in</b><span>Cook something at home</span></span>
+      </button>
+      <button class="mode" id="modeDineOut" aria-pressed="false">
+        <span class="glyph"><svg class="i"><use href="#i-utensils"/></svg></span>
+        <span><b>Dine out</b><span>Find a spot near you</span></span>
+      </button>
+    </div>
+  </section>
 
-    // Initial Default Data
-    let mealsData = [
-      {
-        id: '1', type: 'eat-in', image: imgSalmon,
-        title: 'Meyer Lemon Poached Salmon & Asparagus', subtitle: 'Air-crisped tender spears with velvety cauliflower mash',
-        prepTime: '20 mins', timeVal: 20, calories: 380, protein: 36, sodium: 220,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
-        ingredients: ['6 oz Wild Salmon fillet', '1 bunch fresh asparagus', '1 Meyer lemon (sliced)', 'Cauliflower'],
-        instructions: 'Poach salmon gently with lemon slices for 9 mins. Steam asparagus. Mash cauliflower until velvety.'
-      },
-      {
-        id: '2', type: 'eat-in', image: imgBowl,
-        title: 'Warm Ginger Turkey & Zucchini Skillet', subtitle: 'Hydrating low-sodium bone broth reduction with herbs',
-        prepTime: '18 mins', timeVal: 18, calories: 340, protein: 38, sodium: 310,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
-        ingredients: ['6 oz 99% lean ground turkey', '1 cup low-sodium organic bone broth', '1 large spiralized zucchini', 'Fresh ginger'],
-        instructions: 'Brown lean turkey in a non-stick skillet. Add bone broth and ginger; simmer 5 mins. Toss in zucchini ribbons for the final 90 seconds.'
-      },
-      {
-        id: '3', type: 'eat-in', image: imgChicken,
-        title: 'Greek Oregano Chicken Paillard', subtitle: 'Pounded thin for tender digestion with cucumber dill tzatziki',
-        prepTime: '22 mins', timeVal: 22, calories: 390, protein: 42, sodium: 280,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
-        ingredients: ['7 oz chicken breast', 'Oregano & Lemon', '1/4 cup unsweetened Greek yogurt', 'Cucumber'],
-        instructions: 'Pound chicken thin. Grill 3 mins per side. Serve with light garlic cucumber yogurt dip.'
-      },
-      {
-        id: '4', type: 'eat-in', image: imgHalibut,
-        title: 'Pan-Seared Halibut with Greens', subtitle: 'Clean pan-roasted white fish with lemon emulsion',
-        prepTime: '24 mins', timeVal: 24, calories: 320, protein: 34, sodium: 300,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true,
-        ingredients: ['6 oz Halibut fillet', 'Broccolini', 'Lemon juice', '1 tsp olive oil'],
-        instructions: 'Sear halibut in light olive oil. Steam broccolini. Drizzle with lemon.'
-      },
-      {
-        id: '5', type: 'dine-out', image: imgDineOutDefault, venue: "Five Loaves Cafe", location: "Downtown Summerville",
-        title: 'Custom Grilled Chicken Bowl', subtitle: 'Modified for low fat and light digestion',
-        prepTime: 'Dine Out', timeVal: 99, calories: 410, protein: 39, sodium: 380,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true, orderTip: 'Ask for dressing on the side and no cheese.', address: "N Cedar St, Summerville, SC 29483"
-      },
-      {
-        id: '6', type: 'dine-out', image: imgShrimp, venue: "Page's Okra Grill", location: "Nexton",
-        title: 'Grilled Shrimp & Mixed Greens', subtitle: 'Lightly seasoned local shrimp',
-        prepTime: 'Dine Out', timeVal: 99, calories: 350, protein: 32, sodium: 420,
-        glp1: true, lowSodium: true, lowCal: true, highProtein: true, orderTip: 'Request shrimp grilled dry (no butter or heavy oil) with a light vinaigrette on the side.', address: "Brighton Park Blvd, Summerville, SC 29486"
-      }
-    ];
+  <section class="loc" id="locSection" hidden aria-label="Location">
+    <form class="loc-row" id="locForm">
+      <label class="field">
+        <svg class="i"><use href="#i-pin"/></svg>
+        <span class="sr">City, ZIP or neighborhood</span>
+        <input id="locInput" type="text" inputmode="search" autocomplete="off" placeholder="City, ZIP or neighborhood" value="Summerville, SC">
+        <button type="button" class="icon-btn" id="gpsBtn" aria-label="Use my current location"><svg class="i"><use href="#i-locate"/></svg></button>
+      </label>
+      <button class="btn" type="submit" id="locGo">Find places</button>
+    </form>
+    <div class="radius"><span id="radiusLabel">Within</span>
+      <div class="seg" role="group" aria-labelledby="radiusLabel">
+        <button type="button" data-radius="5" aria-pressed="true">5 mi</button>
+        <button type="button" data-radius="10" aria-pressed="false">10 mi</button>
+        <button type="button" data-radius="20" aria-pressed="false">20 mi</button>
+      </div>
+    </div>
+  </section>
 
-    let currentMode = 'eat-in';
-    const activeFilters = new Set();
-    let searchQuery = '';
+  <section class="filters" aria-labelledby="filtersTitle">
+    <div class="filters-head">
+      <h2 id="filtersTitle">Only show meals that are</h2>
+      <button class="linkish" id="resetFilters" type="button">Clear all</button>
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip" data-f="lowCal" aria-pressed="false">Low calorie <small>≤ 450</small></button>
+      <button class="chip" data-f="lowSodium" aria-pressed="false">Low sodium <small>&lt; 500 mg</small></button>
+      <button class="chip" data-f="glp1" aria-pressed="false">GLP-1 friendly</button>
+      <button class="chip" data-f="highProtein" aria-pressed="false">High protein <small>30 g+</small></button>
+      <button class="chip" data-f="vegetarian" aria-pressed="false">Vegetarian</button>
+      <button class="chip" data-f="glutenFree" aria-pressed="false">Gluten-free</button>
+      <button class="chip" data-f="dairyFree" aria-pressed="false">Dairy-free</button>
+      <button class="chip" data-f="quick" aria-pressed="false">Under 25 min</button>
+      <button class="chip" data-f="saved" aria-pressed="false"><svg class="i"><use href="#i-heart"/></svg>Saved</button>
+    </div>
+    <button class="linkish" id="howBtn" type="button">How we check these</button>
+  </section>
 
-    const mealGrid = document.getElementById('mealGrid');
-    const detailModal = document.getElementById('detailModal');
-    const modalContent = document.getElementById('modalContent');
-    const locationBar = document.getElementById('locationBar');
-    
-    // Mode Switcher (Now toggles Location Bar visibility)
-    function setMode(mode) {
-      currentMode = mode;
-      
-      document.getElementById('modeEatIn').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='eat-in' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
-      document.getElementById('modeDineOut').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='dine-out' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
-      
-      if (mode === 'dine-out') {
-        locationBar.classList.remove('hidden');
-        locationBar.classList.add('flex');
-      } else {
-        locationBar.classList.add('hidden');
-        locationBar.classList.remove('flex');
-      }
+  <section class="results" aria-live="polite">
+    <div class="res-head">
+      <p id="count"></p>
+      <label class="field search" id="searchWrap">
+        <svg class="i"><use href="#i-search"/></svg>
+        <span class="sr">Search</span>
+        <input id="search" type="search" placeholder="Search dishes or ingredients" autocomplete="off">
+      </label>
+    </div>
+    <div class="status" id="status" hidden></div>
+    <div id="out"></div>
+  </section>
+</main>
 
-      renderCards();
+<button class="btn orange fab" id="decideBtn"><svg class="i"><use href="#i-spark"/></svg>Decide for me</button>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Nutrition numbers are estimates or restaurant-published values and can vary. This app is general meal inspiration, not medical advice — follow your doctor or dietitian’s guidance, especially if you take a GLP-1 medication.</p>
+    <p>Restaurant listings © OpenStreetMap contributors. What’s 4 Dinner? version <span id="ver"></span> · Cibola Studios</p>
+  </div>
+</footer>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
+    <div class="panel-bar"><button class="icon-btn" id="sheetClose" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<script>
+"use strict";
+const VERSION = "2.0.0";
+const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
+const DEFAULT_LOC = { label: "Summerville, SC", lat: 33.0185, lon: -80.1756 };
+
+/* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
+const RECIPES = [{"id": "salmon-asparagus", "type": "eat-in", "title": "Lemon-poached salmon with asparagus", "desc": "Gently poached fish over a garlicky cauliflower mash.", "minutes": 20, "calories": 375, "protein": 44, "fat": 15.0, "carbs": 19, "fiber": 7, "sodium": 140, "source": "estimated", "ingredients": ["6 oz wild salmon fillet", "10 asparagus spears (about 5 oz)", "2 cups cauliflower florets", "1 tbsp lemon juice, plus slices", "1 tsp olive oil", "1 clove garlic", "Fresh dill and black pepper"], "steps": ["Steam the cauliflower and garlic for 10 minutes until very soft, then mash with the olive oil and pepper.", "Bring 2 inches of water with lemon slices and dill to a bare simmer. Slide in the salmon and poach 8–10 minutes until it flakes.", "Steam the asparagus for the last 4 minutes. Plate everything and finish with lemon juice."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "turkey-zucchini", "type": "eat-in", "title": "Ginger turkey and zucchini skillet", "desc": "Lean turkey simmered in unsalted broth with lots of ginger.", "minutes": 18, "calories": 255, "protein": 47, "fat": 3.0, "carbs": 13, "fiber": 3, "sodium": 335, "source": "estimated", "ingredients": ["6 oz 99% lean ground turkey", "1 large zucchini, spiralized or sliced", "½ cup unsalted chicken broth", "1 tbsp grated fresh ginger", "2 cloves garlic", "1 tsp low-sodium tamari", "2 scallions, sliced"], "steps": ["Brown the turkey in a nonstick skillet over medium-high heat, breaking it up, about 6 minutes.", "Add ginger and garlic for 30 seconds, then the broth and tamari. Simmer 4 minutes.", "Toss in the zucchini for the final 90 seconds so it stays crisp. Top with scallions."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "chicken-paillard", "type": "eat-in", "title": "Oregano chicken paillard with tzatziki", "desc": "Pounded thin so it cooks fast and stays tender.", "minutes": 22, "calories": 345, "protein": 51, "fat": 10.0, "carbs": 13, "fiber": 3, "sodium": 120, "source": "estimated", "ingredients": ["7 oz chicken breast", "¼ cup nonfat Greek yogurt", "½ cucumber, grated", "2 tsp lemon juice", "1 small clove garlic", "1 tsp olive oil", "1 tomato, sliced", "2 cups chopped romaine", "Dried oregano, dill, black pepper"], "steps": ["Pound the chicken to ¼ inch thick. Rub with oil, oregano and pepper.", "Grill or sear 3 minutes per side until cooked through (165°F).", "Squeeze the grated cucumber dry and stir into the yogurt with garlic, lemon and dill. Serve over the romaine and tomato."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "halibut-quinoa", "type": "eat-in", "title": "Seared halibut with broccolini and quinoa", "desc": "Mild white fish with lemon and a small scoop of quinoa.", "minutes": 24, "calories": 360, "protein": 40, "fat": 10.0, "carbs": 30, "fiber": 6, "sodium": 170, "source": "estimated", "ingredients": ["6 oz halibut fillet", "5 oz broccolini (about half a bunch)", "½ cup cooked quinoa", "1 tsp olive oil", "1 tbsp lemon juice", "Black pepper, parsley"], "steps": ["Pat the halibut dry and season with pepper. Sear in the oil over medium-high heat, 4 minutes per side.", "Steam the broccolini for 4–5 minutes.", "Serve with warm quinoa and finish with lemon and parsley."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "shrimp-stirfry", "type": "eat-in", "title": "Shrimp and vegetable stir-fry", "desc": "Crisp vegetables, ginger and a light tamari glaze over brown rice.", "minutes": 20, "calories": 440, "protein": 50, "fat": 7.0, "carbs": 47, "fiber": 7, "sodium": 430, "source": "estimated", "ingredients": ["7 oz shrimp (check the bag for \"no salt added\")", "1 red bell pepper, sliced", "1 cup broccoli florets", "1 cup sliced mushrooms", "2 tsp grated ginger", "1 clove garlic", "¾ tsp low-sodium tamari", "2 tsp rice vinegar", "1 tsp cornstarch", "½ cup cooked brown rice", "1 tsp oil"], "steps": ["Whisk tamari, vinegar, cornstarch and 3 tbsp water.", "Stir-fry the vegetables in the oil for 4 minutes. Add shrimp, ginger and garlic; cook 3 minutes until pink.", "Pour in the sauce and toss for 30 seconds until glossy. Serve over the rice."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "turkey-taco-cups", "type": "eat-in", "title": "Turkey taco lettuce cups", "desc": "Salt-free taco seasoning, beans and a yogurt \"sour cream.\"", "minutes": 20, "calories": 420, "protein": 40, "fat": 18.0, "carbs": 28, "fiber": 10, "sodium": 130, "source": "estimated", "ingredients": ["5 oz 93% lean ground turkey", "⅓ cup no-salt black beans", "1 small tomato, diced", "¼ onion, diced", "2 tsp lime juice", "6 romaine leaves", "3 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cumin, cilantro"], "steps": ["Cook the turkey and onion until browned. Add chili powder, cumin, beans and a splash of water; simmer 3 minutes.", "Mix tomato, lime and cilantro for a quick pico.", "Spoon into romaine leaves; top with pico, yogurt and avocado."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "pork-sheetpan", "type": "eat-in", "title": "Sheet-pan pork tenderloin and sweet potato", "desc": "Honey-mustard pork with roasted sweet potato and green beans.", "minutes": 35, "calories": 405, "protein": 41, "fat": 9.0, "carbs": 40, "fiber": 8, "sodium": 225, "source": "estimated", "ingredients": ["6 oz pork tenderloin", "1 small sweet potato, cubed", "1½ cups green beans", "1 tsp olive oil", "1 tsp Dijon mustard", "½ tsp honey", "Rosemary, garlic powder, pepper"], "steps": ["Heat oven to 425°F. Toss sweet potato with half the oil and roast 10 minutes.", "Brush pork with mustard, honey, rosemary and pepper. Add pork and green beans (with remaining oil) to the pan.", "Roast 18–20 minutes until the pork reaches 145°F. Rest 5 minutes before slicing."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "cod-papillote", "type": "eat-in", "title": "Cod baked in parchment", "desc": "Steams in its own juices with tomatoes and zucchini — no fuss, no cleanup.", "minutes": 25, "calories": 325, "protein": 41, "fat": 7.0, "carbs": 24, "fiber": 5, "sodium": 130, "source": "estimated", "ingredients": ["7 oz cod fillet", "1 cup cherry tomatoes, halved", "1 small zucchini, thinly sliced", "1 tsp olive oil", "2 tsp lemon juice", "1 clove garlic, sliced", "⅓ cup cooked quinoa", "Basil or thyme, pepper"], "steps": ["Heat oven to 400°F. Layer zucchini, cod, tomatoes, garlic and herbs on a large sheet of parchment.", "Drizzle with oil and lemon, fold and crimp the parchment into a sealed packet.", "Bake 15 minutes. Open carefully (steam) and serve over the quinoa."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "lentil-stew", "type": "eat-in", "title": "Lentil, tomato and spinach stew", "desc": "Hearty and slow-simmered, finished with a spoon of yogurt.", "minutes": 35, "calories": 480, "protein": 35, "fat": 7.0, "carbs": 74, "fiber": 27, "sodium": 200, "source": "estimated", "ingredients": ["1¼ cups cooked lentils", "3 cups baby spinach", "⅔ cup no-salt-added diced tomatoes", "½ onion, diced", "1 carrot, diced", "1 clove garlic", "1 tsp olive oil", "⅔ cup unsalted vegetable broth", "3 tbsp nonfat Greek yogurt", "Cumin, smoked paprika, lemon"], "steps": ["Soften onion, carrot and garlic in the oil for 6 minutes. Add cumin and paprika.", "Add lentils, tomatoes and broth; simmer 15 minutes.", "Stir in spinach until wilted. Top with yogurt and a squeeze of lemon."], "vegetarian": true, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "tofu-edamame", "type": "eat-in", "title": "Ginger tofu and edamame bowl", "desc": "Plant-based, crispy-edged tofu with broccoli and brown rice.", "minutes": 25, "calories": 495, "protein": 42, "fat": 23.0, "carbs": 39, "fiber": 11, "sodium": 245, "source": "estimated", "ingredients": ["6 oz firm tofu, pressed and cubed", "⅓ cup shelled edamame", "1 cup broccoli florets", "⅓ cup cooked brown rice", "1 tsp low-sodium tamari", "2 tsp grated ginger", "2 scallions", "1 tsp oil"], "steps": ["Sear the tofu in oil over medium-high heat until golden on two sides, about 8 minutes.", "Add broccoli, edamame and 2 tbsp water; cover and steam 3 minutes.", "Toss with tamari and ginger. Serve over rice with scallions."], "vegetarian": true, "vegan": true, "glutenFree": true, "dairyFree": true}, {"id": "eggwhite-frittata", "type": "eat-in", "title": "Spinach and mushroom frittata", "desc": "Mostly egg whites, loaded with vegetables. Ready in 15.", "minutes": 15, "calories": 280, "protein": 35, "fat": 11.0, "carbs": 10, "fiber": 3, "sodium": 565, "source": "estimated", "ingredients": ["¾ cup + 2 tbsp egg whites", "1 whole egg", "2 cups spinach", "¾ cup mushrooms", "½ red bell pepper", "1 tbsp grated Parmesan", "½ tsp olive oil", "Black pepper, chives"], "steps": ["Heat the broiler. Sauté mushrooms and pepper in an ovenproof nonstick pan for 4 minutes, then wilt in the spinach.", "Pour in the whisked eggs and whites; cook without stirring for 4 minutes until the edges set.", "Top with Parmesan and broil 2–3 minutes until puffed."], "vegetarian": true, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "greek-chicken-bowl", "type": "eat-in", "title": "Greek chicken and chickpea bowl", "desc": "Crunchy cucumber, tomato and a little feta over romaine.", "minutes": 20, "calories": 450, "protein": 49, "fat": 15.0, "carbs": 31, "fiber": 8, "sodium": 265, "source": "estimated", "ingredients": ["5 oz chicken breast", "⅓ cup no-salt chickpeas", "½ cucumber, diced", "1 tomato, diced", "2 cups romaine", "1 tbsp crumbled feta", "3 tbsp nonfat Greek yogurt", "2 tsp lemon juice", "1 tsp olive oil", "Oregano, garlic powder, pepper"], "steps": ["Season chicken with oregano, garlic powder and pepper; grill or sear 5–6 minutes per side.", "Whisk yogurt, lemon, oil and oregano into a dressing.", "Slice chicken over romaine, chickpeas, cucumber and tomato. Add feta and dressing."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "eggroll-bowl", "type": "eat-in", "title": "Chicken \"egg roll in a bowl\"", "desc": "All the egg-roll flavor, none of the frying.", "minutes": 15, "calories": 330, "protein": 42, "fat": 9.0, "carbs": 20, "fiber": 7, "sodium": 330, "source": "estimated", "ingredients": ["6 oz chicken breast, finely diced", "3 cups shredded cabbage", "1 small carrot, shredded", "2 tsp grated ginger", "1 clove garlic", "1 tsp low-sodium tamari", "2 tsp rice vinegar", "2 scallions", "1 tsp oil"], "steps": ["Stir-fry the chicken in oil over high heat for 5 minutes until cooked through.", "Add ginger, garlic, cabbage and carrot; cook 4 minutes until just tender.", "Toss with tamari and vinegar. Top with scallions."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "shrimp-tacos", "type": "eat-in", "title": "Pineapple-lime shrimp tacos", "desc": "Two corn tortillas, crunchy slaw and a lime-yogurt drizzle.", "minutes": 15, "calories": 365, "protein": 42, "fat": 6.0, "carbs": 39, "fiber": 7, "sodium": 250, "source": "estimated", "ingredients": ["6 oz shrimp (no salt added)", "2 corn tortillas", "1 cup shredded cabbage", "⅓ cup diced pineapple", "2 tsp lime juice", "2 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cilantro"], "steps": ["Season shrimp with chili powder and sear in a hot nonstick pan, 2 minutes per side.", "Mix yogurt with half the lime juice. Toss cabbage with the rest.", "Warm tortillas, then fill with slaw, shrimp, pineapple, avocado and the lime yogurt."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "chicken-veg-soup", "type": "eat-in", "title": "Simple chicken and vegetable soup", "desc": "Light, warm and easy on the stomach. Makes great leftovers.", "minutes": 35, "calories": 275, "protein": 41, "fat": 4.0, "carbs": 17, "fiber": 4, "sodium": 240, "source": "estimated", "ingredients": ["5 oz chicken breast", "1 carrot, sliced", "1 rib celery, sliced", "⅓ onion, diced", "½ zucchini, diced", "1⅔ cups unsalted chicken broth", "1 clove garlic", "Thyme, bay leaf, parsley, pepper"], "steps": ["Simmer broth, whole chicken breast, carrot, celery, onion, garlic, thyme and bay leaf for 20 minutes.", "Remove the chicken, shred it, and return to the pot with the zucchini. Simmer 5 more minutes.", "Finish with parsley and pepper. Taste before salting — most people find it doesn't need any."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}];
+
+/* Chain dishes with nutrition published by the restaurant (checked Sep 2026). Only shown when that chain is found in your radius. */
+const CHAINS = [
+  { match: /chipotle/i, brand: "Chipotle", url: "https://www.chipotle.com/nutrition-calculator", items: [
+    { id: "chip-bowl-nosalsa", title: "Chicken salad bowl, no salsa", desc: "Chicken, fajita veggies and romaine. The lowest-sodium chicken build.",
+      calories: 205, protein: 33, fat: 7, carbs: 6, fiber: 1, sodium: 460, glutenFree: true, dairyFree: true,
+      order: "Order a salad (romaine) with chicken and fajita veggies. Skip the salsa and vinaigrette; ask for a lime wedge." },
+    { id: "chip-bowl-green", title: "Chicken salad bowl with green salsa", desc: "Chicken, fajita veggies, tomatillo-green salsa and romaine.",
+      calories: 220, protein: 33, fat: 7, carbs: 10, fiber: 1, sodium: 720, glutenFree: true, dairyFree: true,
+      order: "Salad with chicken, fajita veggies and tomatillo-green salsa (the lowest-sodium salsa). No vinaigrette." },
+    { id: "chip-bowl-full", title: "Chicken bowl with brown rice and black beans", desc: "A heartier bowl with green salsa and fajita veggies.",
+      calories: 555, protein: 45, fat: 15, carbs: 63, fiber: 10, sodium: 1120, glutenFree: true, dairyFree: true,
+      order: "Bowl with brown rice, black beans, chicken, fajita veggies and green salsa. Ask for a half scoop of rice to trim calories." }
+  ]},
+  { match: /chick-?fil-?a/i, brand: "Chick-fil-A", url: "https://www.chick-fil-a.com/menu/entrees/grilled-nuggets", items: [
+    { id: "cfa-grilled-8", title: "Grilled nuggets, 8-count", desc: "Grilled, not breaded. Pair with a side salad or fruit cup.",
+      calories: 130, protein: 25, fat: 3, carbs: 1, fiber: 0, sodium: 440, glutenFree: true, dairyFree: true,
+      order: "Order the 8-count grilled nuggets. Sauces add sodium fast — try one packet or none." }
+  ]}
+];
+
+/* Ordering advice by cuisine; filter-specific lines are added based on active filters. */
+const CUISINE = {
+  seafood:{label:"Seafood",best:["Grilled, broiled or blackened fish","Steamed shrimp or oysters (skip the cocktail sauce for less sodium)","Double vegetables instead of fries or hush puppies"],avoid:"Fried baskets, shrimp and grits with gravy, butter sauces."},
+  mexican:{label:"Mexican",best:["Grilled chicken or shrimp fajitas (skip the tortillas or keep one)","Bowl or salad with beans, veggies and pico","Grilled fish tacos on corn tortillas"],avoid:"Queso, chimichangas, sour cream and refills of chips."},
+  italian:{label:"Italian",best:["Grilled chicken or fish with vegetables","Minestrone and a side salad","Half portion of pasta with marinara and chicken"],avoid:"Alfredo and cream sauces, fried calamari, garlic bread."},
+  pizza:{label:"Pizza",best:["Thin crust, light cheese, veggies and chicken","Two slices plus a big side salad"],avoid:"Pepperoni, sausage and stuffed crust — the saltiest toppings."},
+  chinese:{label:"Chinese",best:["Steamed chicken, shrimp or tofu with vegetables","Sauce on the side, use a spoonful","Moo goo gai pan or chicken and broccoli"],avoid:"General Tso’s, sweet and sour, lo mein and egg rolls."},
+  japanese:{label:"Japanese",best:["Sashimi with a seaweed salad","Chicken or salmon teriyaki with sauce on the side","Edamame (ask for no salt)"],avoid:"Tempura, spicy mayo rolls, and heavy soy sauce dipping."},
+  thai:{label:"Thai",best:["Grilled chicken satay (light on peanut sauce)","Tom yum soup — small bowl","Stir-fried chicken with basil and vegetables"],avoid:"Coconut curries, pad thai, and fried spring rolls."},
+  indian:{label:"Indian",best:["Tandoori chicken or fish","Chana masala or dal with a small scoop of rice","Raita on the side"],avoid:"Korma, butter chicken, naan and samosas."},
+  mediterranean:{label:"Mediterranean",best:["Chicken or fish kebab plate with salad","Grilled chicken over greens with hummus on the side","Lentil soup"],avoid:"Gyro meat, fried falafel, and extra feta and olives (salty)."},
+  bbq:{label:"Barbecue",best:["Smoked chicken or turkey breast, dry (no sauce)","Green beans or slaw on the side"],avoid:"Brisket, ribs, mac and cheese, and extra sauce."},
+  american:{label:"American",best:["Grilled chicken or fish with two vegetable sides","Big salad with grilled protein, dressing on the side","Lettuce-wrap burger with a side salad"],avoid:"Fried entrees, loaded fries, and cream soups."},
+  burger:{label:"Burgers",best:["Grilled chicken sandwich or lettuce-wrapped burger","Side salad or fruit instead of fries"],avoid:"Double patties, bacon, cheese and milkshakes."},
+  chicken:{label:"Chicken",best:["Grilled chicken, not breaded","Side salad or green beans"],avoid:"Fried tenders, wings with sauce, and biscuits."},
+  sandwich:{label:"Sandwiches",best:["Turkey or chicken breast on a salad or wrap","Load up on vegetables, mustard over mayo"],avoid:"Deli ham, salami and bacon (very high sodium), and chips."},
+  steak:{label:"Steakhouse",best:["6–8 oz filet or sirloin with steamed vegetables","Grilled fish or chicken","Plain baked sweet potato"],avoid:"Ribeye, creamed spinach, loaded potatoes and the bread basket."},
+  asian:{label:"Asian",best:["Pho with lean beef or chicken (drink less of the broth)","Fresh spring rolls","Grilled meat over vermicelli or salad"],avoid:"Fried rice, fried dumplings, and sweet sauces."},
+  breakfast:{label:"Breakfast & brunch",best:["Egg-white omelet with vegetables","Greek yogurt with fruit"],avoid:"Biscuits and gravy, bacon and sausage."},
+  healthy:{label:"Salads & bowls",best:["Greens with grilled chicken or tofu","Dressing on the side, use half"],avoid:"Candied nuts, crispy toppings and creamy dressings."},
+  other:{label:"Restaurant",best:["Grilled or baked lean protein","Double vegetables instead of the starch","Ask for sauces and dressings on the side"],avoid:"Anything fried, breaded, creamy or smothered."}
+};
+const CUISINE_MAP = {seafood:"seafood",fish:"seafood",oyster:"seafood",fish_and_chips:"seafood",crab:"seafood",
+  mexican:"mexican","tex-mex":"mexican",tacos:"mexican",taco:"mexican",burrito:"mexican",latin_american:"mexican",
+  italian:"italian",pasta:"italian",pizza:"pizza",chinese:"chinese",japanese:"japanese",sushi:"japanese",ramen:"japanese",hibachi:"japanese",
+  thai:"thai",indian:"indian",nepalese:"indian",greek:"mediterranean",mediterranean:"mediterranean",lebanese:"mediterranean",middle_eastern:"mediterranean",turkish:"mediterranean",
+  barbecue:"bbq",bbq:"bbq",american:"american",diner:"american",regional:"american",southern:"american",soul_food:"american",
+  burger:"burger",chicken:"chicken",wings:"chicken",fried_chicken:"chicken",sandwich:"sandwich",deli:"sandwich",sub:"sandwich",subs:"sandwich",
+  steak_house:"steak",steak:"steak",vietnamese:"asian",korean:"asian",asian:"asian",noodle:"asian",poke:"healthy",
+  breakfast:"breakfast",pancake:"breakfast",brunch:"breakfast",bagel:"breakfast",salad:"healthy",healthy:"healthy",vegetarian:"healthy",vegan:"healthy"};
+const FILTER_TIPS = {
+  lowSodium:"Low sodium: ask for no added salt and put sauces, dressings and soy sauce on the side. Soups, cured meats, cheese and pickles are the biggest sodium sources.",
+  lowCal:"Low calorie: box half before you start, and swap fries or rice for steamed vegetables.",
+  glp1:"GLP-1 friendly: order a smaller plate, eat the protein first, skip fried and creamy dishes, and stop at the first sign of fullness.",
+  highProtein:"High protein: ask for a double portion of grilled protein instead of an extra side.",
+  vegetarian:"Vegetarian: beans, lentils, tofu and eggs are the best protein picks — ask what can be swapped in.",
+  glutenFree:"Gluten-free: ask about shared fryers and sauces thickened with flour.",
+  dairyFree:"Dairy-free: ask for no butter finish on grilled items — many kitchens add it by default."
+};
+
+/* ---------- Storage ---------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("w4d." + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem("w4d." + k, JSON.stringify(v)); } catch {} },
+  del(k){ try { localStorage.removeItem("w4d." + k); } catch {} }
+};
+
+/* ---------- State ---------- */
+const state = {
+  mode: store.get("mode", "eat-in"),
+  filters: new Set(store.get("filters", [])),
+  favs: new Set(store.get("favs", [])),
+  list: store.get("list", []),
+  imported: store.get("imported", []),
+  loc: store.get("loc", DEFAULT_LOC),
+  radius: store.get("radius", 5),
+  places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all"
+};
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const icon = (n, cls = "i") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
+function miles(a, b){
+  const R = 3958.8, r = x => x * Math.PI / 180;
+  const dLat = r(b.lat - a.lat), dLon = r(b.lon - a.lon);
+  const h = Math.sin(dLat/2)**2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/* Flags are always computed from the numbers — never trusted from data files. */
+function checks(m){
+  const has = k => num(m[k]) !== null;
+  return {
+    lowCal: has("calories") ? m.calories <= LIMITS.cal : null,
+    lowSodium: has("sodium") ? m.sodium < LIMITS.sodium : null,
+    highProtein: has("protein") ? m.protein >= LIMITS.protein : null,
+    glp1: (has("protein") && has("fat") && has("calories"))
+      ? (m.protein >= LIMITS.glp1Protein && m.fat <= LIMITS.glp1Fat && m.calories <= LIMITS.glp1Cal && !m.fried) : null,
+    vegetarian: !!(m.vegetarian || m.vegan), glutenFree: !!m.glutenFree, dairyFree: !!m.dairyFree,
+    quick: m.minutes ? m.minutes <= LIMITS.quickMin : null
+  };
+}
+function passes(m){
+  const c = checks(m);
+  for (const f of state.filters){
+    if (f === "saved"){ if (!state.favs.has(m.id)) return false; continue; }
+    if (f === "quick" && m.type !== "eat-in") continue;
+    if (c[f] !== true) return false;
+  }
+  return true;
+}
+function pills(m){
+  const c = checks(m), out = [];
+  const p = (ok, text) => out.push(`<span class="pill${ok ? " ok" : ""}">${ok ? icon("check") : ""}${esc(text)}</span>`);
+  if (num(m.calories) !== null) p(c.lowCal, `${m.calories} cal`);
+  if (num(m.protein) !== null) p(c.highProtein, `${m.protein} g protein`);
+  if (num(m.sodium) !== null) p(c.lowSodium, `${m.sodium} mg sodium`);
+  if (c.glp1 !== null) p(c.glp1, c.glp1 ? "GLP-1 friendly" : "Not GLP-1 friendly");
+  return `<div class="checks">${out.join("")}</div>`;
+}
+function dietTags(m){
+  const t = [];
+  if (m.vegan) t.push("Vegan"); else if (m.vegetarian) t.push("Vegetarian");
+  if (m.glutenFree) t.push("Gluten-free");
+  if (m.dairyFree) t.push("Dairy-free");
+  return t;
+}
+
+/* ---------- Imported data (from the Colab pipeline, later) ---------- */
+function normalizeImport(raw){
+  const arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.meals) ? raw.meals : null);
+  if (!arr) throw new Error("The file needs to be a list of meals.");
+  const out = [];
+  arr.forEach((m, i) => {
+    if (!m || typeof m !== "object" || !m.title) return;
+    const type = m.type === "eat-in" ? "eat-in" : "dine-out";
+    out.push({
+      id: "imp-" + (m.id ? String(m.id).slice(0, 40) : i) + "-" + Date.now().toString(36),
+      type, imported: true,
+      title: String(m.title).slice(0, 120), desc: String(m.desc || m.subtitle || "").slice(0, 240),
+      venue: m.venue ? String(m.venue).slice(0, 80) : "", address: m.address ? String(m.address).slice(0, 160) : "",
+      lat: num(m.lat), lon: num(m.lon),
+      calories: num(m.calories), protein: num(m.protein), sodium: num(m.sodium), fat: num(m.fat), carbs: num(m.carbs), fiber: num(m.fiber),
+      minutes: num(m.minutes), fried: !!m.fried,
+      vegetarian: !!m.vegetarian, vegan: !!m.vegan, glutenFree: !!m.glutenFree, dairyFree: !!m.dairyFree,
+      source: m.source === "published" ? "published" : "estimated", sourceUrl: /^https:\/\//.test(m.sourceUrl || "") ? m.sourceUrl : "",
+      order: String(m.order || m.orderTip || "").slice(0, 400),
+      ingredients: Array.isArray(m.ingredients) ? m.ingredients.map(String).slice(0, 40) : [],
+      steps: Array.isArray(m.steps) ? m.steps.map(String).slice(0, 20) : (m.instructions ? [String(m.instructions)] : [])
+    });
+  });
+  if (!out.length) throw new Error("No meals with a title were found in that file.");
+  return out;
+}
+
+/* ---------- Rendering ---------- */
+function recipeCard(m){
+  const fav = state.favs.has(m.id);
+  const kicker = m.type === "eat-in" ? (m.imported ? "Imported recipe" : "Home recipe") : esc(m.venue || "Restaurant pick") + (m.dist != null ? ` · ${m.dist.toFixed(1)} mi` : "");
+  const meta = [];
+  if (m.minutes) meta.push(`<span>${icon("clock")}${m.minutes} min</span>`);
+  dietTags(m).forEach(t => meta.push(`<span>${esc(t)}</span>`));
+  return `<article class="card">
+    <button class="open" data-open="${esc(m.id)}" aria-label="Open ${esc(m.title)}"></button>
+    <button class="icon-btn fav" data-fav="${esc(m.id)}" aria-pressed="${fav}" aria-label="${fav ? "Remove from saved" : "Save"}">${icon("heart")}</button>
+    <div class="kicker">${kicker}</div>
+    <h3>${esc(m.title)}</h3>
+    ${m.desc ? `<p class="desc">${esc(m.desc)}</p>` : ""}
+    ${meta.length ? `<div class="meta">${meta.join("")}</div>` : ""}
+    ${pills(m)}
+  </article>`;
+}
+function placeCard(p){
+  const c = CUISINE[p.group];
+  return `<article class="card place">
+    <button class="open" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}"></button>
+    <div class="kicker">${esc(c.label)} · <span class="dist">${p.dist.toFixed(1)} mi</span></div>
+    <h3>${esc(p.name)}</h3>
+    ${p.addr ? `<p class="desc">${esc(p.addr)}</p>` : `<p class="desc">Tap for ordering tips and directions.</p>`}
+    <div class="checks"><span class="pill">Nutrition not published</span></div>
+  </article>`;
+}
+const empty = (title, body) => `<div class="empty"><b>${esc(title)}</b>${esc(body)}</div>`;
+
+function allEatIn(){ return [...state.imported.filter(m => m.type === "eat-in"), ...RECIPES]; }
+function chainPicks(){
+  const picks = [];
+  CHAINS.forEach(ch => {
+    const near = state.places.filter(p => ch.match.test(p.name) || ch.match.test(p.brand || ""));
+    if (!near.length) return;
+    const nearest = near[0];
+    ch.items.forEach(it => picks.push({ ...it, type: "dine-out", venue: ch.brand, source: "published", sourceUrl: ch.url, dist: nearest.dist, placeId: nearest.id }));
+  });
+  return picks;
+}
+function importedDineOut(){
+  return state.imported.filter(m => m.type === "dine-out").map(m => ({ ...m, dist: (m.lat != null && m.lon != null) ? miles(state.loc, m) : null }))
+    .filter(m => m.dist == null || m.dist <= state.radius);
+}
+function matchesQuery(m){
+  const q = state.query;
+  if (!q) return true;
+  return [m.title, m.desc, m.venue, ...(m.ingredients || [])].join(" ").toLowerCase().includes(q);
+}
+
+function render(){
+  const out = $("#out");
+  const eat = state.mode === "eat-in";
+  $("#modeEatIn").setAttribute("aria-pressed", eat);
+  $("#modeDineOut").setAttribute("aria-pressed", !eat);
+  $("#locSection").hidden = eat;
+  document.querySelector('[data-f="quick"]').hidden = !eat;
+  $("#search").placeholder = eat ? "Search dishes or ingredients" : "Search restaurants or dishes";
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", state.filters.has(c.dataset.f)));
+  document.querySelectorAll("[data-radius]").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.radius) === state.radius));
+
+  if (eat){
+    const list = allEatIn().filter(passes).filter(matchesQuery);
+    $("#count").textContent = `${list.length} recipe${list.length === 1 ? "" : "s"}`;
+    out.innerHTML = `<div class="grid">${list.length ? list.map(recipeCard).join("") :
+      empty("Nothing matches all of those.", state.filters.size ? " Try turning off a filter or two." : " Try a different search.")}</div>`;
+    return;
+  }
+
+  // Dine out
+  const picks = [...chainPicks(), ...importedDineOut()].filter(passes).filter(matchesQuery);
+  const places = state.places.filter(p => state.cuisine === "all" || p.group === state.cuisine)
+    .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query));
+  const showSaved = state.filters.has("saved");
+  const placesList = showSaved ? [] : places;
+  $("#count").textContent = state.loading ? "Searching…" : `${placesList.length} place${placesList.length === 1 ? "" : "s"} within ${state.radius} mi of ${state.loc.label}`;
+
+  let html = "";
+  if (picks.length || state.places.length){
+    html += `<h2 class="group-title">Dishes with published nutrition</h2>
+      <p class="group-note">From chains within your radius that post their numbers. Your filters apply here.</p>
+      <div class="grid">${picks.length ? picks.map(recipeCard).join("") : empty("No published dishes match.", state.filters.size ? " Try turning off a filter." : " None of the chains we track are in this radius yet.")}</div>`;
+  }
+  if (!showSaved && state.places.length){
+    const groups = [...new Set(state.places.map(p => p.group))].sort((a, b) => CUISINE[a].label.localeCompare(CUISINE[b].label));
+    html += `<h2 class="group-title">Restaurants near you</h2>
+      <p class="group-note">Most local spots don’t publish nutrition, so we don’t guess. Open one for ordering tips that match your filters.</p>
+      <div class="chips" style="margin-bottom:10px"><button class="chip" data-cuisine="all" aria-pressed="${state.cuisine === "all"}">All</button>${groups.map(g => `<button class="chip" data-cuisine="${g}" aria-pressed="${state.cuisine === g}">${esc(CUISINE[g].label)}</button>`).join("")}</div>
+      <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : empty("No restaurants match that search.", "")}</div>
+      ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}`;
+  }
+  out.innerHTML = html;
+}
+
+/* ---------- Dine out data (OpenStreetMap) ---------- */
+function setStatus(msg, kind){
+  const s = $("#status");
+  if (!msg){ s.hidden = true; return; }
+  s.className = "status" + (kind === "err" ? " err" : "");
+  s.innerHTML = (kind === "load" ? '<span class="spin" aria-hidden="true"></span>' : "") + `<span>${esc(msg)}</span>`;
+  s.hidden = false;
+}
+async function fetchJSON(url, opts = {}, ms = 30000){
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(url, { ...opts, signal: ctl.signal }); if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); }
+  finally { clearTimeout(t); }
+}
+async function geocode(q){
+  const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&countrycodes=us&q=" + encodeURIComponent(q);
+  const r = await fetchJSON(url, { headers: { "Accept-Language": "en" } }, 15000);
+  if (!r.length) throw new Error(`Couldn’t find “${q}”. Try a city and state, or a ZIP code.`);
+  return { label: placeLabel(r[0].address, r[0].display_name.split(",")[0]), lat: +r[0].lat, lon: +r[0].lon };
+}
+function placeLabel(a = {}, fallback = "Current location"){
+  const town = a.city || a.town || a.village || a.hamlet || a.suburb || a.neighbourhood || fallback;
+  const st = (a["ISO3166-2-lvl4"] || "").replace(/^US-/, "") || a.state || "";
+  return [town, st].filter(Boolean).join(", ");
+}
+async function reverseGeocode(lat, lon){
+  try {
+    const r = await fetchJSON(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&lat=${lat}&lon=${lon}`, {}, 10000);
+    return placeLabel(r.address);
+  } catch { return "Current location"; }
+}
+function groupFor(cuisine, amenity){
+  for (const c of cuisine) if (CUISINE_MAP[c]) return CUISINE_MAP[c];
+  return amenity === "fast_food" ? "american" : "other";
+}
+async function loadPlaces(force){
+  const key = `${state.loc.lat.toFixed(3)},${state.loc.lon.toFixed(3)},${state.radius}`;
+  if (!force && key === state.placesKey && state.places.length) { render(); return; }
+  const cache = store.get("places", null);
+  if (!force && cache && cache.key === key && Date.now() - cache.ts < 7 * 864e5){
+    state.places = cache.places; state.placesKey = key; render(); return;
+  }
+  const meters = Math.round(state.radius * 1609.34);
+  const q = `[out:json][timeout:25];nwr["amenity"~"^(restaurant|fast_food)$"]["name"](around:${meters},${state.loc.lat},${state.loc.lon});out center tags 400;`;
+  state.loading = true; setStatus(`Finding restaurants within ${state.radius} mi…`, "load"); render();
+  const endpoints = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
+  let data = null, lastErr = null;
+  for (const ep of endpoints){
+    try { data = await fetchJSON(ep, { method: "POST", body: "data=" + encodeURIComponent(q), headers: { "Content-Type": "application/x-www-form-urlencoded" } }); break; }
+    catch (e){ lastErr = e; }
+  }
+  state.loading = false;
+  if (!data){
+    if (cache && cache.places?.length){
+      state.places = cache.places; state.placesKey = cache.key;
+      setStatus("You’re offline or the map service is busy. Showing your last saved search.", "err");
+    } else {
+      state.places = []; setStatus("Couldn’t reach the restaurant map. Check your connection and tap Find places to try again.", "err");
     }
-    
-    document.getElementById('modeEatIn').addEventListener('click', () => setMode('eat-in'));
-    document.getElementById('modeDineOut').addEventListener('click', () => setMode('dine-out'));
+    render(); return;
+  }
+  const seen = new Set();
+  state.places = (data.elements || []).map(el => {
+    const t = el.tags || {}, lat = el.lat ?? el.center?.lat, lon = el.lon ?? el.center?.lon;
+    if (lat == null || !t.name) return null;
+    const cuisine = (t.cuisine || "").toLowerCase().split(/[;,]/).map(s => s.trim()).filter(Boolean);
+    const addr = [[t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "), t["addr:city"]].filter(Boolean).join(", ");
+    return { id: el.type[0] + el.id, name: t.name, brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
+      group: groupFor(cuisine, t.amenity), cuisineRaw: cuisine.join(" "), addr,
+      website: /^https?:\/\//.test(t.website || t["contact:website"] || "") ? (t.website || t["contact:website"]) : "",
+      phone: t.phone || t["contact:phone"] || "", hours: t.opening_hours || "" };
+  }).filter(p => p && p.dist <= state.radius + 0.05)
+    .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
+    .sort((a, b) => a.dist - b.dist);
+  state.placesKey = key; state.placesShown = 30; state.cuisine = "all";
+  store.set("places", { key, ts: Date.now(), places: state.places });
+  setStatus(state.places.length ? "" : `No restaurants are mapped within ${state.radius} mi. Try a wider radius.`);
+  render();
+}
 
-    // Filters
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const key = pill.getAttribute('data-filter');
-        if(activeFilters.has(key)) {
-          activeFilters.delete(key);
-          pill.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
-          pill.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-        } else {
-          activeFilters.add(key);
-          pill.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-700');
-          pill.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-        }
-        renderCards();
-      });
-    });
+/* ---------- Sheets ---------- */
+let lastFocus = null;
+function openSheet(html){
+  lastFocus = document.activeElement;
+  $("#sheetBody").innerHTML = html;
+  $("#sheet").hidden = false;
+  document.body.style.overflow = "hidden";
+  $(".panel").scrollTop = 0;
+  $("#sheetClose").focus();
+  if (!history.state || !history.state.sheet) history.pushState({ sheet: true }, "");
+}
+function closeSheet(fromPop){
+  if ($("#sheet").hidden) return;
+  $("#sheet").hidden = true;
+  document.body.style.overflow = "";
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+  if (!fromPop && history.state && history.state.sheet) history.back();
+}
+window.addEventListener("popstate", () => closeSheet(true));
+$("#sheetClose").addEventListener("click", () => closeSheet());
+$("#sheet").addEventListener("click", e => { if (e.target.id === "sheet") closeSheet(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+window.addEventListener("pageshow", e => { if (e.persisted){ $("#sheet").hidden = true; document.body.style.overflow = ""; } });
 
-    document.getElementById('clearFilters').addEventListener('click', () => {
-      activeFilters.clear();
-      document.querySelectorAll('.filter-pill').forEach(p => {
-        p.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
-        p.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-      });
-      document.getElementById('searchInput').value = '';
-      searchQuery = '';
-      renderCards();
-    });
+function findMeal(id){ return [...allEatIn(), ...chainPicks(), ...importedDineOut()].find(m => m.id === id); }
+function mapsUrl(name, lat, lon, addr){
+  const q = addr ? `${name}, ${addr}` : (lat != null ? `${name} ${(+lat).toFixed(5)},${(+lon).toFixed(5)}` : name);
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+function tipsFor(group){
+  const c = CUISINE[group] || CUISINE.other;
+  const extra = [...state.filters].filter(f => FILTER_TIPS[f]).map(f => FILTER_TIPS[f]);
+  return `<h3>Good orders here</h3><ul class="tips">${c.best.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
+    <p style="margin-top:10px"><b>Go easy on:</b> ${esc(c.avoid)}</p>
+    ${extra.length ? `<h3>For your filters</h3>${extra.map(x => `<div class="tip">${esc(x)}</div>`).join("")}` : ""}`;
+}
+function openMeal(id){
+  const m = findMeal(id); if (!m) return;
+  const facts = [["Calories", m.calories, ""], ["Protein", m.protein, " g"], ["Sodium", m.sodium, " mg"], ["Fat", m.fat, " g"], ["Carbs", m.carbs, " g"], ["Fiber", m.fiber, " g"]]
+    .filter(f => num(f[1]) !== null).map(f => `<div><b>${esc(f[1])}${f[2]}</b><span>${f[0]}</span></div>`).join("");
+  const src = m.source === "published"
+    ? `Nutrition published by ${esc(m.venue)}${m.sourceUrl ? ` (<a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener">see their numbers</a>)` : ""}. Checked September 2026 — menus change, so confirm before ordering.`
+    : (m.imported ? "Imported estimate. Treat these numbers as approximate." : "Estimated per serving from USDA FoodData Central values for the amounts listed. Brands vary — check your labels, especially broth, beans and shrimp.");
+  let body = `<div class="kicker-lg">${m.type === "eat-in" ? "Home recipe" + (m.minutes ? ` · ${m.minutes} min` : "") : esc(m.venue) + (m.dist != null ? ` · ${m.dist.toFixed(1)} mi away` : "")}</div>
+    <h2 id="sheetTitle">${esc(m.title)}</h2>${m.desc ? `<p>${esc(m.desc)}</p>` : ""}
+    ${pills(m)}<div class="facts">${facts}</div>`;
+  if (m.type === "eat-in"){
+    if (m.ingredients?.length) body += `<h3>Ingredients (1 serving)</h3><ul class="ing">${m.ingredients.map(i => `<li>${icon("check")}<span>${esc(i)}</span></li>`).join("")}</ul>`;
+    if (m.steps?.length) body += `<h3>Steps</h3><ol class="steps">${m.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>`;
+    body += `<div class="actions">
+      <button class="btn" data-addlist="${esc(m.id)}">${icon("plus")}Add to shopping list</button>
+      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>`;
+  } else {
+    if (m.order) body += `<h3>How to order it</h3><div class="tip">${esc(m.order)}</div>`;
+    const place = state.places.find(p => p.id === m.placeId);
+    const lat = place ? place.lat : m.lat, lon = place ? place.lon : m.lon, addr = place ? place.addr : m.address;
+    body += `<div class="actions">
+      <button class="btn" data-maps="${esc(mapsUrl(m.venue, lat, lon, addr))}">${icon("nav")}Directions</button>
+      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>`;
+  }
+  body += `<p class="note" style="margin-top:18px">${src}</p>`;
+  openSheet(body);
+}
+function openPlace(id){
+  const p = state.places.find(x => x.id === id); if (!p) return;
+  const chain = CHAINS.find(ch => ch.match.test(p.name) || ch.match.test(p.brand));
+  let body = `<div class="kicker-lg">${esc(CUISINE[p.group].label)} · ${p.dist.toFixed(1)} mi away</div>
+    <h2 id="sheetTitle">${esc(p.name)}</h2>
+    ${p.addr ? `<p>${esc(p.addr)}</p>` : ""}${p.hours ? `<p class="src">Hours listed on the map: ${esc(p.hours)}</p>` : ""}`;
+  if (chain) body += `<div class="tip">This chain publishes nutrition. See the <b>Dishes with published nutrition</b> section for picks with real numbers.</div>`;
+  body += tipsFor(p.group);
+  body += `<div class="actions">
+    <button class="btn" data-maps="${esc(mapsUrl(p.name, p.lat, p.lon, p.addr))}">${icon("nav")}Directions</button>
+    ${p.website ? `<button class="btn ghost" data-url="${esc(p.website)}">${icon("ext")}Website &amp; menu</button>` : ""}
+    ${p.phone ? `<a class="btn ghost" href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}</div>
+    <p class="note" style="margin-top:18px">Listing from OpenStreetMap. Details can be out of date — call ahead to confirm hours.</p>`;
+  openSheet(body);
+}
+function openInfo(){
+  openSheet(`<h2 id="sheetTitle">How we check meals</h2>
+    <p>Every flag is calculated from the numbers on each dish, per serving.</p>
+    <dl class="crit">
+      <dt>Low calorie</dt><dd>${LIMITS.cal} calories or less.</dd>
+      <dt>Low sodium</dt><dd>Under ${LIMITS.sodium} mg of sodium.</dd>
+      <dt>High protein</dt><dd>${LIMITS.protein} g of protein or more.</dd>
+      <dt>GLP-1 friendly</dt><dd>At least ${LIMITS.glp1Protein} g protein, no more than ${LIMITS.glp1Fat} g fat, ${LIMITS.glp1Cal} calories or less, and nothing fried. These follow common guidance for people on GLP-1 medications: smaller, lean, protein-first meals that are easier on the stomach. Your care team’s advice comes first.</dd>
+      <dt>Under 25 min</dt><dd>Total time for home recipes.</dd>
+    </dl>
+    <h3>Where the numbers come from</h3>
+    <p>Home recipes are estimated from USDA FoodData Central values for the exact amounts listed. Restaurant dishes only get numbers when the restaurant publishes them. Everything else gets ordering tips instead of guessed numbers.</p>
+    <h3>Import meals</h3>
+    <p>Load a <code>meals.json</code> file from the research notebook. Imported meals stay on this device.</p>
+    <div class="actions">
+      <button class="btn" id="importBtn">${icon("upload")}Import meals file</button>
+      ${state.imported.length ? `<button class="btn ghost" id="clearImport">${icon("trash")}Remove ${state.imported.length} imported</button>` : ""}
+    </div>
+    <p class="src" style="margin-top:18px">Version ${VERSION}</p>`);
+}
+function openList(){
+  const items = state.list;
+  openSheet(`<h2 id="sheetTitle">Shopping list</h2>
+    ${items.length ? `<div>${items.map((it, i) => `<div class="list-item${it.done ? " done" : ""}"><input type="checkbox" id="li${i}" data-li="${i}" ${it.done ? "checked" : ""}><label for="li${i}">${esc(it.text)}</label></div>`).join("")}</div>
+    <div class="actions"><button class="btn" id="shareList">${icon("share")}Share list</button><button class="btn ghost" id="clearDone">${icon("trash")}Clear checked</button></div>`
+    : `<p>Your list is empty. Open a home recipe and tap <b>Add to shopping list</b>.</p>`}`);
+}
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      searchQuery = e.target.value.toLowerCase();
-      renderCards();
-    });
+/* ---------- Actions ---------- */
+function toggleFav(id){
+  state.favs.has(id) ? state.favs.delete(id) : state.favs.add(id);
+  store.set("favs", [...state.favs]);
+  document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b => {
+    const on = state.favs.has(id); b.setAttribute("aria-pressed", on);
+    if (b.classList.contains("btn")) b.innerHTML = icon("heart") + (on ? "Saved" : "Save");
+    else b.setAttribute("aria-label", on ? "Remove from saved" : "Save");
+  });
+  if (state.filters.has("saved")) render();
+}
+function addToList(id){
+  const m = findMeal(id); if (!m) return;
+  const have = new Set(state.list.map(i => i.text));
+  let n = 0;
+  (m.ingredients || []).forEach(t => { if (!have.has(t)){ state.list.push({ text: t, done: false }); n++; } });
+  store.set("list", state.list); updateListCount();
+  toast(n ? `Added ${n} item${n === 1 ? "" : "s"} to your list` : "Already on your list");
+}
+function updateListCount(){
+  const n = state.list.filter(i => !i.done).length, b = $("#listCount");
+  b.textContent = n; b.hidden = n === 0;
+}
+function decide(){
+  let pool;
+  if (state.mode === "eat-in") pool = allEatIn().filter(passes).filter(matchesQuery).map(m => ["m", m.id]);
+  else {
+    pool = [...chainPicks(), ...importedDineOut()].filter(passes).map(m => ["m", m.id]);
+    if (!state.filters.has("saved")) pool = pool.concat(state.places.filter(p => state.cuisine === "all" || p.group === state.cuisine).slice(0, 40).map(p => ["p", p.id]));
+  }
+  if (!pool.length){ toast(state.mode === "eat-in" ? "Nothing matches your filters yet" : "Find places first, then I’ll pick one"); return; }
+  const [kind, id] = pool[Math.floor(Math.random() * pool.length)];
+  kind === "m" ? openMeal(id) : openPlace(id);
+}
+function setMode(mode){
+  state.mode = mode; store.set("mode", mode); state.query = ""; $("#search").value = "";
+  render();
+  if (mode === "dine-out") loadPlaces(false);
+  else setStatus("");
+}
 
-    // JSON File Import Logic
-    document.getElementById('importBtn').addEventListener('click', () => {
-      document.getElementById('jsonImporter').click();
-    });
+$("#modeEatIn").addEventListener("click", () => setMode("eat-in"));
+$("#modeDineOut").addEventListener("click", () => setMode("dine-out"));
+$("#chips").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  const f = c.dataset.f; state.filters.has(f) ? state.filters.delete(f) : state.filters.add(f);
+  store.set("filters", [...state.filters]); render();
+});
+$("#resetFilters").addEventListener("click", () => { state.filters.clear(); store.set("filters", []); state.query = ""; $("#search").value = ""; render(); });
+$("#howBtn").addEventListener("click", openInfo);
+$("#infoBtn").addEventListener("click", openInfo);
+$("#listBtn").addEventListener("click", openList);
+$("#decideBtn").addEventListener("click", decide);
+$("#search").addEventListener("input", e => { state.query = e.target.value.trim().toLowerCase(); render(); });
 
-    document.getElementById('jsonImporter').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const imported = JSON.parse(event.target.result);
-          
-          // Clean up imported data and assign default images if none exist
-          const newMeals = imported.map(m => {
-            m.id = "imp_" + Math.random().toString(36).substr(2, 9);
-            if (!m.image) {
-               m.image = m.type === 'dine-out' ? imgDineOutDefault : imgSalmon;
-            }
-            return m;
-          });
-          
-          // Add to data and switch to Dine Out mode automatically
-          mealsData = [...newMeals, ...mealsData];
-          setMode('dine-out');
-          alert(`Successfully loaded ${imported.length} new meals from Colab!`);
-          
-        } catch (err) {
-          alert("Could not load file. Make sure it's a valid meals.json");
-        }
-        e.target.value = ''; // Reset input
-      };
-      reader.readAsText(file);
-    });
-
-    // Launch Map Safely (Clean _blank tab)
-    window.launchGoogleMaps = function(venue, location) {
-      const query = encodeURIComponent(`${venue} ${location}`);
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
-      window.open(mapsUrl, '_blank', 'noopener,noreferrer');
-    };
-
-    function renderCards() {
-      const filtered = mealsData.filter(m => {
-        if(m.type !== currentMode) return false;
-        if(activeFilters.has('glp1') && !m.glp1) return false;
-        if(activeFilters.has('lowSodium') && !m.lowSodium) return false;
-        if(activeFilters.has('lowCal') && !m.lowCal) return false;
-        if(activeFilters.has('highProtein') && !m.highProtein) return false;
-        const tVal = m.timeVal || 99;
-        if(activeFilters.has('quick') && tVal > 25) return false;
-        if(searchQuery && !m.title.toLowerCase().includes(searchQuery) && !(m.venue && m.venue.toLowerCase().includes(searchQuery))) return false;
-        return true;
-      });
-
-      document.getElementById('resultsCount').textContent = `Showing ${filtered.length} recommendation${filtered.length === 1 ? '' : 's'}`;
-      mealGrid.innerHTML = '';
-
-      if (filtered.length === 0) {
-        mealGrid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-semibold">No options match your criteria. Try adjusting filters or importing a JSON file!</div>`;
-        return;
-      }
-
-      filtered.forEach(meal => {
-        const card = document.createElement('div');
-        card.className = "bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer group flex flex-col";
-        card.onclick = () => openModal(meal.id);
-
-        card.innerHTML = `
-          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
-            <img src="${meal.image}" alt="${meal.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            <div class="absolute top-3 left-3 flex gap-1.5 flex-wrap max-w-[80%]">
-              ${meal.glp1 ? `<span class="bg-emerald-500 text-white rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide shadow"><i data-lucide="check-circle-2" class="w-2.5 h-2.5 inline mb-0.5"></i> GLP-1 OK</span>` : ''}
-              ${meal.lowSodium ? `<span class="bg-blue-500 text-white rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide shadow"><500mg Na</span>` : ''}
-            </div>
-            
-            <div class="absolute bottom-3 left-3 flex items-center gap-1 text-white text-xs font-semibold drop-shadow-md">
-              <i data-lucide="clock" class="w-3.5 h-3.5"></i> ${meal.prepTime || 'Dine Out'}
-            </div>
-            <div class="absolute bottom-3 right-3 text-white text-xs font-bold drop-shadow-md">
-              ${meal.calories} kcal
-            </div>
-          </div>
-
-          <div class="p-5 flex-1 flex flex-col">
-            <div class="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-2">
-              ${meal.type === 'eat-in' ? 'HOME-COOKED RECIPE' : meal.venue}
-            </div>
-            <h3 class="font-extrabold text-slate-800 text-lg leading-tight mb-1.5">${meal.title}</h3>
-            <p class="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-2">${meal.subtitle || meal.location || meal.address}</p>
-            
-            <div class="mt-auto pt-4 border-t border-slate-100 flex gap-6">
-              <div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Protein</div>
-                <div class="text-sm font-extrabold text-slate-800">${meal.protein}g</div>
-              </div>
-              <div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Sodium</div>
-                <div class="text-sm font-extrabold text-slate-800">${meal.sodium}mg</div>
-              </div>
-            </div>
-          </div>
-        `;
-        mealGrid.appendChild(card);
-      });
-      lucide.createIcons();
+document.querySelectorAll("[data-radius]").forEach(b => b.addEventListener("click", () => {
+  state.radius = Number(b.dataset.radius); store.set("radius", state.radius); loadPlaces(false);
+}));
+$("#locForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = $("#locInput").value.trim(); if (!q) return;
+  const go = $("#locGo"); go.disabled = true;
+  try {
+    if (q.toLowerCase() !== state.loc.label.toLowerCase()){
+      setStatus("Looking up that location…", "load");
+      state.loc = await geocode(q); store.set("loc", state.loc); $("#locInput").value = state.loc.label;
     }
+    await loadPlaces(true);
+  } catch (err){ setStatus(err.message && !/^HTTP|abort/i.test(err.message) ? err.message : "Couldn’t look up that location. Check your connection and try again.", "err"); }
+  finally { go.disabled = false; }
+});
+$("#gpsBtn").addEventListener("click", () => {
+  if (!navigator.geolocation){ setStatus("This browser can’t share your location. Type a city or ZIP instead.", "err"); return; }
+  setStatus("Getting your location…", "load");
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    state.loc = { lat, lon, label: await reverseGeocode(lat, lon) }; store.set("loc", state.loc);
+    $("#locInput").value = state.loc.label; loadPlaces(true);
+  }, err => setStatus(err.code === 1 ? "Location access is off. Allow it in your browser settings, or type a city or ZIP." : "Couldn’t get your location. Type a city or ZIP instead.", "err"),
+  { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
+});
 
-    function openModal(id) {
-      const meal = mealsData.find(m => m.id === id);
-      if(!meal) return;
-      
-      modalContent.innerHTML = `
-        <div class="h-64 sm:h-72 w-full relative">
-          <img src="${meal.image}" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-          <div class="absolute bottom-6 left-6 right-6 text-white drop-shadow-lg">
-            <div class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2">${meal.type === 'eat-in' ? 'Recipe' : meal.venue}</div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">${meal.title}</h2>
-          </div>
-        </div>
-        
-        <div class="p-6 sm:p-8 space-y-6">
-          <div class="grid grid-cols-3 gap-2 py-3 px-4 bg-slate-50 rounded-2xl text-center border border-slate-200">
-            <div><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Calories</span><span class="font-extrabold text-slate-800 text-lg">${meal.calories}</span></div>
-            <div class="border-x border-slate-200"><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Protein</span><span class="font-extrabold text-slate-800 text-lg">${meal.protein}g</span></div>
-            <div><span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Sodium</span><span class="font-extrabold text-slate-800 text-lg">${meal.sodium}mg</span></div>
-          </div>
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],#moreBtn,#importBtn,#clearImport,#shareList,#clearDone");
+  if (!t) return;
+  if (t.dataset.fav){ e.stopPropagation(); toggleFav(t.dataset.fav); }
+  else if (t.dataset.open) openMeal(t.dataset.open);
+  else if (t.dataset.place) openPlace(t.dataset.place);
+  else if (t.dataset.maps) window.open(t.dataset.maps, "_blank", "noopener,noreferrer");
+  else if (t.dataset.url) window.open(t.dataset.url, "_blank", "noopener,noreferrer");
+  else if (t.dataset.addlist) addToList(t.dataset.addlist);
+  else if (t.dataset.cuisine){ state.cuisine = t.dataset.cuisine; state.placesShown = 30; render(); }
+  else if (t.id === "moreBtn"){ state.placesShown += 30; render(); }
+  else if (t.id === "importBtn") $("#importFile").click();
+  else if (t.id === "clearImport"){ state.imported = []; store.set("imported", []); closeSheet(); render(); toast("Imported meals removed"); }
+  else if (t.id === "clearDone"){ state.list = state.list.filter(i => !i.done); store.set("list", state.list); updateListCount(); openList(); }
+  else if (t.id === "shareList"){
+    const text = "Shopping list\n" + state.list.filter(i => !i.done).map(i => "• " + i.text).join("\n");
+    if (navigator.share) navigator.share({ title: "Shopping list", text }).catch(() => {});
+    else navigator.clipboard?.writeText(text).then(() => toast("List copied"), () => toast("Couldn’t copy the list"));
+  }
+});
+document.addEventListener("change", e => {
+  if (e.target.dataset && e.target.dataset.li != null){
+    const i = Number(e.target.dataset.li); state.list[i].done = e.target.checked; store.set("list", state.list); updateListCount();
+    e.target.closest(".list-item").classList.toggle("done", e.target.checked);
+  }
+});
+$("#importFile").addEventListener("change", e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const meals = normalizeImport(JSON.parse(reader.result));
+      state.imported = [...meals, ...state.imported]; store.set("imported", state.imported);
+      closeSheet(); render(); toast(`Imported ${meals.length} meal${meals.length === 1 ? "" : "s"}`);
+    } catch (err){ toast(err instanceof SyntaxError ? "That file isn’t valid JSON." : err.message); }
+    e.target.value = "";
+  };
+  reader.readAsText(file);
+});
 
-          ${meal.type === 'eat-in' ? `
-            <div>
-              <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">Ingredients</h4>
-              <ul class="space-y-2 text-sm text-slate-600 font-medium">
-                ${meal.ingredients.map(i => `<li class="flex items-center gap-2.5"><i data-lucide="check" class="w-4 h-4 text-orange-500 shrink-0"></i> ${i}</li>`).join('')}
-              </ul>
-            </div>
-            <div>
-              <h4 class="font-bold text-slate-900 mb-2 text-sm uppercase tracking-wider">Instructions</h4>
-              <p class="text-sm text-slate-700 leading-relaxed bg-orange-50/70 p-5 rounded-2xl border border-orange-100">${meal.instructions}</p>
-            </div>
-          ` : `
-            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
-              <h4 class="font-bold text-brand-navy mb-2 text-sm uppercase tracking-wider flex items-center gap-2">
-                <i data-lucide="message-square" class="w-4 h-4 text-orange-500"></i> Order Modification
-              </h4>
-              <p class="text-sm text-slate-700 leading-relaxed font-medium">"${meal.orderTip}"</p>
-            </div>
-            
-            <button onclick="launchGoogleMaps('${meal.venue.replace(/'/g, "\\'")}', '${(meal.address || meal.location).replace(/'/g, "\\'")}')" class="w-full mt-2 py-3.5 bg-brand-navy hover:bg-slate-800 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-md">
-              <i data-lucide="map-pin" class="w-4 h-4 text-orange-400"></i>
-              Navigate in Google Maps
-            </button>
-          `}
-        </div>
-      `;
-      detailModal.classList.remove('hidden');
-      detailModal.classList.add('flex');
-      lucide.createIcons();
-    }
-
-    document.getElementById('closeModal').addEventListener('click', () => {
-      detailModal.classList.add('hidden');
-      detailModal.classList.remove('flex');
-    });
-
-    document.getElementById('surpriseBtn').addEventListener('click', () => {
-      const available = mealsData.filter(m => m.type === currentMode);
-      if(available.length > 0) openModal(available[Math.floor(Math.random() * available.length)].id);
-    });
-
-    // PWA Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
-      });
-    }
-
-    // Modal state cleanup on BFCache back-navigation
-    window.addEventListener('pageshow', (event) => {
-      if (event.persisted && detailModal) {
-        detailModal.classList.add('hidden');
-        detailModal.classList.remove('flex');
-      }
-    });
-
-    // Initialize display
-    setMode('eat-in'); // Ensure location bar is correctly hidden on first load
-  </script>
+/* ---------- Boot ---------- */
+$("#ver").textContent = VERSION;
+$("#locInput").value = state.loc.label;
+updateListCount();
+render();
+if (state.mode === "dine-out") loadPlaces(false);
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+</script>
 </body>
 </html>
