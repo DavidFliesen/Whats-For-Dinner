@@ -277,7 +277,7 @@ dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:14.5px}
 .hero.compact .compact-label{display:block}
 body.dine .loc{padding-top:14px;padding-bottom:10px}
 body.dine .filters{padding-top:12px}
-body.dine .how{display:none}
+body.dine .how{margin-top:6px}
 /* Units */
 .units{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
 .units select{min-height:38px;border:1px solid var(--line);border-radius:999px;background:var(--soft);padding:0 12px;font:600 13px var(--font);color:var(--ink-2)}
@@ -301,6 +301,33 @@ body.dine .how{display:none}
 .link-row .btn{flex:0 1 auto;min-height:42px;padding:0 16px;font-size:14px}
 .link-row .btn svg.i{width:16px;height:16px}
 .m-body .src{margin-top:10px}
+
+.chip-health[aria-pressed="true"]{border-color:#059669;background:#ECFDF5;color:#047857}
+.chip-health[aria-pressed="true"] svg.i{color:#059669}
+.fits{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px}
+.fits span{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:#047857;background:#ECFDF5;border-radius:6px;padding:2px 7px}
+.fits svg.i{width:11px;height:11px;stroke-width:3}
+.hidden-note{margin:-6px 0 14px;font-size:13.5px;color:var(--muted)}
+.hidden-note button{background:none;border:0;padding:0;color:var(--orange);font-weight:700;text-decoration:underline;cursor:pointer}
+.tile{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,#1E293B,#0F172A);color:#fff;font-weight:800;font-size:26px;letter-spacing:-.01em;text-align:center;padding:0 20px}
+.tile small{display:block;font-size:12px;font-weight:600;color:#94A3B8;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.media img.logo,.m-hero img.logo,.w-media img.logo{position:relative;z-index:1}
+
+.media .lb,.media .rb{background:rgba(15,23,42,.72);padding:3px 9px;border-radius:999px;text-shadow:none;font-size:12.5px}
+.media:has(img.logo)::after,.m-hero:has(img.logo)::after{display:none}
+.media img.logo{position:absolute;inset:0}
+.m-hero:has(img.logo) .cap{color:var(--navy);text-shadow:none;background:rgba(255,255,255,.92);border-radius:14px;padding:10px 14px;left:16px;right:16px;bottom:14px}
+.m-hero img.logo{position:absolute;inset:0;padding:30px 60px 90px}
+
+.picks{display:grid;gap:8px}
+.pick{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff}
+.pick b{display:block;color:var(--ink);font-weight:800}
+.pick > span{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.pick .fits{margin:8px 0 0}
+.pick .fits span{background:var(--soft-2);color:var(--muted)}
+.pick .fits span.on{background:#ECFDF5;color:#047857}
+.area-note{display:flex;align-items:center;gap:8px;margin:-4px 0 14px;font-size:13.5px;color:#047857;font-weight:600}
+.area-note svg.i{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -324,6 +351,7 @@ body.dine .how{display:none}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.4 5.1-6"/></symbol>
   <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2l3 11.5M5.5 17.5 9 10h7l-3 7.5H9.5M12 6h2"/></symbol>
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z"/></symbol>
@@ -337,7 +365,6 @@ body.dine .how{display:none}
     <a class="logo" href="./" aria-label="What’s 4 Dinner? home"><img src="./assets/logo.png" alt="What’s 4 Dinner?" width="656" height="402"></a>
     <div class="hdr-actions">
       <button class="pill-btn hot desk" id="decideTop"><svg class="i"><use href="#i-spark"/></svg>Surprise Me</button>
-      <button class="pill-btn" id="importTop"><svg class="i"><use href="#i-file"/></svg><span class="desk">Import JSON</span><span class="mobile">Import</span></button>
       <button class="icon-btn" id="listBtn" aria-label="Shopping list"><svg class="i"><use href="#i-list"/></svg><span class="badge" id="listCount" hidden>0</span></button>
     </div>
   </div>
@@ -383,6 +410,7 @@ body.dine .how{display:none}
       <button class="linkish" id="resetFilters" type="button">Reset Filters</button>
     </div>
     <div class="chips" id="chips">
+      <button class="chip chip-health" data-f="healthier" aria-pressed="true"><svg class="i"><use href="#i-leaf"/></svg>Healthier</button>
       <button class="chip" data-f="glp1" aria-pressed="false"><span class="dot" style="background:var(--emerald)"></span>GLP-1 Friendly</button>
       <button class="chip" data-f="lowSodium" aria-pressed="false"><span class="dot" style="background:var(--blue)"></span>Low Sodium (&lt;500mg)</button>
       <button class="chip" data-f="lowCal" aria-pressed="false"><span class="dot" style="background:var(--amber)"></span>Low Calorie (≤450 kcal)</button>
@@ -440,7 +468,7 @@ body.dine .how{display:none}
 
 <script>
 "use strict";
-const VERSION = "2.6.0";
+const VERSION = "2.8.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -543,7 +571,7 @@ const CUISINE_IMG = {
   chicken:["chicken","dining"], sandwich:["sandwich","dining"], steak:["steak","grill"], asian:["ramen","dining"],
   breakfast:["pancakes","dining"], healthy:["vegbowl","bowl"], other:["restaurant","dining"]
 };
-const CHAIN_IMG = { "Chipotle": ["vegbowl","bowl"], "Chick-fil-A": ["chicken","dining"] };
+const CHAIN_WD = { "Chipotle": "Q465751", "Chick-fil-A": "Q491516" };
 
 /* Several stock photos per cuisine; each restaurant gets one based on its id, so neighbours rarely match. */
 const CUISINE_POOL = {
@@ -563,10 +591,16 @@ function photoFor(m){
     pair = m.photo ? [m.photo, k] : [k, fb];
   }
   else if (m.type === "eat-in") pair = (RECIPE_IMG[m.id] || ["bowl","salmon"]).map(k => PH[k]);
-  else pair = (CHAIN_IMG[m.venue] || ["dining","restaurant"]).map(k => PH[k]);
+  else pair = [PH.dining, PH.restaurant];
   return pair;
 }
 const imgTag = (m, alt) => {
+  if (m.type === "dine-out" && !m.group && m.venue){
+    /* A restaurant dish: show the chain's real logo, or a clean name tile — never a stock photo of a different dish. */
+    const wd = m.brandWd || CHAIN_WD[m.venue], logo = wd && wdCache[wd] && wdCache[wd].logo;
+    return `<span class="tile">${esc(m.venue)}<small>${esc(m.source === "published" ? "Published nutrition" : "Restaurant dish")}</small></span>` +
+      (logo ? `<img src="${esc(commonsFile(logo))}" data-fb="" alt="${esc(m.venue)} logo" class="logo" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : "");
+  }
   const [src, fb] = photoFor(m);
   const logo = m.photo && m.photoKind === "logo" && src === m.photo;
   return `<img src="${esc(src)}" data-fb="${esc(fb)}" alt="${esc(alt)}"${logo ? ' class="logo"' : ""} loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
@@ -588,13 +622,13 @@ const store = {
 /* ---------- State ---------- */
 const state = {
   mode: store.get("mode", "eat-in"),
-  filters: new Set(store.get("filters", [])),
+  filters: new Set(store.get("fv", 0) >= 2 ? store.get("filters", ["healthier"]) : [...store.get("filters", []), "healthier"]),
   favs: new Set(store.get("favs", [])),
   list: store.get("list", []),
   imported: store.get("imported", []),
-  loc: null, /* always starts blank: the user types or shares their location */
+  loc: store.get("loc", null), /* blank on the very first visit, then remembers the last place */
   radius: store.get("radius", 5),
-  places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all", recipeCuisine: "all",
+  area: null, places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all", recipeCuisine: store.get("rcuisine", "all"),
   region: store.get("region", null) || detectRegion()
 };
 
@@ -621,7 +655,8 @@ function checks(m){
     glp1: (has("protein") && has("fat") && has("calories"))
       ? (m.protein >= LIMITS.glp1Protein && m.fat <= LIMITS.glp1Fat && m.calories <= LIMITS.glp1Cal && !m.fried) : null,
     vegetarian: !!(m.vegetarian || m.vegan), glutenFree: !!m.glutenFree, dairyFree: !!m.dairyFree,
-    quick: m.minutes ? m.minutes <= LIMITS.quickMin : null
+    quick: m.minutes ? m.minutes <= LIMITS.quickMin : null,
+    healthier: (has("calories") && has("fat") && has("sodium")) ? (m.calories <= 500 && m.fat <= 15 && m.sodium < 800 && !m.fried) : null
   };
 }
 function passes(m){
@@ -760,13 +795,14 @@ function placeCard(p){
   return `<article class="card place">
     <button class="media" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}">
       ${imgTag(p, c.label + " food")}
-      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}</span>
+      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}${p.pack && p.pack.picks.length ? `<span class="tag p">Menu picks</span>` : ""}</span>
       <span class="lb">${icon("pin")}${p.dist.toFixed(1)} mi</span>
     </button>
     <div class="body">
       <div class="kicker">${esc(c.label)}</div>
       <h3><button data-place="${esc(p.id)}">${esc(p.name)}</button></h3>
       <p class="desc">${p.addr ? esc(p.addr) : "Tap for ordering tips and directions."}</p>
+      ${fitsLine(p)}
       <div class="foot-row">
         <div class="stat"><small>Nutrition</small><b class="miss">Not published</b></div>
         <button class="view" data-place="${esc(p.id)}">Order tips</button>
@@ -785,7 +821,7 @@ function chainPicks(){
     const near = state.places.filter(p => ch.match.test(p.name) || ch.match.test(p.brand || ""));
     if (!near.length) return;
     const nearest = near[0];
-    ch.items.forEach(it => picks.push({ ...it, type: "dine-out", venue: ch.brand, source: "published", sourceUrl: ch.url, dist: nearest.dist, placeId: nearest.id }));
+    ch.items.forEach(it => picks.push({ ...it, type: "dine-out", venue: ch.brand, source: "published", sourceUrl: ch.url, dist: nearest.dist, placeId: nearest.id, brandWd: nearest.brandWd || CHAIN_WD[ch.brand] }));
   });
   return picks;
 }
@@ -850,9 +886,13 @@ function render(){
       <div class="grid">${picks.length ? picks.map(recipeCard).join("") : empty("No published dishes match your filters.", " Try turning one off.")}</div>`;
   }
   if (!showSaved && state.places.length){
-    const groups = [...new Set(state.places.map(p => p.group))].sort((a, b) => CUISINE[a].label.localeCompare(CUISINE[b].label));
-    html += `<h2 class="group-title">Restaurants near you</h2>
-      <p class="group-note">Most local spots don’t publish nutrition, so we don’t guess. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}${state.filters.has("delivery") || state.filters.has("takeaway") ? " Delivery and takeout filters only show places tagged that way on OpenStreetMap — many others offer it too, so check the delivery apps in each restaurant’s details." : ""}</p>
+    const groups = [...new Set(state.places.filter(placePasses).map(p => p.group))].sort((a, b) => CUISINE[a].label.localeCompare(CUISINE[b].label));
+    const hiddenUnhealthy = state.filters.has("healthier") ? state.places.filter(p => lessHealthy(p)).length : 0;
+    html += `<h2 class="group-title">Restaurants near you</h2>`;
+    if (state.area) html += `<p class="area-note">${icon("check")}Local data for ${esc(state.area.name)}: real photos and menu picks where restaurants have websites.</p>`;
+    if (hiddenUnhealthy) html += `<p class="hidden-note">${hiddenUnhealthy} fast-food and less-healthy place${hiddenUnhealthy === 1 ? " is" : "s are"} hidden. <button type="button" id="showAllBtn">Turn off Healthier</button> to see ${hiddenUnhealthy === 1 ? "it" : "them"}.</p>`;
+    html += `
+      <p class="group-note">Restaurants rarely publish nutrition, so your filters match places by their type of food, whether they’re fast food, and any diet tags on the map. That works in every country. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}${state.filters.has("delivery") || state.filters.has("takeaway") ? " Delivery and takeout filters only show places tagged that way on OpenStreetMap — many others offer it too, so check the delivery apps in each restaurant’s details." : ""}</p>
       <div class="chips cuisine-chips"><button class="chip" data-cuisine="all" aria-pressed="${state.cuisine === "all"}">All</button>${groups.map(g => `<button class="chip" data-cuisine="${g}" aria-pressed="${state.cuisine === g}">${esc(CUISINE[g].label)}</button>`).join("")}</div>
       <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : empty("No restaurants match that search.", "")}</div>
       ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}`;
@@ -911,7 +951,7 @@ async function loadPlaces(force, scroll){
   if (!force && key === state.placesKey && state.places.length) { render(); if (scroll) scrollToResults(); return; }
   const cache = store.get("places", null);
   if (!force && cache && cache.key === key && Date.now() - cache.ts < 7 * 864e5){
-    state.places = cache.places; state.placesKey = key; render(); if (scroll) scrollToResults(); return;
+    state.places = cache.places; state.placesKey = key; await applyAreaPack(); render(); if (scroll) scrollToResults(); enrichPhotos(); return;
   }
   const meters = Math.round(state.radius * 1609.34);
   const q = `[out:json][timeout:25];nwr["amenity"~"^(restaurant|fast_food)$"]["name"](around:${meters},${state.loc.lat},${state.loc.lon});out center tags 400;`;
@@ -939,7 +979,8 @@ async function loadPlaces(force, scroll){
     if (lat == null || !t.name) return null;
     const cuisine = (t.cuisine || "").toLowerCase().split(/[;,]/).map(s => s.trim()).filter(Boolean);
     const addr = [[t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "), t["addr:city"]].filter(Boolean).join(", ");
-    return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
+    return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", fast: t.amenity === "fast_food",
+      diet: { vegetarian: t["diet:vegetarian"], vegan: t["diet:vegan"], gluten_free: t["diet:gluten_free"], lactose_free: t["diet:lactose_free"], dairy_free: t["diet:dairy_free"] }, brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
       group: groupFor(cuisine, t.amenity), cuisineRaw: cuisine.join(" "), addr,
       website: /^https?:\/\//.test(t.website || t["contact:website"] || "") ? (t.website || t["contact:website"]) : "",
       phone: t.phone || t["contact:phone"] || "", hours: t.opening_hours || "",
@@ -950,6 +991,7 @@ async function loadPlaces(force, scroll){
     .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => a.dist - b.dist);
   state.placesKey = key; state.placesShown = 30; state.cuisine = "all";
+  await applyAreaPack();
   store.set("places", { key, ts: Date.now(), places: state.places });
   enrichPhotos();
   setStatus(state.places.length ? "" : `No restaurants are mapped within ${state.radius} mi. Try a wider radius.`);
@@ -957,6 +999,50 @@ async function loadPlaces(force, scroll){
   if (scroll) scrollToResults();
 }
 
+
+
+/* ---------- Local area data (built by the Colab notebook, stored in data/areas/) ----------
+   For areas that have been researched, restaurants get the main photo from their own website
+   and dish picks taken word-for-word from their online menu. Everywhere else works as before. */
+const packs = { index: null, loaded: {} };
+async function loadAreaIndex(){
+  if (packs.index) return packs.index;
+  let areas = [];
+  try { const r = await fetch("./data/areas/index.json", { cache: "no-cache" }); if (r.ok) areas = (await r.json()).areas || []; } catch {}
+  const local = store.get("localPacks", {});
+  Object.values(local).forEach(pk => { if (pk && pk.area) areas = areas.filter(a => a.id !== pk.area.id).concat([{ ...pk.area, local: true }]); });
+  packs.index = areas;
+  return areas;
+}
+function areaFor(loc){
+  if (!loc || !packs.index) return null;
+  return packs.index.find(a => a.center && miles(loc, { lat: a.center[0], lon: a.center[1] }) <= (a.radius_mi || 20)) || null;
+}
+async function getPack(area){
+  if (packs.loaded[area.id]) return packs.loaded[area.id];
+  let pack = null;
+  if (area.local) pack = store.get("localPacks", {})[area.id] || null;
+  else { try { const r = await fetch("./" + String(area.file || "").replace(/^\.?\//, ""), { cache: "no-cache" }); if (r.ok) pack = await r.json(); } catch {} }
+  if (pack && pack.places) packs.loaded[area.id] = pack;
+  return pack;
+}
+const cleanUrl = u => /^https:\/\//i.test(u || "") ? u : "";
+async function applyAreaPack(){
+  await loadAreaIndex();
+  const area = areaFor(state.loc);
+  state.area = area ? { id: area.id, name: area.name, generated: area.generated || "" } : null;
+  if (!area) return;
+  const pack = await getPack(area); if (!pack) return;
+  state.places.forEach(p => {
+    const d = pack.places[p.id]; if (!d) return;
+    const picks = Array.isArray(d.picks) ? d.picks.filter(x => x && x.dish).slice(0, 6).map(x => ({
+      dish: String(x.dish).slice(0, 120), note: String(x.note || "").slice(0, 200),
+      fits: Array.isArray(x.fits) ? x.fits.filter(f => FILTER_NAME[f]) : [] })) : [];
+    p.pack = { picks, menuUrl: cleanUrl(d.menuUrl), website: cleanUrl(d.website), checked: String(d.checked || pack.generated || "").slice(0, 10) };
+    const photo = cleanUrl(d.photo);
+    if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true; }
+  });
+}
 
 /* ---------- Real restaurant photos (free sources only) ----------
    1) A photo mapped to the restaurant in OpenStreetMap (image / wikimedia_commons tags).
@@ -977,6 +1063,8 @@ const wdCache = store.get("wd", {});
 async function enrichPhotos(){
   const need = new Set();
   state.places.forEach(p => { if (!p.photo){ if (p.wd && !(p.wd in wdCache)) need.add(p.wd); if (p.brandWd && !(p.brandWd in wdCache)) need.add(p.brandWd); } });
+  if (inUS()) Object.values(CHAIN_WD).forEach(id => { if (!(id in wdCache)) need.add(id); });
+  state.places.forEach(p => { if (p.brandWd && !(p.brandWd in wdCache) && CHAINS.some(ch => ch.match.test(p.name))) need.add(p.brandWd); });
   const ids = [...need].filter(id => /^Q\d+$/.test(id));
   for (let i = 0; i < ids.length; i += 50){
     try {
@@ -996,9 +1084,49 @@ async function enrichPhotos(){
     const pick = (own && own.img && ["photo", own.img]) || (brand && brand.img && ["photo", brand.img]) || (own && own.logo && ["logo", own.logo]) || (brand && brand.logo && ["logo", brand.logo]);
     if (pick){ p.photoKind = pick[0]; p.photo = commonsFile(pick[1]); p.photoCredit = commonsPage(pick[1]); p.photoFromBrand = !(own && (own.img || own.logo)); changed = true; }
   });
-  if (changed && state.mode === "dine-out") render();
+  if ((changed || ids.length) && state.mode === "dine-out") render();
 }
 
+
+
+/* ---------- How well a restaurant suits each filter (works worldwide) ----------
+   Restaurants rarely publish nutrition, so we use what OpenStreetMap knows everywhere:
+   the kind of place (sit-down vs fast food), its cuisine, its brand and its diet tags.
+   c = low calorie, s = low sodium, g = GLP-1 friendly, p = high protein, v = vegetarian, f = gluten-free, d = dairy-free */
+const FIT = {
+  seafood:"csgpfd", mexican:"cgpvfd", italian:"cgpv", pizza:"v", chinese:"cgpvd", japanese:"cgpvd", thai:"cgpvfd", indian:"cgpvf",
+  mediterranean:"csgpvfd", bbq:"pfd", american:"csgpvfd", burger:"p", chicken:"cgpfd", sandwich:"cgpvd", steak:"csgpfd",
+  asian:"cgpvfd", breakfast:"cgpvf", healthy:"csgpvfd", other:"cgp"
+};
+const FAST_FIT = { american:"p", chicken:"p", other:"", burger:"p", pizza:"v", sandwich:"cgpvd", mexican:"cgpvfd", healthy:"csgpvfd", asian:"cgpvd", japanese:"cgpvd", mediterranean:"cgpvfd" };
+const FILTER_LETTER = { lowCal:"c", lowSodium:"s", glp1:"g", highProtein:"p", vegetarian:"v", glutenFree:"f", dairyFree:"d" };
+const FILTER_NAME = { lowCal:"Low calorie", lowSodium:"Low sodium", glp1:"GLP-1 friendly", highProtein:"High protein", vegetarian:"Vegetarian", glutenFree:"Gluten-free", dairyFree:"Dairy-free" };
+const UNHEALTHY_BRANDS = /mc ?donald|burger king|wendy'?s|\bkfc\b|kentucky fried|popeyes|taco bell|domino'?s|pizza hut|papa john|little caesar|sonic drive|\barby'?s|hardee'?s|carl'?s jr|jack in the box|dairy queen|krispy kreme|dunkin|five guys|white castle|checkers|rally'?s|bojangles|church'?s|whataburger|in-n-out|culver'?s|raising cane|long john silver|zaxby|wingstop|buffalo wild wings|hungry jack|greggs|supermac|chicken cottage|jollibee|telepizza|steak ?n ?shake|freddy'?s|cook ?out|krystal|del taco|golden corral|shake shack|smashburger|a&w|captain d|wienerschnitzel|burger|frituur|friterie|pommes|chippy|chipper|fish (&|and) chips|donut|doughnut|waffle|crepe|ice cream|gelato/i;
+const UNHEALTHY_CUISINES = /\b(donut|dessert|ice_cream|frozen_yogurt|cake|crepe|waffle|fish_and_chips|chips|fries|friture|hot_dog|fried_chicken|wings|burger|pizza|pancake|bubble_tea|chocolate|confectionery)\b/;
+function dietTag(p, key){ const v = (p.diet || {})[key]; return /^(yes|only)$/i.test(v || "") ? true : (/^no$/i.test(v || "") ? false : null); }
+function lessHealthy(p){
+  if (p.group === "burger" || p.group === "pizza") return true;
+  if (p.fast && p.group === "chicken") return true;
+  return UNHEALTHY_BRANDS.test(p.name + " " + (p.brand || "")) || UNHEALTHY_CUISINES.test(p.cuisineRaw || "");
+}
+function placeFits(p, f){
+  const picks = p.pack && p.pack.picks;
+  if (picks && picks.length && FILTER_NAME[f] && picks.some(x => x.fits.includes(f))) return true; /* their own menu has a matching dish */
+  if (f === "healthier") return !lessHealthy(p) || !!(picks && picks.length && !UNHEALTHY_BRANDS.test(p.name + " " + (p.brand || "")));
+  if (f === "vegetarian"){ const d = dietTag(p, "vegetarian") ?? dietTag(p, "vegan"); if (d !== null) return d; }
+  if (f === "glutenFree"){ const d = dietTag(p, "gluten_free"); if (d !== null) return d; }
+  if (f === "dairyFree"){ const d = dietTag(p, "lactose_free") ?? dietTag(p, "dairy_free") ?? dietTag(p, "vegan"); if (d !== null) return d; }
+  const letter = FILTER_LETTER[f]; if (!letter) return true;
+  const table = p.fast ? { ...FIT, ...FAST_FIT } : FIT;
+  return (table[p.group] ?? FIT.other).includes(letter);
+}
+const PLACE_FILTERS = ["healthier", "lowCal", "lowSodium", "glp1", "highProtein", "vegetarian", "glutenFree", "dairyFree"];
+function placePasses(p){ return [...state.filters].every(f => !PLACE_FILTERS.includes(f) || placeFits(p, f)); }
+function fitsLine(p){
+  const act = [...state.filters].filter(f => FILTER_NAME[f]);
+  if (!act.length) return "";
+  return `<div class="fits">${act.map(f => `<span>${icon("check")}${esc(FILTER_NAME[f])}</span>`).join("")}</div>`;
+}
 
 /* ---------- Reviews & delivery links (no APIs: each button opens a search) ---------- */
 function takeWord(){ const cc = state.loc && state.loc.country; return ["us","ca","ph"].includes(cc) || !cc ? "Takeout" : "Takeaway"; }
@@ -1007,7 +1135,8 @@ function visiblePlaces(){
     .filter(p => state.cuisine === "all" || p.group === state.cuisine)
     .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query))
     .filter(p => !state.filters.has("delivery") || p.delivery === "yes")
-    .filter(p => !state.filters.has("takeaway") || p.takeaway === "yes");
+    .filter(p => !state.filters.has("takeaway") || p.takeaway === "yes")
+    .filter(placePasses);
 }
 /* Web search used to find a restaurant on a service. Baidu in mainland China, Google elsewhere. */
 function webSearch(q){
@@ -1148,6 +1277,13 @@ function openPlace(id){
   let body = `<div class="m-hero">${imgTag(p, CUISINE[p.group].label + " food")}<div class="cap"><div class="k">${esc(CUISINE[p.group].label)} · ${p.dist.toFixed(1)} mi away</div><h2 id="sheetTitle">${esc(p.name)}</h2></div></div>
     <div class="m-body">${p.addr ? `<p style="color:var(--ink-2);font-weight:600">${esc(p.addr)}</p>` : ""}${p.hours ? `<p class="src">Hours listed on the map: ${esc(p.hours)}</p>` : ""}`;
   if (chain && inUS()) body += `<div class="tipbox o">This chain publishes nutrition. See <b>Dishes with published nutrition</b> for picks with real numbers.</div>`;
+  if (p.pack && p.pack.picks.length){
+    const act = [...state.filters].filter(f => FILTER_NAME[f]);
+    const score = x => act.filter(f => x.fits.includes(f)).length;
+    const picks = p.pack.picks.slice().sort((a, b) => score(b) - score(a));
+    body += `<h3>From their menu</h3><div class="picks">${picks.map(x => `<div class="pick"><b>${esc(x.dish)}</b>${x.note ? `<span>${esc(x.note)}</span>` : ""}${x.fits.length ? `<div class="fits">${x.fits.map(f => `<span${act.includes(f) ? ' class="on"' : ""}>${icon("check")}${esc(FILTER_NAME[f])}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>
+      <p class="src">Dish names are copied word-for-word from the menu on their website${p.pack.checked ? ` (checked ${esc(p.pack.checked)})` : ""}, chosen by an AI reading the descriptions. The tags are a best guess from those descriptions, not measured nutrition. Menus change, so confirm when you order.${p.pack.menuUrl ? ` <a href="${esc(p.pack.menuUrl)}" target="_blank" rel="noopener">See their full menu</a>` : ""}</p>`;
+  }
   body += tipsFor(p.group);
   const avail = [p.delivery === "yes" ? "Delivers" : "", p.takeaway === "yes" ? takeWord() + " available" : "", p.delivery === "no" ? "No delivery" : ""].filter(Boolean);
   if (avail.length) body = body.replace('<div class="m-body">', `<div class="m-body"><div class="checks">${avail.map(a => `<span class="pill ok">${icon("check")}${esc(a)}</span>`).join("")}</div>`);
@@ -1156,7 +1292,7 @@ function openPlace(id){
     ${p.website ? `<button class="btn ghost" data-url="${esc(p.website)}">${icon("ext")}Website &amp; menu</button>` : ""}
     ${p.phone ? `<a class="btn ghost" href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}</div>
     ${linksBlock(p.name, p.lat, p.lon, p.addr, townOf(p), p.website)}
-    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant.")) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">Photo credit &amp; license</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>Google Maps</b> above for its real photos."}</p></div>`;
+    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromSite ? "Photo from the restaurant’s own website." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant."))) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">${p.photoFromSite ? "Visit their website" : "Photo credit &amp; license"}</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>Google Maps</b> above for its real photos."}</p></div>`;
   openSheet(body);
 }
 function openInfo(){
@@ -1170,12 +1306,14 @@ function openInfo(){
       <dt>Under 25 min</dt><dd>Total time for home recipes.</dd>
     </dl>
     <h3>Where the numbers come from</h3>
-    <p>Home recipes are estimated from USDA FoodData Central values for the exact amounts listed. Restaurant dishes only get numbers when the restaurant publishes them. Everything else gets ordering tips instead of guessed numbers.</p>
-    <h3>Import meals</h3>
-    <p>Load a <code>meals.json</code> file from the research notebook. Imported meals stay on this device.</p>
+    <p>Home recipes are estimated from USDA FoodData Central values for the exact amounts listed. Restaurant dishes only get numbers when the restaurant publishes them.</p>
+    <h3>How restaurants are matched</h3>
+    <p>Most restaurants don’t publish nutrition, so filters match places by their type of food, whether they’re fast food, and diet tags on OpenStreetMap. In researched areas${(packs.index || []).length ? ` (${(packs.index || []).map(a => esc(a.name)).join(", ")})` : ""}, dishes taken word-for-word from a restaurant’s own online menu count too.</p>
+    <h3>Import JSON</h3>
+    <p>For testing: load a <code>meals.json</code> file or an area file from the research notebook. Imported data stays on this device.</p>
     <div class="actions">
-      <button class="btn" id="importBtn">${icon("upload")}Import meals file</button>
-      ${state.imported.length ? `<button class="btn ghost" id="clearImport">${icon("trash")}Remove ${state.imported.length} imported</button>` : ""}
+      <button class="btn" id="importBtn">${icon("upload")}Import JSON</button>
+      ${state.imported.length || Object.keys(store.get("localPacks", {})).length ? `<button class="btn ghost" id="clearImport">${icon("trash")}Remove imported data</button>` : ""}
     </div>
     <p class="src" style="margin:18px 0 26px">Version ${VERSION}</p></div>`);
 }
@@ -1307,9 +1445,8 @@ $("#chips").addEventListener("click", e => {
   const f = c.dataset.f; state.filters.has(f) ? state.filters.delete(f) : state.filters.add(f);
   store.set("filters", [...state.filters]); render();
 });
-$("#resetFilters").addEventListener("click", () => { state.filters.clear(); store.set("filters", []); state.query = ""; $("#search").value = ""; render(); });
+$("#resetFilters").addEventListener("click", () => { state.filters = new Set(["healthier"]); store.set("filters", ["healthier"]); state.query = ""; $("#search").value = ""; render(); });
 $("#howBtn").addEventListener("click", openInfo);
-$("#importTop").addEventListener("click", () => $("#importFile").click());
 $("#decideTop").addEventListener("click", decide);
 $("#listBtn").addEventListener("click", openList);
 $("#decideBtn").addEventListener("click", decide);
@@ -1366,7 +1503,7 @@ function closeAC(){ ac.items = []; ac.active = -1; $("#acList").hidden = true; $
 function chooseAC(i){
   const p = ac.items[i]; if (!p) return;
   closeAC();
-  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; 
+  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; store.set("loc", state.loc);
   $("#locInput").value = p.label; $("#locInput").blur();
   loadPlaces(true, true);
 }
@@ -1403,7 +1540,7 @@ $("#locForm").addEventListener("submit", async e => {
   try {
     if (!state.loc || q.toLowerCase() !== state.loc.label.toLowerCase()){
       setStatus("Looking up that location…", "load");
-      state.loc = await geocode(q); $("#locInput").value = state.loc.label;
+      state.loc = await geocode(q); store.set("loc", state.loc); $("#locInput").value = state.loc.label;
     }
     await loadPlaces(true, true);
   } catch (err){ setStatus(err.message && !/^HTTP|abort/i.test(err.message) ? err.message : "Couldn’t look up that location. Check your connection and try again.", "err"); }
@@ -1415,14 +1552,14 @@ $("#gpsBtn").addEventListener("click", () => {
   navigator.geolocation.getCurrentPosition(async pos => {
     const { latitude: lat, longitude: lon } = pos.coords;
     const where = await reverseGeocode(lat, lon);
-    state.loc = { lat, lon, label: where.label, country: where.country }; 
+    state.loc = { lat, lon, label: where.label, country: where.country }; store.set("loc", state.loc);
     $("#locInput").value = state.loc.label; loadPlaces(true, true);
   }, err => setStatus(err.code === 1 ? "Location access is off. Allow it in your browser settings, or type a city or ZIP." : "Couldn’t get your location. Type a city or ZIP instead.", "err"),
   { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
 });
 
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],[data-rcuisine],#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
+  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],[data-rcuisine],#showAllBtn,#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
   if (!t) return;
   if (t.dataset.fav){ e.stopPropagation(); toggleFav(t.dataset.fav); }
   else if (t.dataset.open) openMeal(t.dataset.open);
@@ -1430,12 +1567,13 @@ document.addEventListener("click", e => {
   else if (t.dataset.maps) window.open(t.dataset.maps, "_blank", "noopener,noreferrer");
   else if (t.dataset.url) window.open(t.dataset.url, "_blank", "noopener,noreferrer");
   else if (t.dataset.addlist) addToList(t.dataset.addlist);
-  else if (t.dataset.rcuisine){ state.recipeCuisine = t.dataset.rcuisine; render(); }
+  else if (t.dataset.rcuisine){ state.recipeCuisine = t.dataset.rcuisine; store.set("rcuisine", state.recipeCuisine); render(); }
   else if (t.dataset.cuisine){ state.cuisine = t.dataset.cuisine; state.placesShown = 30; render(); }
   else if (t.id === "spinBtn" || t.id === "spinAgain") spinWheel();
+  else if (t.id === "showAllBtn"){ state.filters.delete("healthier"); store.set("filters", [...state.filters]); render(); }
   else if (t.id === "moreBtn"){ state.placesShown += 30; render(); }
   else if (t.id === "importBtn") $("#importFile").click();
-  else if (t.id === "clearImport"){ state.imported = []; store.set("imported", []); closeSheet(); render(); toast("Imported meals removed"); }
+  else if (t.id === "clearImport"){ state.imported = []; store.set("imported", []); store.del("localPacks"); packs.index = null; packs.loaded = {}; closeSheet(); if (state.mode === "dine-out" && state.loc) loadPlaces(true); else render(); toast("Imported data removed"); }
   else if (t.id === "clearDone"){ state.list = state.list.filter(i => !i.done); store.set("list", state.list); updateListCount(); openList(); }
   else if (t.id === "shareList"){
     const text = "Shopping list\n" + state.list.filter(i => !i.done).map(i => "• " + i.text).join("\n");
@@ -1454,7 +1592,15 @@ $("#importFile").addEventListener("change", e => {
   const reader = new FileReader();
   reader.onload = () => {
     try {
-      const meals = normalizeImport(JSON.parse(reader.result));
+      const data = JSON.parse(reader.result);
+      if (data && data.area && data.places && typeof data.places === "object"){
+        const local = store.get("localPacks", {}); local[data.area.id] = data; store.set("localPacks", local);
+        packs.index = null; packs.loaded = {};
+        closeSheet(); toast(`Loaded area data for ${data.area.name || data.area.id}`);
+        if (state.mode === "dine-out" && state.loc) loadPlaces(true); else render();
+        e.target.value = ""; return;
+      }
+      const meals = normalizeImport(data);
       state.imported = [...meals, ...state.imported]; store.set("imported", state.imported);
       closeSheet(); render(); toast(`Imported ${meals.length} meal${meals.length === 1 ? "" : "s"}`);
     } catch (err){ toast(err instanceof SyntaxError ? "That file isn’t valid JSON." : err.message); }
@@ -1465,8 +1611,8 @@ $("#importFile").addEventListener("change", e => {
 
 /* ---------- Boot ---------- */
 $("#ver").textContent = VERSION;
-$("#locInput").value = "";
-store.del("loc"); store.del("places"); /* locations are no longer remembered */
+$("#locInput").value = state.loc ? state.loc.label : "";
+store.set("fv", 2); store.set("filters", [...state.filters]);
 updateListCount();
 render();
 if (state.mode === "dine-out" && state.loc) loadPlaces(false);

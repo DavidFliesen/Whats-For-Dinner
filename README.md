@@ -1,7 +1,23 @@
-# What’s 4 Dinner? — Version 2.6.0
+# What’s 4 Dinner? — Version 2.8.0
 An ARTEZIQ app.
 
-## What’s new in 2.6.0
+## What’s new in 2.8.0
+- **Researched areas**: Summerville & Charleston, SC and Portstewart & Londonderry, Northern Ireland. Run `area_builder.ipynb` in Google Colab (free T4 GPU, no API keys) and upload the `data/areas/` files it produces. The app then loads them automatically when your location is in one of those areas:
+  - **Real photos** from each restaurant’s own website (tagged “Real photo”).
+  - **Menu picks**: up to 6 healthier dishes copied word-for-word from the restaurant’s online menu and tagged with the app’s filters. These also count when filtering. Every pick is checked against the downloaded menu text; anything not on the menu is discarded.
+  - Chains are skipped (the app handles them) and sites whose robots.txt disallows bots are respected.
+- **Import JSON** moved from the header into **How we check these**; it accepts a meals file or an area file (for checking before publishing).
+- **How we check these** link now shows in Dine Out too.
+- Service worker always fetches the newest area data, with an offline fallback.
+- Replaces `agent_pipeline.ipynb` / `agent_pipeline_oss.ipynb` (safe to delete).
+
+## 2.7.0
+- **Healthier** filter, on by default. Dine Out hides burger, pizza and fried-chicken fast food, dessert/ice-cream/doughnut shops and chips shops (with a one-tap “Turn off Healthier” link showing how many are hidden). Eat In and restaurant dishes require ≤ 500 cal, ≤ 15 g fat and < 800 mg sodium.
+- **Filters now narrow restaurants in every country**: low calorie, low sodium, GLP-1, high protein, vegetarian, gluten-free and dairy-free match places by cuisine, sit-down vs fast food, and OpenStreetMap diet tags (e.g. diet:vegan, diet:gluten_free). Cards show which of your filters each place suits.
+- **Dishes with published nutrition** show the chain’s real logo (from Wikidata) or a clean name tile — no more mismatched stock food photos.
+- **Remembers your last settings**, including the city (blank only on the very first visit), mode, filters, radius, measurements and cuisine.
+
+## 2.6.0
 - **Photos & reviews buttons that match the country**: Google Maps and Tripadvisor everywhere, plus Yelp (US/Canada), Tabelog (Japan), Naver Map (Korea), Dianping (China), Zomato (India) and TheFork (much of Europe).
 - **Get it delivered**: the main delivery apps for 70+ countries (e.g. DoorDash/Uber Eats/Grubhub in the US; Deliveroo/Just Eat/Uber Eats in the UK and Ireland; Wolt, Glovo, Swiggy, Zomato, GrabFood, Rappi, iFood, talabat and more elsewhere), plus “Order direct” when the restaurant has a website and “Other apps” as a catch-all. Buttons open a search for that restaurant — no APIs, no keys.
 - **Delivers / Takeout (Takeaway) badges and filters** from OpenStreetMap tags. Coverage is partial, so untagged places may still deliver.

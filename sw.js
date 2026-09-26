@@ -1,8 +1,8 @@
-/* What's 4 Dinner? service worker — v2.6.0
+/* What's 4 Dinner? service worker — v2.8.0
    App shell: cache-first (works fully offline after first visit).
    Google Fonts, Unsplash and Wikimedia photos: stale-while-revalidate (photos you have seen work offline).
    Map/geocoding APIs: always network (the app keeps its own saved copy of the last search). */
-const VERSION = "2.6.0";
+const VERSION = "2.8.0";
 const SHELL = "w4d-shell-" + VERSION;
 const RUNTIME = "w4d-runtime-" + VERSION;
 const SHELL_FILES = [
@@ -42,6 +42,15 @@ self.addEventListener("fetch", e => {
   }
 
   // Same-origin: navigations fall back to the cached app; files are cache-first.
+  // Area data from the research notebook: always try for the latest, fall back to the saved copy offline.
+  if (url.origin === self.location.origin && url.pathname.includes("/data/")) {
+    e.respondWith(fetch(req).then(res => {
+      if (res.ok) { const copy = res.clone(); caches.open(RUNTIME).then(c => c.put(req, copy)); }
+      return res;
+    }).catch(() => caches.match(req)));
+    return;
+  }
+
   if (url.origin === self.location.origin) {
     if (req.mode === "navigate") {
       e.respondWith(fetch(req).then(res => {
