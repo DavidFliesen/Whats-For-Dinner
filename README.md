@@ -1,7 +1,13 @@
-# What’s 4 Dinner? — Version 2.5.0
+# What’s 4 Dinner? — Version 2.6.0
 An ARTEZIQ app.
 
-## What’s new in 2.5.0
+## What’s new in 2.6.0
+- **Photos & reviews buttons that match the country**: Google Maps and Tripadvisor everywhere, plus Yelp (US/Canada), Tabelog (Japan), Naver Map (Korea), Dianping (China), Zomato (India) and TheFork (much of Europe).
+- **Get it delivered**: the main delivery apps for 70+ countries (e.g. DoorDash/Uber Eats/Grubhub in the US; Deliveroo/Just Eat/Uber Eats in the UK and Ireland; Wolt, Glovo, Swiggy, Zomato, GrabFood, Rappi, iFood, talabat and more elsewhere), plus “Order direct” when the restaurant has a website and “Other apps” as a catch-all. Buttons open a search for that restaurant — no APIs, no keys.
+- **Delivers / Takeout (Takeaway) badges and filters** from OpenStreetMap tags. Coverage is partial, so untagged places may still deliver.
+- Dishes with published nutrition also get the review and delivery buttons.
+
+## 2.5.0
 - **Location starts blank** with a prompt to type a town/city/postcode or use GPS. Locations aren’t remembered between visits.
 - **Real restaurant photos where free sources have them**: a photo mapped to the restaurant in OpenStreetMap, or from Wikidata/Wikimedia Commons (the place itself, else its chain — photo first, then logo). Cards are tagged “Real photo”, “Chain photo” or “Logo”, with credit/license links in the popup.
 - Restaurants without a real photo get a varied cuisine photo (picked per restaurant) so neighbours rarely look identical.

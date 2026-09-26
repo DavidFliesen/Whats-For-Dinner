@@ -296,6 +296,11 @@ body.dine .how{display:none}
 .photo-credit{font-size:11.5px;color:var(--faint);margin-top:6px}
 .photo-credit a{color:var(--muted)}
 .search[hidden]{display:none}
+
+.link-row{display:flex;flex-wrap:wrap;gap:8px}
+.link-row .btn{flex:0 1 auto;min-height:42px;padding:0 16px;font-size:14px}
+.link-row .btn svg.i{width:16px;height:16px}
+.m-body .src{margin-top:10px}
 </style>
 </head>
 <body>
@@ -319,6 +324,9 @@ body.dine .how{display:none}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2l3 11.5M5.5 17.5 9 10h7l-3 7.5H9.5M12 6h2"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M10 13l-2 2 2 2M14 13l2 2-2 2"/></symbol>
   <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9 5 3h14l2 6M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0Z"/><path d="M5 13v8h14v-8M10 21v-5h4v5"/></symbol>
@@ -383,6 +391,8 @@ body.dine .how{display:none}
       <button class="chip" data-f="vegetarian" aria-pressed="false"><span class="dot" style="background:var(--lime)"></span>Vegetarian</button>
       <button class="chip" data-f="glutenFree" aria-pressed="false"><span class="dot" style="background:var(--cyan)"></span>Gluten-Free</button>
       <button class="chip" data-f="dairyFree" aria-pressed="false"><span class="dot" style="background:var(--rose)"></span>Dairy-Free</button>
+      <button class="chip" data-f="delivery" aria-pressed="false" hidden><svg class="i"><use href="#i-bike"/></svg>Delivers</button>
+      <button class="chip" data-f="takeaway" aria-pressed="false" hidden><svg class="i"><use href="#i-bag"/></svg><span id="takeLabel">Takeout</span></button>
       <button class="chip" data-f="saved" aria-pressed="false"><svg class="i"><use href="#i-heart"/></svg>Saved</button>
     </div>
     <button class="linkish how" id="howBtn" type="button">How we check these</button>
@@ -430,7 +440,7 @@ body.dine .how{display:none}
 
 <script>
 "use strict";
-const VERSION = "2.5.0";
+const VERSION = "2.6.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -619,6 +629,7 @@ function passes(m){
   for (const f of state.filters){
     if (f === "saved"){ if (!state.favs.has(m.id)) return false; continue; }
     if (f === "quick" && m.type !== "eat-in") continue;
+    if (f === "delivery" || f === "takeaway") continue; /* restaurant-only filters */
     if (c[f] !== true) return false;
   }
   return true;
@@ -749,7 +760,7 @@ function placeCard(p){
   return `<article class="card place">
     <button class="media" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}">
       ${imgTag(p, c.label + " food")}
-      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}</span>
+      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}</span>
       <span class="lb">${icon("pin")}${p.dist.toFixed(1)} mi</span>
     </button>
     <div class="body">
@@ -800,6 +811,9 @@ function render(){
   $("#unitsWrap").hidden = !eat;
   $("#units").value = state.region;
   document.querySelector('[data-f="quick"]').hidden = !eat;
+  document.querySelector('[data-f="delivery"]').hidden = eat;
+  document.querySelector('[data-f="takeaway"]').hidden = eat;
+  $("#takeLabel").textContent = takeWord();
   $("#search").placeholder = eat ? "Search dish, ingredient, protein..." : "Search spot or dish...";
   document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", state.filters.has(c.dataset.f)));
   document.querySelectorAll("[data-radius]").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.radius) === state.radius));
@@ -824,8 +838,7 @@ function render(){
   }
   const rawPicks = [...chainPicks(), ...importedDineOut()];
   const picks = rawPicks.filter(passes).filter(matchesQuery);
-  const places = state.places.filter(p => state.cuisine === "all" || p.group === state.cuisine)
-    .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query));
+  const places = visiblePlaces();
   const showSaved = state.filters.has("saved");
   const placesList = showSaved ? [] : places;
   $("#count").innerHTML = state.loading ? "Searching…" : `Showing <b>${placesList.length}</b> local spot${placesList.length === 1 ? "" : "s"} within ${state.radius} mi of ${esc(state.loc.label)}`;
@@ -839,7 +852,7 @@ function render(){
   if (!showSaved && state.places.length){
     const groups = [...new Set(state.places.map(p => p.group))].sort((a, b) => CUISINE[a].label.localeCompare(CUISINE[b].label));
     html += `<h2 class="group-title">Restaurants near you</h2>
-      <p class="group-note">Most local spots don’t publish nutrition, so we don’t guess. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}</p>
+      <p class="group-note">Most local spots don’t publish nutrition, so we don’t guess. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}${state.filters.has("delivery") || state.filters.has("takeaway") ? " Delivery and takeout filters only show places tagged that way on OpenStreetMap — many others offer it too, so check the delivery apps in each restaurant’s details." : ""}</p>
       <div class="chips cuisine-chips"><button class="chip" data-cuisine="all" aria-pressed="${state.cuisine === "all"}">All</button>${groups.map(g => `<button class="chip" data-cuisine="${g}" aria-pressed="${state.cuisine === g}">${esc(CUISINE[g].label)}</button>`).join("")}</div>
       <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : empty("No restaurants match that search.", "")}</div>
       ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}`;
@@ -926,11 +939,13 @@ async function loadPlaces(force, scroll){
     if (lat == null || !t.name) return null;
     const cuisine = (t.cuisine || "").toLowerCase().split(/[;,]/).map(s => s.trim()).filter(Boolean);
     const addr = [[t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "), t["addr:city"]].filter(Boolean).join(", ");
-    return { id: el.type[0] + el.id, name: t.name, brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
+    return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
       group: groupFor(cuisine, t.amenity), cuisineRaw: cuisine.join(" "), addr,
       website: /^https?:\/\//.test(t.website || t["contact:website"] || "") ? (t.website || t["contact:website"]) : "",
       phone: t.phone || t["contact:phone"] || "", hours: t.opening_hours || "",
-      ...photoFromTags(t), wd: t.wikidata || "", brandWd: t["brand:wikidata"] || "" };
+      ...photoFromTags(t), wd: t.wikidata || "", brandWd: t["brand:wikidata"] || "",
+      delivery: /^(yes|only)$/i.test(t.delivery || "") ? "yes" : (/^no$/i.test(t.delivery || "") ? "no" : ""),
+      takeaway: /^(yes|only)$/i.test(t.takeaway || "") ? "yes" : (/^no$/i.test(t.takeaway || "") ? "no" : "") };
   }).filter(p => p && p.dist <= state.radius + 0.05)
     .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => a.dist - b.dist);
@@ -982,6 +997,83 @@ async function enrichPhotos(){
     if (pick){ p.photoKind = pick[0]; p.photo = commonsFile(pick[1]); p.photoCredit = commonsPage(pick[1]); p.photoFromBrand = !(own && (own.img || own.logo)); changed = true; }
   });
   if (changed && state.mode === "dine-out") render();
+}
+
+
+/* ---------- Reviews & delivery links (no APIs: each button opens a search) ---------- */
+function takeWord(){ const cc = state.loc && state.loc.country; return ["us","ca","ph"].includes(cc) || !cc ? "Takeout" : "Takeaway"; }
+function visiblePlaces(){
+  return state.places
+    .filter(p => state.cuisine === "all" || p.group === state.cuisine)
+    .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query))
+    .filter(p => !state.filters.has("delivery") || p.delivery === "yes")
+    .filter(p => !state.filters.has("takeaway") || p.takeaway === "yes");
+}
+/* Web search used to find a restaurant on a service. Baidu in mainland China, Google elsewhere. */
+function webSearch(q){
+  const cc = state.loc && state.loc.country;
+  return cc === "cn" ? "https://www.baidu.com/s?wd=" + encodeURIComponent(q) : "https://www.google.com/search?q=" + encodeURIComponent(q);
+}
+/* direct(name, town): the service's own search page (only where the link format is known to work);
+   otherwise a web search limited to the service's site (site) or with its name added (kw). */
+const SERVICES = {
+  doordash:{n:"DoorDash", direct:(q) => "https://www.doordash.com/search/store/" + encodeURIComponent(q) + "/"},
+  ubereats:{n:"Uber Eats", site:"ubereats.com"}, grubhub:{n:"Grubhub", site:"grubhub.com"}, skip:{n:"SkipTheDishes", site:"skipthedishes.com"},
+  deliveroo:{n:"Deliveroo", kw:"Deliveroo"}, justeat:{n:"Just Eat", kw:"Just Eat"}, menulog:{n:"Menulog", site:"menulog.com.au"},
+  lieferando:{n:"Lieferando", kw:"Lieferando"}, thuisbezorgd:{n:"Thuisbezorgd", site:"thuisbezorgd.nl"}, takeaway:{n:"Takeaway.com", kw:"Takeaway.com"},
+  pyszne:{n:"Pyszne.pl", site:"pyszne.pl"}, wolt:{n:"Wolt", site:"wolt.com"}, foodora:{n:"foodora", kw:"foodora"}, glovo:{n:"Glovo", site:"glovoapp.com"},
+  bolt:{n:"Bolt Food", kw:"Bolt Food"}, efood:{n:"efood", site:"e-food.gr"}, yemeksepeti:{n:"Yemeksepeti", site:"yemeksepeti.com"}, getir:{n:"Getir", kw:"Getir yemek"},
+  talabat:{n:"talabat", site:"talabat.com"}, careem:{n:"Careem", kw:"Careem food"}, hungerstation:{n:"HungerStation", site:"hungerstation.com"}, jahez:{n:"Jahez", kw:"Jahez"},
+  tenbis:{n:"10bis", kw:"10bis"}, swiggy:{n:"Swiggy", site:"swiggy.com"}, zomato:{n:"Zomato", site:"zomato.com"},
+  grab:{n:"GrabFood", kw:"GrabFood"}, foodpanda:{n:"foodpanda", kw:"foodpanda"}, lineman:{n:"LINE MAN", kw:"LINE MAN Wongnai"}, gofood:{n:"GoFood", kw:"GoFood"},
+  shopeefood:{n:"ShopeeFood", kw:"ShopeeFood"}, keeta:{n:"Keeta", kw:"Keeta"}, demaecan:{n:"Demae-can", site:"demae-can.com"},
+  baemin:{n:"Baemin", kw:"배달의민족"}, coupangeats:{n:"Coupang Eats", kw:"쿠팡이츠"}, meituan:{n:"Meituan", kw:"美团外卖"}, eleme:{n:"Ele.me", kw:"饿了么"},
+  rappi:{n:"Rappi", kw:"Rappi"}, ifood:{n:"iFood", site:"ifood.com.br"}, pedidosya:{n:"PedidosYa", kw:"PedidosYa"}, didi:{n:"DiDi Food", kw:"DiDi Food"},
+  mrd:{n:"Mr D", kw:"Mr D Food"}, chowdeck:{n:"Chowdeck", kw:"Chowdeck"}, yandex:{n:"Yandex Eats", kw:"Яндекс Еда"}
+};
+const DELIVERY_BY_COUNTRY = {
+  us:["doordash","ubereats","grubhub"], ca:["doordash","ubereats","skip"], gb:["deliveroo","justeat","ubereats"], ie:["deliveroo","justeat","ubereats"],
+  au:["ubereats","doordash","menulog"], nz:["ubereats","doordash"], de:["lieferando","wolt","ubereats"], at:["lieferando","foodora","wolt"],
+  ch:["justeat","ubereats","wolt"], nl:["thuisbezorgd","ubereats"], be:["takeaway","deliveroo","ubereats"], lu:["takeaway","wolt"],
+  fr:["ubereats","deliveroo","justeat"], es:["glovo","justeat","ubereats"], it:["glovo","deliveroo","justeat"], pt:["glovo","ubereats","bolt"],
+  pl:["pyszne","glovo","wolt"], cz:["wolt","foodora","bolt"], sk:["wolt","bolt"], hu:["wolt","foodora"], ro:["glovo","wolt","bolt"],
+  hr:["wolt","glovo","bolt"], si:["wolt","bolt"], rs:["wolt","glovo"], bg:["glovo","wolt"], gr:["efood","wolt"], cy:["wolt","foodpanda"],
+  se:["wolt","foodora","ubereats"], no:["wolt","foodora"], dk:["wolt","justeat"], fi:["wolt","foodora"], ee:["wolt","bolt"], lv:["wolt","bolt"], lt:["wolt","bolt"],
+  is:["wolt"], mt:["wolt","bolt"], tr:["yemeksepeti","getir"], ua:["glovo","bolt"], ge:["wolt","glovo"], kz:["glovo","yandex","wolt"], ru:["yandex"], by:["yandex"],
+  ae:["talabat","deliveroo","careem"], sa:["hungerstation","jahez","careem"], kw:["talabat","deliveroo"], qa:["talabat","deliveroo"], bh:["talabat"], om:["talabat"],
+  eg:["talabat"], jo:["talabat","careem"], il:["wolt","tenbis"], in:["swiggy","zomato"], pk:["foodpanda"], bd:["foodpanda"], lk:["ubereats"],
+  sg:["grab","foodpanda","deliveroo"], my:["grab","foodpanda","shopeefood"], th:["grab","lineman","foodpanda"], ph:["grab","foodpanda"], vn:["grab","shopeefood"],
+  id:["gofood","grab","shopeefood"], hk:["foodpanda","keeta"], tw:["foodpanda","ubereats"], jp:["ubereats","demaecan","wolt"], kr:["baemin","coupangeats"], cn:["meituan","eleme"],
+  mx:["rappi","didi","ubereats"], br:["ifood","rappi"], ar:["pedidosya","rappi"], uy:["pedidosya"], py:["pedidosya"], bo:["pedidosya"], cl:["pedidosya","rappi","ubereats"],
+  pe:["pedidosya","rappi"], ec:["pedidosya","rappi"], co:["rappi","didi"], cr:["rappi","ubereats"], za:["mrd","ubereats"], ke:["glovo","bolt"], ng:["chowdeck","glovo"], ma:["glovo"]
+};
+function serviceUrl(key, name, town){
+  const s = SERVICES[key];
+  if (s.direct) return s.direct(`${name} ${town}`.trim());
+  if (s.site) return webSearch(`"${name}" ${town} site:${s.site}`);
+  return webSearch(`"${name}" ${town} ${s.kw}`);
+}
+function townOf(p){ return (p && p.city) || (state.loc ? state.loc.label : ""); }
+function reviewLinks(name, lat, lon, addr, town){
+  const cc = state.loc && state.loc.country, q = `${name} ${town}`.trim(), out = [];
+  out.push({ n: "Google Maps", url: mapsUrl(name, lat, lon, addr), main: true });
+  if (cc === "us" || cc === "ca") out.push({ n: "Yelp", url: "https://www.yelp.com/search?find_desc=" + encodeURIComponent(name) + "&find_loc=" + encodeURIComponent(addr || town) });
+  if (cc === "jp") out.push({ n: "Tabelog", url: webSearch(`"${name}" ${town} site:tabelog.com`) });
+  if (cc === "kr") out.push({ n: "Naver Map", url: "https://map.naver.com/p/search/" + encodeURIComponent(q) });
+  if (cc === "cn") out.push({ n: "Dianping", url: webSearch(`${name} ${town} 大众点评`) });
+  if (cc === "in") out.push({ n: "Zomato", url: webSearch(`"${name}" ${town} site:zomato.com`) });
+  if (["fr","it","es","pt","nl","be","ch","se","dk","at"].includes(cc)) out.push({ n: "TheFork", url: webSearch(`"${name}" ${town} TheFork`) });
+  out.push({ n: "Tripadvisor", url: "https://www.tripadvisor.com/Search?q=" + encodeURIComponent(q) });
+  return out;
+}
+function linksBlock(name, lat, lon, addr, town, website){
+  const cc = state.loc && state.loc.country;
+  const rev = reviewLinks(name, lat, lon, addr, town);
+  const del = (DELIVERY_BY_COUNTRY[cc] || ["ubereats"]).filter(k => SERVICES[k]);
+  const btn = (url, label, cls) => `<button class="btn ${cls}" data-url="${esc(url)}">${label}</button>`;
+  return `<h3>Photos &amp; reviews</h3><div class="link-row">${rev.map(r => btn(r.url, (r.main ? icon("ext") : icon("star")) + esc(r.n), r.main ? "orange" : "ghost")).join("")}</div>
+    <h3>Get it delivered</h3><div class="link-row">${del.map(k => btn(serviceUrl(k, name, town), icon("bike") + esc(SERVICES[k].n), "ghost")).join("")}${website ? btn(website, icon("bag") + "Order direct", "ghost") : ""}${cc ? "" : ""}${btn(webSearch(`"${name}" ${town} delivery`), icon("search") + "Other apps", "ghost")}</div>
+    <p class="src">Each button opens a search for this restaurant on that site or app. If it isn’t listed there, that service doesn’t deliver from it. Ordering direct from the restaurant often costs them less.</p>`;
 }
 
 /* ---------- Sheets ---------- */
@@ -1043,8 +1135,9 @@ function openMeal(id){
     const place = state.places.find(p => p.id === m.placeId);
     const lat = place ? place.lat : m.lat, lon = place ? place.lon : m.lon, addr = place ? place.addr : m.address;
     body += `<div class="actions">
-      <button class="btn" data-maps="${esc(mapsUrl(m.venue, lat, lon, addr))}">${icon("pin")}Navigate in Google Maps</button>
-      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>`;
+      <button class="btn" data-maps="${esc(lat != null ? "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lon : mapsUrl(m.venue, lat, lon, addr))}">${icon("nav")}Directions</button>
+      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>
+      ${m.venue && state.loc ? linksBlock(m.venue, lat, lon, addr, townOf(place), place && place.website) : ""}`;
   }
   body += `<p class="note">${src}</p></div>`;
   openSheet(body);
@@ -1056,12 +1149,14 @@ function openPlace(id){
     <div class="m-body">${p.addr ? `<p style="color:var(--ink-2);font-weight:600">${esc(p.addr)}</p>` : ""}${p.hours ? `<p class="src">Hours listed on the map: ${esc(p.hours)}</p>` : ""}`;
   if (chain && inUS()) body += `<div class="tipbox o">This chain publishes nutrition. See <b>Dishes with published nutrition</b> for picks with real numbers.</div>`;
   body += tipsFor(p.group);
+  const avail = [p.delivery === "yes" ? "Delivers" : "", p.takeaway === "yes" ? takeWord() + " available" : "", p.delivery === "no" ? "No delivery" : ""].filter(Boolean);
+  if (avail.length) body = body.replace('<div class="m-body">', `<div class="m-body"><div class="checks">${avail.map(a => `<span class="pill ok">${icon("check")}${esc(a)}</span>`).join("")}</div>`);
   body += `<div class="actions">
-    <button class="btn orange" data-maps="${esc(mapsUrl(p.name, p.lat, p.lon, p.addr))}">${icon("ext")}See photos &amp; reviews</button>
     <button class="btn" data-maps="${esc("https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lon)}">${icon("nav")}Directions</button>
     ${p.website ? `<button class="btn ghost" data-url="${esc(p.website)}">${icon("ext")}Website &amp; menu</button>` : ""}
     ${p.phone ? `<a class="btn ghost" href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}</div>
-    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant.")) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">Photo credit &amp; license</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>See photos &amp; reviews</b> for its real photos on Google Maps."}</p></div>`;
+    ${linksBlock(p.name, p.lat, p.lon, p.addr, townOf(p), p.website)}
+    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant.")) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">Photo credit &amp; license</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>Google Maps</b> above for its real photos."}</p></div>`;
   openSheet(body);
 }
 function openInfo(){
@@ -1123,9 +1218,7 @@ function surprisePool(){
   if (state.mode === "eat-in") pool = allEatIn().filter(passes).filter(matchesQuery).map(m => ({ kind: "m", id: m.id, label: m.title, item: m }));
   else {
     pool = [...chainPicks(), ...importedDineOut()].filter(passes).filter(matchesQuery).map(m => ({ kind: "m", id: m.id, label: (m.venue ? m.venue + ": " : "") + m.title, item: m }));
-    if (!state.filters.has("saved")) pool = pool.concat(state.places
-      .filter(p => state.cuisine === "all" || p.group === state.cuisine)
-      .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query))
+    if (!state.filters.has("saved")) pool = pool.concat(visiblePlaces()
       .slice(0, 40).map(p => ({ kind: "p", id: p.id, label: p.name, item: p })));
   }
   return pool;
