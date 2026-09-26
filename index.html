@@ -91,8 +91,26 @@
       </div>
     </div>
 
-    <!-- Filters & Search -->
+    <!-- Interface Controls (Location, Filters & Search) -->
     <div class="space-y-4">
+      
+      <!-- Restored Geographic Location Bar (Hidden in Eat-In Mode) -->
+      <div id="locationBar" class="hidden flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-2">
+        <div class="flex items-center gap-2 flex-1 w-full max-w-md bg-slate-50 border border-slate-200 rounded-full px-4 py-2 shadow-sm focus-within:border-orange-400 focus-within:bg-white transition">
+          <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 shrink-0"></i>
+          <input type="text" id="locationInput" placeholder="Enter City, Zip, or Neighborhood..." value="Summerville, SC" class="w-full text-sm font-semibold focus:outline-none bg-transparent text-slate-700">
+          <button id="gpsBtn" title="Use current location" class="p-1 hover:bg-slate-200 text-slate-500 rounded-full transition">
+            <i data-lucide="locate-fixed" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+          <span>Radius:</span>
+          <button class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 hover:bg-orange-200 transition shadow-sm">5 mi</button>
+          <button class="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition shadow-sm">10 mi</button>
+          <button class="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition shadow-sm">20 mi</button>
+        </div>
+      </div>
+
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div class="space-y-3 flex-1">
           <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
@@ -136,7 +154,7 @@
 
   <!-- Footer Version Stamp -->
   <footer class="border-t border-slate-200 py-6 text-center">
-    <span class="text-xs font-semibold text-slate-400 tracking-wide">What’s 4 Dinner? • Version 1.2.3</span>
+    <span class="text-xs font-semibold text-slate-400 tracking-wide">What’s 4 Dinner? • Version 1.2.4</span>
   </footer>
 
   <!-- Detail Modal -->
@@ -159,6 +177,7 @@
     const imgChicken = "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=800&q=80";
     const imgHalibut = "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80";
     const imgDineOutDefault = "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80";
+    const imgShrimp = "https://images.unsplash.com/photo-1544025162-831e330541cd?auto=format&fit=crop&w=800&q=80";
 
     // Initial Default Data
     let mealsData = [
@@ -193,6 +212,18 @@
         glp1: true, lowSodium: true, lowCal: true, highProtein: true,
         ingredients: ['6 oz Halibut fillet', 'Broccolini', 'Lemon juice', '1 tsp olive oil'],
         instructions: 'Sear halibut in light olive oil. Steam broccolini. Drizzle with lemon.'
+      },
+      {
+        id: '5', type: 'dine-out', image: imgDineOutDefault, venue: "Five Loaves Cafe", location: "Downtown Summerville",
+        title: 'Custom Grilled Chicken Bowl', subtitle: 'Modified for low fat and light digestion',
+        prepTime: 'Dine Out', timeVal: 99, calories: 410, protein: 39, sodium: 380,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true, orderTip: 'Ask for dressing on the side and no cheese.', address: "N Cedar St, Summerville, SC 29483"
+      },
+      {
+        id: '6', type: 'dine-out', image: imgShrimp, venue: "Page's Okra Grill", location: "Nexton",
+        title: 'Grilled Shrimp & Mixed Greens', subtitle: 'Lightly seasoned local shrimp',
+        prepTime: 'Dine Out', timeVal: 99, calories: 350, protein: 32, sodium: 420,
+        glp1: true, lowSodium: true, lowCal: true, highProtein: true, orderTip: 'Request shrimp grilled dry (no butter or heavy oil) with a light vinaigrette on the side.', address: "Brighton Park Blvd, Summerville, SC 29486"
       }
     ];
 
@@ -203,14 +234,26 @@
     const mealGrid = document.getElementById('mealGrid');
     const detailModal = document.getElementById('detailModal');
     const modalContent = document.getElementById('modalContent');
+    const locationBar = document.getElementById('locationBar');
     
-    // Mode Switcher
+    // Mode Switcher (Now toggles Location Bar visibility)
     function setMode(mode) {
       currentMode = mode;
+      
       document.getElementById('modeEatIn').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='eat-in' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
       document.getElementById('modeDineOut').className = "px-8 py-3 rounded-full font-bold flex items-center gap-2 transition text-sm shadow-md " + (mode==='dine-out' ? "bg-orange-500 text-white" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700");
+      
+      if (mode === 'dine-out') {
+        locationBar.classList.remove('hidden');
+        locationBar.classList.add('flex');
+      } else {
+        locationBar.classList.add('hidden');
+        locationBar.classList.remove('flex');
+      }
+
       renderCards();
     }
+    
     document.getElementById('modeEatIn').addEventListener('click', () => setMode('eat-in'));
     document.getElementById('modeDineOut').addEventListener('click', () => setMode('dine-out'));
 
@@ -434,7 +477,8 @@
       }
     });
 
-    renderCards();
+    // Initialize display
+    setMode('eat-in'); // Ensure location bar is correctly hidden on first load
   </script>
 </body>
 </html>
