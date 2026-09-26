@@ -328,6 +328,18 @@ body.dine .how{margin-top:6px}
 .pick .fits span.on{background:#ECFDF5;color:#047857}
 .area-note{display:flex;align-items:center;gap:8px;margin:-4px 0 14px;font-size:13.5px;color:#047857;font-weight:600}
 .area-note svg.i{width:16px;height:16px}
+
+.cuisine-bar{padding:18px 0 4px;border-bottom:1px solid var(--soft-2)}
+.cuisine-bar[hidden]{display:none}
+.cuisine-bar .filters-head h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.cz-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.cz-label{flex-basis:100%;font-size:12px;font-weight:700;color:var(--orange-700);display:flex;align-items:center;gap:4px;margin:2px 0 -2px}
+.cz-label svg.i{width:14px;height:14px}
+.chip .n{font-weight:600;color:var(--faint);font-size:12px}
+.chip[aria-pressed="true"] .n{color:var(--orange-700)}
+.chip.local{border-color:#FDBA74}
+.chip.zero{opacity:.55}
+body.dine .cuisine-bar{padding-top:12px}
 </style>
 </head>
 <body>
@@ -404,6 +416,14 @@ body.dine .how{margin-top:6px}
     </div>
   </section>
 
+  <section class="cuisine-bar" id="cuisineSection" hidden aria-labelledby="cuisineTitle">
+    <div class="filters-head">
+      <h2 id="cuisineTitle">Cuisine</h2>
+      <button class="linkish" id="cuisineClear" type="button" hidden>Any cuisine</button>
+    </div>
+    <div id="cuisineChips"></div>
+  </section>
+
   <section class="filters" aria-labelledby="filtersTitle">
     <div class="filters-head">
       <h2 id="filtersTitle">Dietary &amp; Health Filters</h2>
@@ -468,7 +488,7 @@ body.dine .how{margin-top:6px}
 
 <script>
 "use strict";
-const VERSION = "2.8.0";
+const VERSION = "2.9.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -476,7 +496,7 @@ const RECIPES = [{"id": "salmon-asparagus", "type": "eat-in", "title": "Lemon-po
 
 /* Chain dishes with nutrition published by the restaurant (checked Sep 2026). Only shown when that chain is found in your radius. */
 const CHAINS = [
-  { match: /chipotle/i, brand: "Chipotle", url: "https://www.chipotle.com/nutrition-calculator", items: [
+  { match: /chipotle/i, brand: "Chipotle", cuisine: "mexican", url: "https://www.chipotle.com/nutrition-calculator", items: [
     { id: "chip-bowl-nosalsa", title: "Chicken salad bowl, no salsa", desc: "Chicken, fajita veggies and romaine. The lowest-sodium chicken build.",
       calories: 205, protein: 33, fat: 7, carbs: 6, fiber: 1, sodium: 460, glutenFree: true, dairyFree: true,
       order: "Order a salad (romaine) with chicken and fajita veggies. Skip the salsa and vinaigrette; ask for a lime wedge." },
@@ -487,7 +507,7 @@ const CHAINS = [
       calories: 555, protein: 45, fat: 15, carbs: 63, fiber: 10, sodium: 1120, glutenFree: true, dairyFree: true,
       order: "Bowl with brown rice, black beans, chicken, fajita veggies and green salsa. Ask for a half scoop of rice to trim calories." }
   ]},
-  { match: /chick-?fil-?a/i, brand: "Chick-fil-A", url: "https://www.chick-fil-a.com/menu/entrees/grilled-nuggets", items: [
+  { match: /chick-?fil-?a/i, brand: "Chick-fil-A", cuisine: "chicken", url: "https://www.chick-fil-a.com/menu/entrees/grilled-nuggets", items: [
     { id: "cfa-grilled-8", title: "Grilled nuggets, 8-count", desc: "Grilled, not breaded. Pair with a side salad or fruit cup.",
       calories: 130, protein: 25, fat: 3, carbs: 1, fiber: 0, sodium: 440, glutenFree: true, dairyFree: true,
       order: "Order the 8-count grilled nuggets. Sauces add sodium fast — try one packet or none." }
@@ -514,6 +534,7 @@ const CUISINE = {
   asian:{label:"Asian",best:["Pho with lean beef or chicken (drink less of the broth)","Fresh spring rolls","Grilled meat over vermicelli or salad"],avoid:"Fried rice, fried dumplings, and sweet sauces."},
   breakfast:{label:"Breakfast & brunch",best:["Egg-white omelet with vegetables","Greek yogurt with fruit"],avoid:"Biscuits and gravy, bacon and sausage."},
   healthy:{label:"Salads & bowls",best:["Greens with grilled chicken or tofu","Dressing on the side, use half"],avoid:"Candied nuts, crispy toppings and creamy dressings."},
+  pub:{label:"Pub",best:["Grilled fish or chicken with vegetables or salad","Steak with a side salad instead of chips","Soup and a side salad (ask how salty the soup is)"],avoid:"Battered fish, chips, pies, burgers and creamy sauces."},
   other:{label:"Restaurant",best:["Grilled or baked lean protein","Double vegetables instead of the starch","Ask for sauces and dressings on the side"],avoid:"Anything fried, breaded, creamy or smothered."}
 };
 const CUISINE_MAP = {seafood:"seafood",fish:"seafood",oyster:"seafood",fish_and_chips:"seafood",crab:"seafood",
@@ -569,7 +590,7 @@ const CUISINE_IMG = {
   chinese:["asiandish","dining"], japanese:["sushi","dining"], thai:["padthai","dining"], indian:["curry","dining"],
   mediterranean:["salad","bowl"], bbq:["bbq","grill"], american:["dining","plated"], burger:["burger","dining"],
   chicken:["chicken","dining"], sandwich:["sandwich","dining"], steak:["steak","grill"], asian:["ramen","dining"],
-  breakfast:["pancakes","dining"], healthy:["vegbowl","bowl"], other:["restaurant","dining"]
+  breakfast:["pancakes","dining"], healthy:["vegbowl","bowl"], pub:["restaurant2","plated"], other:["restaurant","dining"]
 };
 const CHAIN_WD = { "Chipotle": "Q465751", "Chick-fil-A": "Q491516" };
 
@@ -579,7 +600,7 @@ const CUISINE_POOL = {
   chinese:["asiandish","stirfry"], japanese:["sushi","sushi2","ramen"], thai:["padthai","bowl"], indian:["curry","plated"],
   mediterranean:["salad","vegbowl","bowl"], bbq:["bbq","grill"], american:["dining","burger2","plated","restaurant2"], burger:["burger","burger2"],
   chicken:["chicken","salad"], sandwich:["sandwich","restaurant2"], steak:["steak","grill"], asian:["ramen","asiandish","stirfry"],
-  breakfast:["pancakes","breakfast"], healthy:["vegbowl","salad","bowl"], other:["restaurant","restaurant2","restaurant3","dining"]
+  breakfast:["pancakes","breakfast"], healthy:["vegbowl","salad","bowl"], pub:["restaurant2","plated","restaurant3"], other:["restaurant","restaurant2","restaurant3","dining"]
 };
 function hashStr(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
 function photoFor(m){
@@ -628,7 +649,7 @@ const state = {
   imported: store.get("imported", []),
   loc: store.get("loc", null), /* blank on the very first visit, then remembers the last place */
   radius: store.get("radius", 5),
-  area: null, places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all", recipeCuisine: store.get("rcuisine", "all"),
+  area: null, places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all", recipeCuisine: store.get("rcuisine", "all"), cuisines: new Set(store.get("cuisines", [])), czAll: false,
   region: store.get("region", null) || detectRegion()
 };
 
@@ -795,11 +816,11 @@ function placeCard(p){
   return `<article class="card place">
     <button class="media" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}">
       ${imgTag(p, c.label + " food")}
-      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}${p.pack && p.pack.picks.length ? `<span class="tag p">Menu picks</span>` : ""}</span>
+      <span class="tags"><span class="tag n">${esc(cuisinesOf(p)[0] ? czLabel(cuisinesOf(p)[0]) : c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}${p.pack && p.pack.picks.length ? `<span class="tag p">Menu picks</span>` : ""}</span>
       <span class="lb">${icon("pin")}${p.dist.toFixed(1)} mi</span>
     </button>
     <div class="body">
-      <div class="kicker">${esc(c.label)}</div>
+      <div class="kicker">${esc(cuisinesOf(p).slice(0, 2).map(czLabel).join(" · ") || c.label)}</div>
       <h3><button data-place="${esc(p.id)}">${esc(p.name)}</button></h3>
       <p class="desc">${p.addr ? esc(p.addr) : "Tap for ordering tips and directions."}</p>
       ${fitsLine(p)}
@@ -821,7 +842,7 @@ function chainPicks(){
     const near = state.places.filter(p => ch.match.test(p.name) || ch.match.test(p.brand || ""));
     if (!near.length) return;
     const nearest = near[0];
-    ch.items.forEach(it => picks.push({ ...it, type: "dine-out", venue: ch.brand, source: "published", sourceUrl: ch.url, dist: nearest.dist, placeId: nearest.id, brandWd: nearest.brandWd || CHAIN_WD[ch.brand] }));
+    ch.items.forEach(it => picks.push({ ...it, type: "dine-out", cuisineKey: ch.cuisine, venue: ch.brand, source: "published", sourceUrl: ch.url, dist: nearest.dist, placeId: nearest.id, brandWd: nearest.brandWd || CHAIN_WD[ch.brand] }));
   });
   return picks;
 }
@@ -843,6 +864,7 @@ function render(){
   $("#locSection").hidden = eat;
   $("#searchWrap").hidden = false;
   $("#hero").classList.toggle("compact", !eat);
+  renderCuisineBar();
   document.body.classList.toggle("dine", !eat);
   $("#unitsWrap").hidden = !eat;
   $("#units").value = state.region;
@@ -851,7 +873,7 @@ function render(){
   document.querySelector('[data-f="takeaway"]').hidden = eat;
   $("#takeLabel").textContent = takeWord();
   $("#search").placeholder = eat ? "Search dish, ingredient, protein..." : "Search spot or dish...";
-  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", state.filters.has(c.dataset.f)));
+  document.querySelectorAll("#chips .chip").forEach(c => c.setAttribute("aria-pressed", state.filters.has(c.dataset.f)));
   document.querySelectorAll("[data-radius]").forEach(b => b.setAttribute("aria-pressed", Number(b.dataset.radius) === state.radius));
 
   if (eat){
@@ -873,7 +895,7 @@ function render(){
     return;
   }
   const rawPicks = [...chainPicks(), ...importedDineOut()];
-  const picks = rawPicks.filter(passes).filter(matchesQuery);
+  const picks = rawPicks.filter(passes).filter(matchesQuery).filter(m => !state.cuisines.size || state.cuisines.has(m.cuisineKey));
   const places = visiblePlaces();
   const showSaved = state.filters.has("saved");
   const placesList = showSaved ? [] : places;
@@ -886,15 +908,13 @@ function render(){
       <div class="grid">${picks.length ? picks.map(recipeCard).join("") : empty("No published dishes match your filters.", " Try turning one off.")}</div>`;
   }
   if (!showSaved && state.places.length){
-    const groups = [...new Set(state.places.filter(placePasses).map(p => p.group))].sort((a, b) => CUISINE[a].label.localeCompare(CUISINE[b].label));
     const hiddenUnhealthy = state.filters.has("healthier") ? state.places.filter(p => lessHealthy(p)).length : 0;
     html += `<h2 class="group-title">Restaurants near you</h2>`;
     if (state.area) html += `<p class="area-note">${icon("check")}Local data for ${esc(state.area.name)}: real photos and menu picks where restaurants have websites.</p>`;
     if (hiddenUnhealthy) html += `<p class="hidden-note">${hiddenUnhealthy} fast-food and less-healthy place${hiddenUnhealthy === 1 ? " is" : "s are"} hidden. <button type="button" id="showAllBtn">Turn off Healthier</button> to see ${hiddenUnhealthy === 1 ? "it" : "them"}.</p>`;
     html += `
       <p class="group-note">Restaurants rarely publish nutrition, so your filters match places by their type of food, whether they’re fast food, and any diet tags on the map. That works in every country. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}${state.filters.has("delivery") || state.filters.has("takeaway") ? " Delivery and takeout filters only show places tagged that way on OpenStreetMap — many others offer it too, so check the delivery apps in each restaurant’s details." : ""}</p>
-      <div class="chips cuisine-chips"><button class="chip" data-cuisine="all" aria-pressed="${state.cuisine === "all"}">All</button>${groups.map(g => `<button class="chip" data-cuisine="${g}" aria-pressed="${state.cuisine === g}">${esc(CUISINE[g].label)}</button>`).join("")}</div>
-      <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : empty("No restaurants match that search.", "")}</div>
+      <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : (state.cuisines.size ? empty(`No ${[...state.cuisines].map(czLabel).join(" or ")} places match within ${state.radius} mi.`, state.radius < 20 ? " Try a wider radius, or turn off a filter." : " Try turning off a filter, or pick another cuisine.") : empty("No restaurants match that search.", ""))}</div>
       ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}`;
   }
   out.innerHTML = html;
@@ -938,10 +958,12 @@ async function reverseGeocode(lat, lon){
 }
 function groupFor(cuisine, amenity){
   for (const c of cuisine) if (CUISINE_MAP[c]) return CUISINE_MAP[c];
+  if (amenity === "pub") return "pub";
   return amenity === "fast_food" ? "american" : "other";
 }
 function scrollToResults(){
-  const el = document.querySelector(".results"); if (!el) return;
+  const cz = document.getElementById("cuisineSection");
+  const el = cz && !cz.hidden ? cz : document.querySelector(".results"); if (!el) return;
   const top = el.getBoundingClientRect().top + window.scrollY - (document.querySelector("header.top").offsetHeight + 8);
   window.scrollTo({ top, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 }
@@ -954,7 +976,8 @@ async function loadPlaces(force, scroll){
     state.places = cache.places; state.placesKey = key; await applyAreaPack(); render(); if (scroll) scrollToResults(); enrichPhotos(); return;
   }
   const meters = Math.round(state.radius * 1609.34);
-  const q = `[out:json][timeout:25];nwr["amenity"~"^(restaurant|fast_food)$"]["name"](around:${meters},${state.loc.lat},${state.loc.lon});out center tags 400;`;
+  const around = `(around:${meters},${state.loc.lat},${state.loc.lon})`;
+  const q = `[out:json][timeout:25];(nwr["amenity"~"^(restaurant|fast_food)$"]["name"]${around};nwr["amenity"="pub"]["name"]["food"~"^(yes|only)$"]${around};nwr["amenity"="pub"]["name"]["cuisine"]${around};);out center tags 500;`;
   state.loading = true; setStatus(`Finding restaurants within ${state.radius} mi…`, "load"); render();
   if (scroll) scrollToResults();
   const endpoints = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
@@ -979,7 +1002,7 @@ async function loadPlaces(force, scroll){
     if (lat == null || !t.name) return null;
     const cuisine = (t.cuisine || "").toLowerCase().split(/[;,]/).map(s => s.trim()).filter(Boolean);
     const addr = [[t["addr:housenumber"], t["addr:street"]].filter(Boolean).join(" "), t["addr:city"]].filter(Boolean).join(", ");
-    return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", fast: t.amenity === "fast_food",
+    return { id: el.type[0] + el.id, name: t.name, city: t["addr:city"] || "", fast: t.amenity === "fast_food", amenity: t.amenity,
       diet: { vegetarian: t["diet:vegetarian"], vegan: t["diet:vegan"], gluten_free: t["diet:gluten_free"], lactose_free: t["diet:lactose_free"], dairy_free: t["diet:dairy_free"] }, brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
       group: groupFor(cuisine, t.amenity), cuisineRaw: cuisine.join(" "), addr,
       website: /^https?:\/\//.test(t.website || t["contact:website"] || "") ? (t.website || t["contact:website"]) : "",
@@ -990,7 +1013,7 @@ async function loadPlaces(force, scroll){
   }).filter(p => p && p.dist <= state.radius + 0.05)
     .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => a.dist - b.dist);
-  state.placesKey = key; state.placesShown = 30; state.cuisine = "all";
+  state.placesKey = key; state.placesShown = 30;
   await applyAreaPack();
   store.set("places", { key, ts: Date.now(), places: state.places });
   enrichPhotos();
@@ -1038,6 +1061,8 @@ async function applyAreaPack(){
     const picks = Array.isArray(d.picks) ? d.picks.filter(x => x && x.dish).slice(0, 6).map(x => ({
       dish: String(x.dish).slice(0, 120), note: String(x.note || "").slice(0, 200),
       fits: Array.isArray(x.fits) ? x.fits.filter(f => FILTER_NAME[f]) : [] })) : [];
+    p.packCuisines = Array.isArray(d.cuisines) ? d.cuisines.map(String).filter(k => /^[a-z][a-z_-]{1,24}$/.test(k)).slice(0, 5) : [];
+    p._cz = null;
     p.pack = { picks, menuUrl: cleanUrl(d.menuUrl), website: cleanUrl(d.website), checked: String(d.checked || pack.generated || "").slice(0, 10) };
     const photo = cleanUrl(d.photo);
     if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true; }
@@ -1096,7 +1121,7 @@ async function enrichPhotos(){
 const FIT = {
   seafood:"csgpfd", mexican:"cgpvfd", italian:"cgpv", pizza:"v", chinese:"cgpvd", japanese:"cgpvd", thai:"cgpvfd", indian:"cgpvf",
   mediterranean:"csgpvfd", bbq:"pfd", american:"csgpvfd", burger:"p", chicken:"cgpfd", sandwich:"cgpvd", steak:"csgpfd",
-  asian:"cgpvfd", breakfast:"cgpvf", healthy:"csgpvfd", other:"cgp"
+  asian:"cgpvfd", breakfast:"cgpvf", healthy:"csgpvfd", pub:"cgp", other:"cgp"
 };
 const FAST_FIT = { american:"p", chicken:"p", other:"", burger:"p", pizza:"v", sandwich:"cgpvd", mexican:"cgpvfd", healthy:"csgpvfd", asian:"cgpvd", japanese:"cgpvd", mediterranean:"cgpvfd" };
 const FILTER_LETTER = { lowCal:"c", lowSodium:"s", glp1:"g", highProtein:"p", vegetarian:"v", glutenFree:"f", dairyFree:"d" };
@@ -1128,16 +1153,130 @@ function fitsLine(p){
   return `<div class="fits">${act.map(f => `<span>${icon("check")}${esc(FILTER_NAME[f])}</span>`).join("")}</div>`;
 }
 
+
+/* ---------- Cuisines for Dine Out (worldwide + regional) ----------
+   Each restaurant gets one or more cuisines from its map tags, its name, and (in researched areas) its menu.
+   Cuisines that are a local specialty where you are are shown first as "Local favorites". */
+const CZ_ALIAS = { fish:"seafood", oyster:"seafood", oysters:"seafood", crab:"seafood", shellfish:"seafood", fish_and_chips:"fish_and_chips",
+  tacos:"mexican", taco:"mexican", burrito:"mexican", tex_mex:"tex-mex", "tex-mex":"tex-mex", barbecue:"bbq", bbq:"bbq", smokehouse:"bbq",
+  steak_house:"steak", steakhouse:"steak", grill:"grill", soul_food:"soul", soul:"soul", low_country:"lowcountry", lowcountry:"lowcountry",
+  geechee:"gullah", gullah_geechee:"gullah", middle_eastern:"middle_eastern", arab:"middle_eastern", kebab:"kebab", doner:"kebab",
+  coffee_shop:"cafe", cafe:"cafe", sandwich:"sandwich", sub:"sandwich", subs:"sandwich", deli:"deli", noodle:"noodles", noodles:"noodles",
+  chicken:"chicken", wings:"chicken", fried_chicken:"chicken", salad:"salad", healthy:"healthy", vegan:"vegan", vegetarian:"vegetarian",
+  latin_american:"latin", caribbean:"caribbean", jamaican:"jamaican", hawaiian:"hawaiian", poke:"poke", pub:"pub" };
+const CZ_LABEL = { bbq:"Barbecue", soul:"Soul food", gullah:"Gullah Geechee", lowcountry:"Lowcountry", southern:"Southern", "tex-mex":"Tex-Mex",
+  middle_eastern:"Middle Eastern", steak:"Steakhouse", fish_and_chips:"Fish & chips", cafe:"Café", latin:"Latin American", pub:"Pub food",
+  cajun:"Cajun", creole:"Creole", irish:"Irish", british:"British", scottish:"Scottish", welsh:"Welsh", seafood:"Seafood", american:"American",
+  new_american:"New American", noodles:"Noodles", poke:"Poké", deli:"Deli", kebab:"Kebab", grill:"Grill", regional:"Regional" };
+const CZ_SKIP = /^(restaurant|food|yes|no|local|international|various|mixed|fine_dining|dinner|lunch|drinks|bar|beer|wine|coffee|tea|ice_cream|dessert|bubble_tea|juice)$/;
+const CZ_NAME = [
+  ["gullah", /gullah|geechee/i], ["lowcountry", /low ?country/i], ["soul", /soul food|soul kitchen|\bsoul\b/i],
+  ["southern", /southern|biscuit|grits|meat ?(&|and) ?three|country kitchen|fried green/i], ["cajun", /cajun|bayou|crawfish/i], ["creole", /creole/i],
+  ["bbq", /\bbbq\b|barbe?cue|smokehouse|\bsmoke(d|y)?\b/i], ["seafood", /seafood|oyster|crab|shrimp|fish ?house|lobster/i],
+  ["irish", /\birish\b|ulster|shebeen/i], ["sushi", /sushi/i], ["ramen", /ramen/i], ["tapas", /tapas/i], ["pho", /\bpho\b/i]
+];
+const US_SOUTH = ["AL","AR","FL","GA","KY","LA","MS","NC","SC","TN","TX","VA","WV","OK"];
+const NATIONAL = { it:"italian", fr:"french", es:"spanish", pt:"portuguese", gr:"greek", tr:"turkish", de:"german", at:"austrian", ch:"swiss",
+  jp:"japanese", kr:"korean", cn:"chinese", tw:"taiwanese", hk:"cantonese", th:"thai", vn:"vietnamese", in:"indian", pk:"pakistani", mx:"mexican",
+  br:"brazilian", pe:"peruvian", ar:"argentinian", cl:"chilean", co:"colombian", lb:"lebanese", ma:"moroccan", et:"ethiopian", jm:"jamaican",
+  ph:"filipino", id:"indonesian", my:"malaysian", sg:"singaporean", ie:"irish", gb:"british", pl:"polish", hu:"hungarian", cz:"czech",
+  se:"swedish", no:"norwegian", dk:"danish", fi:"finnish", nl:"dutch", be:"belgian", au:"australian", nz:"new_zealand", za:"south_african", ng:"nigerian", eg:"egyptian", il:"israeli", ir:"persian" };
+function usState(){ const m = state.loc && state.loc.country === "us" && /,\s*([A-Z]{2})$/.exec(state.loc.label); return m ? m[1] : ""; }
+/* Which cuisines are local specialties here, and any local names for them. */
+function regionInfo(){
+  const loc = state.loc; if (!loc) return { local: [], labels: {} };
+  const cc = loc.country, st = usState(), local = [], labels = {};
+  const inBox = (la1, la2, lo1, lo2) => loc.lat >= la1 && loc.lat <= la2 && loc.lon >= lo1 && loc.lon <= lo2;
+  if (cc === "us"){
+    if (inBox(29.8, 34.4, -81.9, -77.8)) local.push("gullah");                 /* Gullah Geechee Cultural Heritage Corridor, NC–FL coast */
+    if (inBox(31.0, 33.9, -81.6, -78.5)) local.push("lowcountry");             /* South Carolina & Georgia Lowcountry */
+    if (US_SOUTH.includes(st)) local.push("southern", "soul", "bbq");
+    if (["LA","MS"].includes(st)) local.push("cajun", "creole");
+    if (["TX","NM","AZ"].includes(st)) local.push("tex-mex");
+    if (["ME","NH","VT","MA","RI","CT","MD"].includes(st) || inBox(29.8, 34.4, -81.9, -77.8)) local.push("seafood");
+    if (st === "HI") local.push("hawaiian", "poke");
+    if (["NC","SC"].includes(st)) labels.bbq = "Carolina barbecue";
+    if (st === "TX") labels.bbq = "Texas barbecue";
+    if (st === "TN") labels.bbq = "Tennessee barbecue";
+    if (["MO","KS"].includes(st)) { local.push("bbq"); labels.bbq = "Kansas City barbecue"; }
+    labels.regional = US_SOUTH.includes(st) ? "Southern" : "Regional American";
+  } else {
+    const nat = NATIONAL[cc]; if (nat) local.push(nat);
+    if (cc === "gb" && /northern ireland/i.test(loc.label)) { local.splice(0, local.length, "irish"); }
+    if (cc === "gb" && /scotland/i.test(loc.label)) local.push("scottish");
+    if (cc === "gb" && /wales/i.test(loc.label)) local.push("welsh");
+    if (cc === "gb" || cc === "ie") local.push("pub", "seafood");
+    if (nat) labels.regional = CZ_LABEL[nat] || nat.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+  return { local: [...new Set(local)], labels };
+}
+function czKey(raw){
+  const r = String(raw).toLowerCase().trim().replace(/\s+/g, "_");
+  if (!r || CZ_SKIP.test(r)) return "";
+  return CZ_ALIAS[r] || r;
+}
+function cuisinesOf(p){
+  if (p._cz) return p._cz;
+  const keys = new Set();
+  (p.cuisineRaw || "").split(" ").map(czKey).filter(Boolean).forEach(k => keys.add(k));
+  CZ_NAME.forEach(([k, re]) => { if (re.test(p.name)) keys.add(k); });
+  (p.packCuisines || []).forEach(k => keys.add(k));
+  if (p.amenity === "pub") keys.add("pub");
+  if (keys.has("regional")){ const r = regionInfo(); keys.delete("regional"); const lab = r.labels.regional; if (lab === "Southern") keys.add("southern"); else if (lab) keys.add(lab.toLowerCase().replace(/ /g, "_")); }
+  if (!keys.size && p.group !== "other") keys.add(p.group);
+  return (p._cz = [...keys]);
+}
+function czLabel(k){
+  const r = regionInfo();
+  return r.labels[k] || CZ_LABEL[k] || (CUISINE[k] && CUISINE[k].label) || k.replace(/[_-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+function czMatch(p){ return !state.cuisines.size || cuisinesOf(p).some(k => state.cuisines.has(k)); }
+function renderCuisineBar(){
+  const sec = $("#cuisineSection");
+  if (state.mode !== "dine-out" || !state.loc || !state.places.length){ sec.hidden = true; return; }
+  sec.hidden = false;
+  const base = placesBeforeCuisine();
+  const counts = {};
+  base.forEach(p => cuisinesOf(p).forEach(k => counts[k] = (counts[k] || 0) + 1));
+  const { local } = regionInfo();
+  const chip = (k, isLocal) => `<button class="chip${isLocal ? " local" : ""}${counts[k] ? "" : " zero"}" data-cz="${esc(k)}" aria-pressed="${state.cuisines.has(k)}">${esc(czLabel(k))} <span class="n">${counts[k] || 0}</span></button>`;
+  const others = Object.keys(counts).filter(k => !local.includes(k)).sort((a, b) => counts[b] - counts[a] || czLabel(a).localeCompare(czLabel(b)));
+  const shown = state.czAll ? others : others.slice(0, 14);
+  const selectedHidden = others.filter(k => state.cuisines.has(k) && !shown.includes(k));
+  $("#cuisineChips").innerHTML =
+    (local.length ? `<div class="cz-row"><span class="cz-label">${icon("pin")}Local favorites</span>${local.map(k => chip(k, true)).join("")}</div>` : "") +
+    `<div class="cz-row">${local.length ? `<span class="cz-label" style="color:var(--faint)">All cuisines nearby</span>` : ""}<button class="chip" data-cz="*" aria-pressed="${!state.cuisines.size}">Any</button>${[...shown, ...selectedHidden].map(k => chip(k, false)).join("")}${others.length > 14 ? `<button class="linkish" data-czmore="1" type="button">${state.czAll ? "Fewer" : `+${others.length - 14} more`}</button>` : ""}</div>`;
+  $("#cuisineClear").hidden = !state.cuisines.size;
+}
+function setCuisine(k){
+  if (k === "*") state.cuisines.clear();
+  else state.cuisines.has(k) ? state.cuisines.delete(k) : state.cuisines.add(k);
+  store.set("cuisines", [...state.cuisines]); state.placesShown = 30; render();
+}
+function resetCuisinesForNewPlace(){ state.cuisines.clear(); store.set("cuisines", []); state.czAll = false; }
+
+const REGION_TIPS = {
+  gullah: "Look for okra and tomatoes, lima beans, greens, and fish or shrimp cooked in a stew or on the grill. Red rice is tasty but salty — keep it to a small scoop, and ask if the greens are cooked with smoked meat.",
+  lowcountry: "Shrimp and grits is lighter with grilled shrimp and no gravy or cheese. Steamed shellfish, broiled fish and a Lowcountry boil (skip the sausage) are good picks; she-crab soup is rich and salty.",
+  southern: "Choose grilled or blackened chicken or fish with vegetable sides like green beans, greens, okra or tomatoes. Go easy on fried chicken, mac and cheese, biscuits and gravy.",
+  soul: "Baked chicken, greens (ask about ham hocks for sodium), black-eyed peas and cabbage are the lighter plates. Fried fish, candied yams and mac and cheese are the heavy ones.",
+  cajun: "Blackened fish or grilled shrimp with vegetables beats fried plates. Gumbo and jambalaya are high in sodium — a cup, not a bowl.",
+  creole: "Shrimp or fish Creole in a tomato sauce is a good choice with a small portion of rice. Skip étouffée made with a butter roux if you’re watching fat.",
+  bbq: "Smoked chicken or turkey breast, or lean brisket (ask for the flat, not the point), with green beans or slaw. Sauce on the side — it’s where much of the sugar and salt is.",
+  irish: "Grilled salmon or fish, Irish stew (a cup), or roast chicken with vegetables. Go easy on the fry-ups, battered fish, champ with butter and soda bread.",
+  pub: "Many pubs will do grilled fish or chicken with salad or vegetables instead of chips — ask. Pies, battered fish and burgers are the heaviest choices."
+};
+
 /* ---------- Reviews & delivery links (no APIs: each button opens a search) ---------- */
 function takeWord(){ const cc = state.loc && state.loc.country; return ["us","ca","ph"].includes(cc) || !cc ? "Takeout" : "Takeaway"; }
-function visiblePlaces(){
+function placesBeforeCuisine(){
   return state.places
-    .filter(p => state.cuisine === "all" || p.group === state.cuisine)
     .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query))
     .filter(p => !state.filters.has("delivery") || p.delivery === "yes")
     .filter(p => !state.filters.has("takeaway") || p.takeaway === "yes")
     .filter(placePasses);
 }
+function visiblePlaces(){ return placesBeforeCuisine().filter(czMatch); }
 /* Web search used to find a restaurant on a service. Baidu in mainland China, Google elsewhere. */
 function webSearch(q){
   const cc = state.loc && state.loc.country;
@@ -1274,7 +1413,7 @@ function openMeal(id){
 function openPlace(id){
   const p = state.places.find(x => x.id === id); if (!p) return;
   const chain = CHAINS.find(ch => ch.match.test(p.name) || ch.match.test(p.brand));
-  let body = `<div class="m-hero">${imgTag(p, CUISINE[p.group].label + " food")}<div class="cap"><div class="k">${esc(CUISINE[p.group].label)} · ${p.dist.toFixed(1)} mi away</div><h2 id="sheetTitle">${esc(p.name)}</h2></div></div>
+  let body = `<div class="m-hero">${imgTag(p, CUISINE[p.group].label + " food")}<div class="cap"><div class="k">${esc(cuisinesOf(p).slice(0, 2).map(czLabel).join(" · ") || CUISINE[p.group].label)} · ${p.dist.toFixed(1)} mi away</div><h2 id="sheetTitle">${esc(p.name)}</h2></div></div>
     <div class="m-body">${p.addr ? `<p style="color:var(--ink-2);font-weight:600">${esc(p.addr)}</p>` : ""}${p.hours ? `<p class="src">Hours listed on the map: ${esc(p.hours)}</p>` : ""}`;
   if (chain && inUS()) body += `<div class="tipbox o">This chain publishes nutrition. See <b>Dishes with published nutrition</b> for picks with real numbers.</div>`;
   if (p.pack && p.pack.picks.length){
@@ -1285,6 +1424,8 @@ function openPlace(id){
       <p class="src">Dish names are copied word-for-word from the menu on their website${p.pack.checked ? ` (checked ${esc(p.pack.checked)})` : ""}, chosen by an AI reading the descriptions. The tags are a best guess from those descriptions, not measured nutrition. Menus change, so confirm when you order.${p.pack.menuUrl ? ` <a href="${esc(p.pack.menuUrl)}" target="_blank" rel="noopener">See their full menu</a>` : ""}</p>`;
   }
   body += tipsFor(p.group);
+  const reg = cuisinesOf(p).find(k => REGION_TIPS[k]);
+  if (reg) body += `<h3>${esc(czLabel(reg))} tips</h3><div class="tipbox o">${esc(REGION_TIPS[reg])}</div>`;
   const avail = [p.delivery === "yes" ? "Delivers" : "", p.takeaway === "yes" ? takeWord() + " available" : "", p.delivery === "no" ? "No delivery" : ""].filter(Boolean);
   if (avail.length) body = body.replace('<div class="m-body">', `<div class="m-body"><div class="checks">${avail.map(a => `<span class="pill ok">${icon("check")}${esc(a)}</span>`).join("")}</div>`);
   body += `<div class="actions">
@@ -1445,6 +1586,7 @@ $("#chips").addEventListener("click", e => {
   const f = c.dataset.f; state.filters.has(f) ? state.filters.delete(f) : state.filters.add(f);
   store.set("filters", [...state.filters]); render();
 });
+$("#cuisineClear").addEventListener("click", () => setCuisine("*"));
 $("#resetFilters").addEventListener("click", () => { state.filters = new Set(["healthier"]); store.set("filters", ["healthier"]); state.query = ""; $("#search").value = ""; render(); });
 $("#howBtn").addEventListener("click", openInfo);
 $("#decideTop").addEventListener("click", decide);
@@ -1503,7 +1645,7 @@ function closeAC(){ ac.items = []; ac.active = -1; $("#acList").hidden = true; $
 function chooseAC(i){
   const p = ac.items[i]; if (!p) return;
   closeAC();
-  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; store.set("loc", state.loc);
+  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; store.set("loc", state.loc); resetCuisinesForNewPlace();
   $("#locInput").value = p.label; $("#locInput").blur();
   loadPlaces(true, true);
 }
@@ -1540,7 +1682,7 @@ $("#locForm").addEventListener("submit", async e => {
   try {
     if (!state.loc || q.toLowerCase() !== state.loc.label.toLowerCase()){
       setStatus("Looking up that location…", "load");
-      state.loc = await geocode(q); store.set("loc", state.loc); $("#locInput").value = state.loc.label;
+      state.loc = await geocode(q); store.set("loc", state.loc); resetCuisinesForNewPlace(); $("#locInput").value = state.loc.label;
     }
     await loadPlaces(true, true);
   } catch (err){ setStatus(err.message && !/^HTTP|abort/i.test(err.message) ? err.message : "Couldn’t look up that location. Check your connection and try again.", "err"); }
@@ -1552,14 +1694,14 @@ $("#gpsBtn").addEventListener("click", () => {
   navigator.geolocation.getCurrentPosition(async pos => {
     const { latitude: lat, longitude: lon } = pos.coords;
     const where = await reverseGeocode(lat, lon);
-    state.loc = { lat, lon, label: where.label, country: where.country }; store.set("loc", state.loc);
+    state.loc = { lat, lon, label: where.label, country: where.country }; store.set("loc", state.loc); resetCuisinesForNewPlace();
     $("#locInput").value = state.loc.label; loadPlaces(true, true);
   }, err => setStatus(err.code === 1 ? "Location access is off. Allow it in your browser settings, or type a city or ZIP." : "Couldn’t get your location. Type a city or ZIP instead.", "err"),
   { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
 });
 
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],[data-rcuisine],#showAllBtn,#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
+  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cz],[data-czmore],[data-rcuisine],#showAllBtn,#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
   if (!t) return;
   if (t.dataset.fav){ e.stopPropagation(); toggleFav(t.dataset.fav); }
   else if (t.dataset.open) openMeal(t.dataset.open);
@@ -1568,7 +1710,8 @@ document.addEventListener("click", e => {
   else if (t.dataset.url) window.open(t.dataset.url, "_blank", "noopener,noreferrer");
   else if (t.dataset.addlist) addToList(t.dataset.addlist);
   else if (t.dataset.rcuisine){ state.recipeCuisine = t.dataset.rcuisine; store.set("rcuisine", state.recipeCuisine); render(); }
-  else if (t.dataset.cuisine){ state.cuisine = t.dataset.cuisine; state.placesShown = 30; render(); }
+  else if (t.dataset.cz){ setCuisine(t.dataset.cz); }
+  else if (t.dataset.czmore){ state.czAll = !state.czAll; renderCuisineBar(); }
   else if (t.id === "spinBtn" || t.id === "spinAgain") spinWheel();
   else if (t.id === "showAllBtn"){ state.filters.delete("healthier"); store.set("filters", [...state.filters]); render(); }
   else if (t.id === "moreBtn"){ state.placesShown += 30; render(); }

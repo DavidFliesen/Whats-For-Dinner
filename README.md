@@ -1,7 +1,15 @@
-# What’s 4 Dinner? — Version 2.8.0
+# What’s 4 Dinner? — Version 2.9.0
 An ARTEZIQ app.
 
-## What’s new in 2.8.0
+## What’s new in 2.9.0
+- **Cuisine picker in Dine Out**, right under the location: pick one or more cuisines (with counts), or “Any”. Built from the restaurants actually nearby, so it works in every country and picks up local styles automatically (e.g. Roman in Rome, Sichuan in China).
+- **Local favorites** shown first where they’re a regional specialty: Gullah Geechee (NC–FL coastal corridor), Lowcountry (SC/GA coast), Southern, Soul food and Carolina barbecue (Carolinas), Cajun & Creole (LA/MS), Tex-Mex (TX/NM/AZ), seafood (coasts), Irish and pub food (Ireland & Northern Ireland), plus the national cuisine elsewhere.
+- Regional ordering tips in each restaurant’s details (e.g. Gullah Geechee, Lowcountry, Southern, Soul food, Cajun, Creole, barbecue, Irish, pub).
+- Pubs that serve food are now included (important in the UK and Ireland).
+- `area_builder.ipynb` now tags local cuisines from words on each restaurant’s own website (e.g. red rice, okra soup, shrimp and grits, Ulster fry, champ), so places the map doesn’t label still show up under Gullah Geechee, Lowcountry, Irish, etc.
+- Cuisine choice is remembered, and resets when you pick a new location.
+
+## 2.8.0
 - **Researched areas**: Summerville & Charleston, SC and Portstewart & Londonderry, Northern Ireland. Run `area_builder.ipynb` in Google Colab (free T4 GPU, no API keys) and upload the `data/areas/` files it produces. The app then loads them automatically when your location is in one of those areas:
   - **Real photos** from each restaurant’s own website (tagged “Real photo”).
   - **Menu picks**: up to 6 healthier dishes copied word-for-word from the restaurant’s online menu and tagged with the app’s filters. These also count when filtering. Every pick is checked against the downloaded menu text; anything not on the menu is discarded.
