@@ -345,6 +345,11 @@ body.dine .cuisine-bar{padding-top:12px}
 .btn[data-fav] svg.i{transition:fill .15s,color .15s}
 .btn[data-fav][aria-pressed="true"]{border-color:#FDBA74;background:var(--orange-50);color:var(--orange-700)}
 .btn[data-fav][aria-pressed="true"] svg.i{fill:var(--orange);color:var(--orange)}
+
+.btn.ghost.danger{color:#B91C1C;border-color:#FECACA}
+.btn.ghost.danger:hover,.btn.ghost.danger[data-armed]{background:#FEF2F2;border-color:#FCA5A5}
+.btn:disabled{opacity:.45;cursor:default}
+.m-plain .actions .btn{flex:1 1 auto;white-space:nowrap;padding:0 14px;font-size:14px}
 </style>
 </head>
 <body>
@@ -493,7 +498,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "2.9.2";
+const VERSION = "2.9.3";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -1483,7 +1488,7 @@ function openList(){
   const items = state.list;
   openSheet(`<div class="m-plain" style="padding-bottom:26px"><h2 id="sheetTitle">Shopping list</h2>
     ${items.length ? `<div>${items.map((it, i) => `<div class="list-item${it.done ? " done" : ""}"><input type="checkbox" id="li${i}" data-li="${i}" ${it.done ? "checked" : ""}><label for="li${i}">${esc(it.text)}</label></div>`).join("")}</div>
-    <div class="actions"><button class="btn" id="shareList">${icon("share")}Share list</button><button class="btn ghost" id="clearDone">${icon("trash")}Clear checked</button></div>`
+    <div class="actions"><button class="btn" id="shareList">${icon("share")}Share list</button><button class="btn ghost" id="clearDone"${items.some(i => i.done) ? "" : " disabled"}>${icon("check")}Clear checked</button><button class="btn ghost danger" id="clearAll">${icon("trash")}Clear all</button></div>`
     : `<p>Your list is empty. Open a home recipe and tap <b>Add to shopping list</b>.</p>`}</div>`);
 }
 
@@ -1752,7 +1757,7 @@ $("#gpsBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cz],[data-czmore],[data-rcuisine],#showAllBtn,#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
+  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cz],[data-czmore],[data-rcuisine],#showAllBtn,#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#clearAll,#spinBtn,#spinAgain");
   if (!t) return;
   if (t.dataset.fav){ e.stopPropagation(); toggleFav(t.dataset.fav); }
   else if (t.dataset.open) openMeal(t.dataset.open);
@@ -1768,6 +1773,11 @@ document.addEventListener("click", e => {
   else if (t.id === "moreBtn"){ state.placesShown += 30; render(); }
   else if (t.id === "importBtn") $("#importFile").click();
   else if (t.id === "clearImport"){ state.imported = []; store.set("imported", []); store.del("localPacks"); packs.index = null; packs.loaded = {}; closeSheet(); if (state.mode === "dine-out" && state.loc) loadPlaces(true); else render(); toast("Imported data removed"); }
+  else if (t.id === "clearAll"){
+    /* Two taps so a whole list isn't wiped by accident */
+    if (t.dataset.armed){ state.list = []; store.set("list", state.list); updateListCount(); openList(); toast("Shopping list cleared"); }
+    else { t.dataset.armed = "1"; t.innerHTML = icon("trash") + "Tap to confirm"; setTimeout(() => { if (t.isConnected){ delete t.dataset.armed; t.innerHTML = icon("trash") + "Clear all"; } }, 3000); }
+  }
   else if (t.id === "clearDone"){ state.list = state.list.filter(i => !i.done); store.set("list", state.list); updateListCount(); openList(); }
   else if (t.id === "shareList"){
     const text = "Shopping list\n" + state.list.filter(i => !i.done).map(i => "• " + i.text).join("\n");
@@ -1779,6 +1789,7 @@ document.addEventListener("change", e => {
   if (e.target.dataset && e.target.dataset.li != null){
     const i = Number(e.target.dataset.li); state.list[i].done = e.target.checked; store.set("list", state.list); updateListCount();
     e.target.closest(".list-item").classList.toggle("done", e.target.checked);
+    const cd = document.getElementById("clearDone"); if (cd) cd.disabled = !state.list.some(i => i.done);
   }
 });
 $("#importFile").addEventListener("change", e => {

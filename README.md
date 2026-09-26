@@ -1,5 +1,9 @@
-# What’s 4 Dinner? — Version 2.9.2
+# What’s 4 Dinner? — Version 2.9.3
 An ARTEZIQ app.
+
+## Changes in 2.9.3
+- Shopping list has a third button, **Clear all**, next to Share list and Clear checked. It asks for a second tap (“Tap to confirm”, within 3 seconds) so a list isn’t wiped by accident.
+- **Clear checked** is greyed out until at least one item is checked.
 
 ## Fixes in 2.9.2
 - The **Save / Saved** button in recipe and dish details now shows a filled orange heart (with a light orange button) when saved, matching the heart on the cards. Tapping it again unsaves and returns it to an outline.
