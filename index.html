@@ -340,6 +340,11 @@ body.dine .how{margin-top:6px}
 .chip.local{border-color:#FDBA74}
 .chip.zero{opacity:.55}
 body.dine .cuisine-bar{padding-top:12px}
+
+/* Saved state on the Save button in recipe and dish details: same filled orange heart as the cards */
+.btn[data-fav] svg.i{transition:fill .15s,color .15s}
+.btn[data-fav][aria-pressed="true"]{border-color:#FDBA74;background:var(--orange-50);color:var(--orange-700)}
+.btn[data-fav][aria-pressed="true"] svg.i{fill:var(--orange);color:var(--orange)}
 </style>
 </head>
 <body>
@@ -488,7 +493,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "2.9.1";
+const VERSION = "2.9.2";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */

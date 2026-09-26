@@ -1,5 +1,8 @@
-# What’s 4 Dinner? — Version 2.9.1
+# What’s 4 Dinner? — Version 2.9.2
 An ARTEZIQ app.
+
+## Fixes in 2.9.2
+- The **Save / Saved** button in recipe and dish details now shows a filled orange heart (with a light orange button) when saved, matching the heart on the cards. Tapping it again unsaves and returns it to an outline.
 
 ## Fixes in 2.9.1
 - **Location suggestions**: typing “Summerville, SC” now puts the town of Summerville, South Carolina first. Typed state abbreviations are understood, towns rank above neighbourhoods, and neighbourhoods show their town (e.g. “Pinehill, Summerville, SC”). Pressing Enter only takes the top suggestion when it matches what you typed; otherwise it looks up exactly what you typed.
