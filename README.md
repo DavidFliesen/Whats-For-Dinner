@@ -1,6 +1,12 @@
-# What’s 4 Dinner? — Version 2.3.0
+# What’s 4 Dinner? — Version 2.4.0
 
-## What’s new in 2.3.0
+## What’s new in 2.4.0
+- **Location suggestions as you type** (after 3 letters), worldwide — e.g. “Portste” offers Portstewart, Northern Ireland. Uses Photon (OpenStreetMap data, no API key). Arrow keys + Enter work; Enter picks the top suggestion.
+- **Dine Out fits on screen**: the hero shrinks to a slim Eat In / Dine Out bar in Dine Out, the empty chain section is hidden, and the page scrolls to the results after every search.
+- **International recipes**: 6 new dishes (Indian chicken tikka, Moroccan tagine, Thai larb, Irish cod with champ, Vietnamese pho-style soup, Italian turkey meatballs) — 21 total — with a cuisine filter.
+- **Measurements**: US (cups, oz, °F), UK & Ireland (metric + UK food names like courgette, prawns, spring onions, coriander), or Metric. Picked automatically from the device language; change it anytime next to the recipe count.
+
+## 2.3.0
 - **Dine Out works worldwide.** Location search is no longer limited to the US — try “Portstewart, Northern Ireland” or “London, England”. GPS works anywhere too.
 - Locations outside the US show as “Town, Region” (e.g. “London, England”).
 - Chain dishes with published nutrition (Chipotle, Chick-fil-A) only appear for US locations, since those numbers are for US menus.
