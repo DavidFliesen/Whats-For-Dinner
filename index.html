@@ -282,6 +282,20 @@ body.dine .how{display:none}
 .units{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
 .units select{min-height:38px;border:1px solid var(--line);border-radius:999px;background:var(--soft);padding:0 12px;font:600 13px var(--font);color:var(--ink-2)}
 .units[hidden]{display:none}
+
+.loc-prompt{display:flex;gap:14px;align-items:flex-start;padding:22px;border:2px dashed #FDBA74;background:var(--orange-50);border-radius:22px;color:var(--ink-2)}
+.loc-prompt > svg.i{width:28px;height:28px;color:var(--orange);flex:none}
+.loc-prompt b{display:block;font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.loc-prompt span{font-size:14.5px;color:var(--muted)}
+.loc-prompt span svg.i{width:16px;height:16px;vertical-align:-3px;color:var(--orange)}
+.ac-wrap .field:has(input:placeholder-shown){border-color:#FDBA74;background:#fff}
+
+.media img.logo,.m-hero img.logo,.winner .w-media img.logo{object-fit:contain;background:#fff;padding:26px 34px}
+.media:has(img.logo)::after,.m-hero:has(img.logo)::after,.w-media:has(img.logo)::after{background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,0) 45%)}
+.tag.real{background:rgba(16,185,129,.95)}
+.photo-credit{font-size:11.5px;color:var(--faint);margin-top:6px}
+.photo-credit a{color:var(--muted)}
+.search[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -339,7 +353,7 @@ body.dine .how{display:none}
       <label class="field">
         <svg class="i"><use href="#i-pin"/></svg>
         <span class="sr">City, ZIP or neighborhood</span>
-        <input id="locInput" type="text" inputmode="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Start typing a town, city or postcode" value="Summerville, SC" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acList">
+        <input id="locInput" type="text" inputmode="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Type your town, city or postcode…" value="" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acList">
         <button type="button" class="icon-btn" id="gpsBtn" aria-label="Use my current location"><svg class="i"><use href="#i-locate"/></svg></button>
       </label>
       <ul class="ac-list" id="acList" role="listbox" aria-label="Matching places" hidden></ul>
@@ -401,7 +415,7 @@ body.dine .how{display:none}
   <div class="wrap">
     <p>Nutrition numbers are estimates or restaurant-published values and can vary. This app is general meal inspiration, not medical advice — follow your doctor or dietitian’s guidance, especially if you take a GLP-1 medication.</p>
     <p>Restaurant listings © OpenStreetMap contributors. Food photos from Unsplash show the style of dish and may not be the exact plate.</p>
-    <p class="ver">What’s 4 Dinner? • Version <span id="ver"></span> • Cibola Studios</p>
+    <p class="ver">What’s 4 Dinner? • Version <span id="ver"></span> • ARTEZIQ</p>
   </div>
 </footer>
 
@@ -416,9 +430,8 @@ body.dine .how{display:none}
 
 <script>
 "use strict";
-const VERSION = "2.4.0";
+const VERSION = "2.5.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
-const DEFAULT_LOC = { label: "Summerville, SC", lat: 33.0185, lon: -80.1756, country: "us" };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
 const RECIPES = [{"id": "salmon-asparagus", "type": "eat-in", "title": "Lemon-poached salmon with asparagus", "desc": "Gently poached fish over a garlicky cauliflower mash.", "minutes": 20, "calories": 375, "protein": 44, "fat": 15.0, "carbs": 19, "fiber": 7, "sodium": 140, "source": "estimated", "cuisine": "Modern", "ingredients": ["6 oz wild salmon fillet", "10 asparagus spears (about 5 oz)", "2 cups cauliflower florets", "1 tbsp lemon juice, plus slices", "1 tsp olive oil", "1 clove garlic", "Fresh dill and black pepper"], "ingredientsMetric": ["170 g wild salmon fillet", "10 asparagus spears (about 140 g)", "200 g cauliflower florets", "1 tbsp lemon juice, plus slices", "1 tsp olive oil", "1 clove garlic", "Fresh dill and black pepper"], "steps": ["Steam the cauliflower and garlic for 10 minutes until very soft, then mash with the olive oil and pepper.", "Bring 2 inches of water with lemon slices and dill to a bare simmer. Slide in the salmon and poach 8–10 minutes until it flakes.", "Steam the asparagus for the last 4 minutes. Plate everything and finish with lemon juice."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "turkey-zucchini", "type": "eat-in", "title": "Ginger turkey and zucchini skillet", "desc": "Lean turkey simmered in unsalted broth with lots of ginger.", "minutes": 18, "calories": 255, "protein": 47, "fat": 3.0, "carbs": 13, "fiber": 3, "sodium": 335, "source": "estimated", "cuisine": "Asian-inspired", "ingredients": ["6 oz 99% lean ground turkey", "1 large zucchini, spiralized or sliced", "½ cup unsalted chicken broth", "1 tbsp grated fresh ginger", "2 cloves garlic", "1 tsp low-sodium tamari", "2 scallions, sliced"], "ingredientsMetric": ["170 g 99% lean ground turkey", "1 large zucchini, spiralized or sliced", "120 ml unsalted chicken broth", "1 tbsp grated fresh ginger", "2 cloves garlic", "1 tsp low-sodium tamari", "2 scallions, sliced"], "steps": ["Brown the turkey in a nonstick skillet over medium-high heat, breaking it up, about 6 minutes.", "Add ginger and garlic for 30 seconds, then the broth and tamari. Simmer 4 minutes.", "Toss in the zucchini for the final 90 seconds so it stays crisp. Top with scallions."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "chicken-paillard", "type": "eat-in", "title": "Oregano chicken paillard with tzatziki", "desc": "Pounded thin so it cooks fast and stays tender.", "minutes": 22, "calories": 345, "protein": 51, "fat": 10.0, "carbs": 13, "fiber": 3, "sodium": 120, "source": "estimated", "cuisine": "Greek", "ingredients": ["7 oz chicken breast", "¼ cup nonfat Greek yogurt", "½ cucumber, grated", "2 tsp lemon juice", "1 small clove garlic", "1 tsp olive oil", "1 tomato, sliced", "2 cups chopped romaine", "Dried oregano, dill, black pepper"], "ingredientsMetric": ["190 g chicken breast", "60 g nonfat Greek yogurt", "½ cucumber, grated", "2 tsp lemon juice", "1 small clove garlic", "1 tsp olive oil", "1 tomato, sliced", "60 g chopped romaine", "Dried oregano, dill, black pepper"], "steps": ["Pound the chicken to ¼ inch thick. Rub with oil, oregano and pepper.", "Grill or sear 3 minutes per side until cooked through (165°F).", "Squeeze the grated cucumber dry and stir into the yogurt with garlic, lemon and dill. Serve over the romaine and tomato."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "halibut-quinoa", "type": "eat-in", "title": "Seared halibut with broccolini and quinoa", "desc": "Mild white fish with lemon and a small scoop of quinoa.", "minutes": 24, "calories": 360, "protein": 40, "fat": 10.0, "carbs": 30, "fiber": 6, "sodium": 170, "source": "estimated", "cuisine": "Mediterranean", "ingredients": ["6 oz halibut fillet", "5 oz broccolini (about half a bunch)", "½ cup cooked quinoa", "1 tsp olive oil", "1 tbsp lemon juice", "Black pepper, parsley"], "ingredientsMetric": ["170 g halibut fillet", "150 g broccolini (about half a bunch)", "90 g cooked quinoa", "1 tsp olive oil", "1 tbsp lemon juice", "Black pepper, parsley"], "steps": ["Pat the halibut dry and season with pepper. Sear in the oil over medium-high heat, 4 minutes per side.", "Steam the broccolini for 4–5 minutes.", "Serve with warm quinoa and finish with lemon and parsley."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "shrimp-stirfry", "type": "eat-in", "title": "Shrimp and vegetable stir-fry", "desc": "Crisp vegetables, ginger and a light tamari glaze over brown rice.", "minutes": 20, "calories": 440, "protein": 50, "fat": 7.0, "carbs": 47, "fiber": 7, "sodium": 430, "source": "estimated", "cuisine": "Chinese-inspired", "ingredients": ["7 oz shrimp (check the bag for \"no salt added\")", "1 red bell pepper, sliced", "1 cup broccoli florets", "1 cup sliced mushrooms", "2 tsp grated ginger", "1 clove garlic", "¾ tsp low-sodium tamari", "2 tsp rice vinegar", "1 tsp cornstarch", "½ cup cooked brown rice", "1 tsp oil"], "ingredientsMetric": ["200 g shrimp (check the bag for \"no salt added\")", "1 red bell pepper, sliced", "100 g broccoli florets", "70 g sliced mushrooms", "2 tsp grated ginger", "1 clove garlic", "¾ tsp low-sodium tamari", "2 tsp rice vinegar", "1 tsp cornstarch", "100 g cooked brown rice", "1 tsp oil"], "steps": ["Whisk tamari, vinegar, cornstarch and 3 tbsp water.", "Stir-fry the vegetables in the oil for 4 minutes. Add shrimp, ginger and garlic; cook 3 minutes until pink.", "Pour in the sauce and toss for 30 seconds until glossy. Serve over the rice."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "turkey-taco-cups", "type": "eat-in", "title": "Turkey taco lettuce cups", "desc": "Salt-free taco seasoning, beans and a yogurt \"sour cream.\"", "minutes": 20, "calories": 420, "protein": 40, "fat": 18.0, "carbs": 28, "fiber": 10, "sodium": 130, "source": "estimated", "cuisine": "Mexican-inspired", "ingredients": ["5 oz 93% lean ground turkey", "⅓ cup no-salt black beans", "1 small tomato, diced", "¼ onion, diced", "2 tsp lime juice", "6 romaine leaves", "3 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cumin, cilantro"], "ingredientsMetric": ["150 g 93% lean ground turkey", "60 g no-salt black beans", "1 small tomato, diced", "¼ onion, diced", "2 tsp lime juice", "6 romaine leaves", "3 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cumin, cilantro"], "steps": ["Cook the turkey and onion until browned. Add chili powder, cumin, beans and a splash of water; simmer 3 minutes.", "Mix tomato, lime and cilantro for a quick pico.", "Spoon into romaine leaves; top with pico, yogurt and avocado."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "pork-sheetpan", "type": "eat-in", "title": "Sheet-pan pork tenderloin and sweet potato", "desc": "Honey-mustard pork with roasted sweet potato and green beans.", "minutes": 35, "calories": 405, "protein": 41, "fat": 9.0, "carbs": 40, "fiber": 8, "sodium": 225, "source": "estimated", "cuisine": "American", "ingredients": ["6 oz pork tenderloin", "1 small sweet potato, cubed", "1½ cups green beans", "1 tsp olive oil", "1 tsp Dijon mustard", "½ tsp honey", "Rosemary, garlic powder, pepper"], "ingredientsMetric": ["170 g pork tenderloin", "1 small sweet potato, cubed", "150 g green beans", "1 tsp olive oil", "1 tsp Dijon mustard", "½ tsp honey", "Rosemary, garlic powder, pepper"], "steps": ["Heat oven to 425°F. Toss sweet potato with half the oil and roast 10 minutes.", "Brush pork with mustard, honey, rosemary and pepper. Add pork and green beans (with remaining oil) to the pan.", "Roast 18–20 minutes until the pork reaches 145°F. Rest 5 minutes before slicing."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "cod-papillote", "type": "eat-in", "title": "Cod baked in parchment", "desc": "Steams in its own juices with tomatoes and zucchini — no fuss, no cleanup.", "minutes": 25, "calories": 325, "protein": 41, "fat": 7.0, "carbs": 24, "fiber": 5, "sodium": 130, "source": "estimated", "cuisine": "French", "ingredients": ["7 oz cod fillet", "1 cup cherry tomatoes, halved", "1 small zucchini, thinly sliced", "1 tsp olive oil", "2 tsp lemon juice", "1 clove garlic, sliced", "⅓ cup cooked quinoa", "Basil or thyme, pepper"], "ingredientsMetric": ["200 g cod fillet", "120 g cherry tomatoes, halved", "1 small zucchini, thinly sliced", "1 tsp olive oil", "2 tsp lemon juice", "1 clove garlic, sliced", "60 g cooked quinoa", "Basil or thyme, pepper"], "steps": ["Heat oven to 400°F. Layer zucchini, cod, tomatoes, garlic and herbs on a large sheet of parchment.", "Drizzle with oil and lemon, fold and crimp the parchment into a sealed packet.", "Bake 15 minutes. Open carefully (steam) and serve over the quinoa."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "lentil-stew", "type": "eat-in", "title": "Lentil, tomato and spinach stew", "desc": "Hearty and slow-simmered, finished with a spoon of yogurt.", "minutes": 35, "calories": 480, "protein": 35, "fat": 7.0, "carbs": 74, "fiber": 27, "sodium": 200, "source": "estimated", "cuisine": "Middle Eastern", "ingredients": ["1¼ cups cooked lentils", "3 cups baby spinach", "⅔ cup no-salt-added diced tomatoes", "½ onion, diced", "1 carrot, diced", "1 clove garlic", "1 tsp olive oil", "⅔ cup unsalted vegetable broth", "3 tbsp nonfat Greek yogurt", "Cumin, smoked paprika, lemon"], "ingredientsMetric": ["250 g cooked lentils", "80 g baby spinach", "150 g no-salt-added diced tomatoes", "½ onion, diced", "1 carrot, diced", "1 clove garlic", "1 tsp olive oil", "150 ml unsalted vegetable broth", "3 tbsp nonfat Greek yogurt", "Cumin, smoked paprika, lemon"], "steps": ["Soften onion, carrot and garlic in the oil for 6 minutes. Add cumin and paprika.", "Add lentils, tomatoes and broth; simmer 15 minutes.", "Stir in spinach until wilted. Top with yogurt and a squeeze of lemon."], "vegetarian": true, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "tofu-edamame", "type": "eat-in", "title": "Ginger tofu and edamame bowl", "desc": "Plant-based, crispy-edged tofu with broccoli and brown rice.", "minutes": 25, "calories": 495, "protein": 42, "fat": 23.0, "carbs": 39, "fiber": 11, "sodium": 245, "source": "estimated", "cuisine": "Japanese-inspired", "ingredients": ["6 oz firm tofu, pressed and cubed", "⅓ cup shelled edamame", "1 cup broccoli florets", "⅓ cup cooked brown rice", "1 tsp low-sodium tamari", "2 tsp grated ginger", "2 scallions", "1 tsp oil"], "ingredientsMetric": ["170 g firm tofu, pressed and cubed", "60 g shelled edamame", "100 g broccoli florets", "80 g cooked brown rice", "1 tsp low-sodium tamari", "2 tsp grated ginger", "2 scallions", "1 tsp oil"], "steps": ["Sear the tofu in oil over medium-high heat until golden on two sides, about 8 minutes.", "Add broccoli, edamame and 2 tbsp water; cover and steam 3 minutes.", "Toss with tamari and ginger. Serve over rice with scallions."], "vegetarian": true, "vegan": true, "glutenFree": true, "dairyFree": true}, {"id": "eggwhite-frittata", "type": "eat-in", "title": "Spinach and mushroom frittata", "desc": "Mostly egg whites, loaded with vegetables. Ready in 15.", "minutes": 15, "calories": 280, "protein": 35, "fat": 11.0, "carbs": 10, "fiber": 3, "sodium": 565, "source": "estimated", "cuisine": "Italian", "ingredients": ["¾ cup + 2 tbsp egg whites", "1 whole egg", "2 cups spinach", "¾ cup mushrooms", "½ red bell pepper", "1 tbsp grated Parmesan", "½ tsp olive oil", "Black pepper, chives"], "ingredientsMetric": ["200 ml egg whites", "1 whole egg", "60 g spinach", "60 g mushrooms", "½ red bell pepper", "1 tbsp grated Parmesan", "½ tsp olive oil", "Black pepper, chives"], "steps": ["Heat the broiler. Sauté mushrooms and pepper in an ovenproof nonstick pan for 4 minutes, then wilt in the spinach.", "Pour in the whisked eggs and whites; cook without stirring for 4 minutes until the edges set.", "Top with Parmesan and broil 2–3 minutes until puffed."], "vegetarian": true, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "greek-chicken-bowl", "type": "eat-in", "title": "Greek chicken and chickpea bowl", "desc": "Crunchy cucumber, tomato and a little feta over romaine.", "minutes": 20, "calories": 450, "protein": 49, "fat": 15.0, "carbs": 31, "fiber": 8, "sodium": 265, "source": "estimated", "cuisine": "Greek", "ingredients": ["5 oz chicken breast", "⅓ cup no-salt chickpeas", "½ cucumber, diced", "1 tomato, diced", "2 cups romaine", "1 tbsp crumbled feta", "3 tbsp nonfat Greek yogurt", "2 tsp lemon juice", "1 tsp olive oil", "Oregano, garlic powder, pepper"], "ingredientsMetric": ["150 g chicken breast", "70 g no-salt chickpeas", "½ cucumber, diced", "1 tomato, diced", "60 g romaine", "1 tbsp crumbled feta", "3 tbsp nonfat Greek yogurt", "2 tsp lemon juice", "1 tsp olive oil", "Oregano, garlic powder, pepper"], "steps": ["Season chicken with oregano, garlic powder and pepper; grill or sear 5–6 minutes per side.", "Whisk yogurt, lemon, oil and oregano into a dressing.", "Slice chicken over romaine, chickpeas, cucumber and tomato. Add feta and dressing."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "eggroll-bowl", "type": "eat-in", "title": "Chicken \"egg roll in a bowl\"", "desc": "All the egg-roll flavor, none of the frying.", "minutes": 15, "calories": 330, "protein": 42, "fat": 9.0, "carbs": 20, "fiber": 7, "sodium": 330, "source": "estimated", "cuisine": "Chinese-American", "ingredients": ["6 oz chicken breast, finely diced", "3 cups shredded cabbage", "1 small carrot, shredded", "2 tsp grated ginger", "1 clove garlic", "1 tsp low-sodium tamari", "2 tsp rice vinegar", "2 scallions", "1 tsp oil"], "ingredientsMetric": ["170 g chicken breast, finely diced", "200 g shredded cabbage", "1 small carrot, shredded", "2 tsp grated ginger", "1 clove garlic", "1 tsp low-sodium tamari", "2 tsp rice vinegar", "2 scallions", "1 tsp oil"], "steps": ["Stir-fry the chicken in oil over high heat for 5 minutes until cooked through.", "Add ginger, garlic, cabbage and carrot; cook 4 minutes until just tender.", "Toss with tamari and vinegar. Top with scallions."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "shrimp-tacos", "type": "eat-in", "title": "Pineapple-lime shrimp tacos", "desc": "Two corn tortillas, crunchy slaw and a lime-yogurt drizzle.", "minutes": 15, "calories": 365, "protein": 42, "fat": 6.0, "carbs": 39, "fiber": 7, "sodium": 250, "source": "estimated", "cuisine": "Mexican", "ingredients": ["6 oz shrimp (no salt added)", "2 corn tortillas", "1 cup shredded cabbage", "⅓ cup diced pineapple", "2 tsp lime juice", "2 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cilantro"], "ingredientsMetric": ["170 g shrimp (no salt added)", "2 corn tortillas", "60 g shredded cabbage", "60 g diced pineapple", "2 tsp lime juice", "2 tbsp nonfat Greek yogurt", "2 thin slices avocado", "Salt-free chili powder, cilantro"], "steps": ["Season shrimp with chili powder and sear in a hot nonstick pan, 2 minutes per side.", "Mix yogurt with half the lime juice. Toss cabbage with the rest.", "Warm tortillas, then fill with slaw, shrimp, pineapple, avocado and the lime yogurt."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "chicken-veg-soup", "type": "eat-in", "title": "Simple chicken and vegetable soup", "desc": "Light, warm and easy on the stomach. Makes great leftovers.", "minutes": 35, "calories": 275, "protein": 41, "fat": 4.0, "carbs": 17, "fiber": 4, "sodium": 240, "source": "estimated", "cuisine": "Classic", "ingredients": ["5 oz chicken breast", "1 carrot, sliced", "1 rib celery, sliced", "⅓ onion, diced", "½ zucchini, diced", "1⅔ cups unsalted chicken broth", "1 clove garlic", "Thyme, bay leaf, parsley, pepper"], "ingredientsMetric": ["150 g chicken breast", "1 carrot, sliced", "1 rib celery, sliced", "⅓ onion, diced", "½ zucchini, diced", "400 ml unsalted chicken broth", "1 clove garlic", "Thyme, bay leaf, parsley, pepper"], "steps": ["Simmer broth, whole chicken breast, carrot, celery, onion, garlic, thyme and bay leaf for 20 minutes.", "Remove the chicken, shred it, and return to the pot with the zucchini. Simmer 5 more minutes.", "Finish with parsley and pepper. Taste before salting — most people find it doesn't need any."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "chicken-tikka", "type": "eat-in", "title": "Chicken tikka skewers with raita", "desc": "Yogurt-and-spice marinated chicken, grilled, with cooling cucumber raita.", "minutes": 30, "calories": 350, "protein": 51, "fat": 8.0, "carbs": 16, "fiber": 3, "sodium": 115, "source": "estimated", "cuisine": "Indian", "ingredients": ["6½ oz chicken breast, cubed", "⅓ cup nonfat Greek yogurt, divided", "½ cucumber, grated", "2 tsp lemon juice", "1 clove garlic, grated", "2 tsp grated ginger", "½ red onion, in chunks", "½ red bell pepper, in chunks", "½ tsp oil", "Salt-free garam masala, cumin, paprika, turmeric, mint"], "ingredientsMetric": ["180 g chicken breast, cubed", "80 g nonfat Greek yogurt, divided", "½ cucumber, grated", "2 tsp lemon juice", "1 clove garlic, grated", "2 tsp grated ginger", "½ red onion, in chunks", "½ red bell pepper, in chunks", "½ tsp oil", "Salt-free garam masala, cumin, paprika, turmeric, mint"], "steps": ["Mix half the yogurt with lemon, garlic, ginger and the spices. Coat the chicken and marinate at least 15 minutes (or overnight).", "Thread chicken, onion and pepper onto skewers, brush with the oil, and grill or broil 10–12 minutes, turning, until cooked through (165°F).", "Squeeze the cucumber dry and stir into the remaining yogurt with mint. Serve alongside."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "chicken-tagine", "type": "eat-in", "title": "Moroccan chicken and chickpea tagine", "desc": "Warm spices, tomatoes and vegetables simmered low and slow.", "minutes": 40, "calories": 425, "protein": 45, "fat": 10.0, "carbs": 39, "fiber": 11, "sodium": 185, "source": "estimated", "cuisine": "Moroccan", "ingredients": ["5 oz chicken breast, in chunks", "⅓ cup no-salt chickpeas", "⅔ cup no-salt-added diced tomatoes", "½ onion, sliced", "1 carrot, in chunks", "½ small zucchini, in chunks", "½ cup unsalted chicken broth", "1 tsp olive oil", "1 clove garlic", "Cumin, cinnamon, paprika, ginger, lemon, parsley"], "ingredientsMetric": ["150 g chicken breast, in chunks", "60 g no-salt chickpeas", "150 g no-salt-added diced tomatoes", "½ onion, sliced", "1 carrot, in chunks", "½ small zucchini, in chunks", "120 ml unsalted chicken broth", "1 tsp olive oil", "1 clove garlic", "Cumin, cinnamon, paprika, ginger, lemon, parsley"], "steps": ["Soften the onion and garlic in the oil for 5 minutes. Stir in the spices for 30 seconds.", "Add chicken, carrot, tomatoes and broth. Cover and simmer gently for 20 minutes.", "Add chickpeas and zucchini; simmer 8 more minutes. Finish with lemon and parsley."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "chicken-larb", "type": "eat-in", "title": "Thai chicken larb lettuce cups", "desc": "Zingy lime, fresh herbs and a small splash of fish sauce.", "minutes": 15, "calories": 325, "protein": 42, "fat": 5.0, "carbs": 26, "fiber": 4, "sodium": 325, "source": "estimated", "cuisine": "Thai", "ingredients": ["6 oz chicken breast, finely chopped or minced", "1 tbsp lime juice", "½ tsp fish sauce", "1 small shallot, thinly sliced", "½ cucumber, sliced", "6 lettuce leaves", "2 scallions", "¼ cup cooked brown rice", "Mint, cilantro, chili flakes"], "ingredientsMetric": ["170 g chicken breast, finely chopped or minced", "1 tbsp lime juice", "½ tsp fish sauce", "1 small shallot, thinly sliced", "½ cucumber, sliced", "6 lettuce leaves", "2 scallions", "60 g cooked brown rice", "Mint, cilantro, chili flakes"], "steps": ["Cook the chicken in a nonstick pan with 2 tbsp water, breaking it up, for 5–6 minutes.", "Off the heat, stir in lime juice, fish sauce, shallot, scallions, chili and lots of mint and cilantro.", "Spoon into lettuce cups with a little rice and cucumber on the side."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "cod-champ", "type": "eat-in", "title": "Baked cod with champ and cabbage", "desc": "An Irish-style supper: flaky cod over spring-onion mashed potato.", "minutes": 30, "calories": 345, "protein": 38, "fat": 6.0, "carbs": 36, "fiber": 6, "sodium": 145, "source": "estimated", "cuisine": "Irish", "ingredients": ["6½ oz cod fillet", "1 medium potato, peeled and cubed", "3 tbsp skim milk, warmed", "3 scallions, sliced", "1½ cups shredded cabbage", "1 tsp olive oil", "2 tsp lemon juice", "Parsley, black pepper"], "ingredientsMetric": ["180 g cod fillet", "1 medium potato, peeled and cubed", "3 tbsp skim milk, warmed", "3 scallions, sliced", "100 g shredded cabbage", "1 tsp olive oil", "2 tsp lemon juice", "Parsley, black pepper"], "steps": ["Heat oven to 400°F. Boil the potato 15 minutes until tender.", "Meanwhile, place cod on a lined tray, brush with half the oil, add pepper and lemon, and bake 12–14 minutes.", "Mash the potato with warm milk and scallions. Steam or sauté the cabbage in the remaining oil for 4 minutes. Serve together with parsley."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}, {"id": "chicken-pho", "type": "eat-in", "title": "Chicken pho-style noodle soup", "desc": "Ginger-scented broth, rice noodles and plenty of fresh herbs.", "minutes": 30, "calories": 350, "protein": 42, "fat": 4.0, "carbs": 34, "fiber": 3, "sodium": 405, "source": "estimated", "cuisine": "Vietnamese", "ingredients": ["5 oz chicken breast", "1⅔ cups unsalted chicken broth", "½ cup cooked rice noodles", "1 tbsp sliced ginger", "¼ onion, sliced", "½ cup bean sprouts", "2 tsp lime juice", "½ tsp fish sauce", "Star anise, cinnamon stick, basil, cilantro, chili"], "ingredientsMetric": ["150 g chicken breast", "400 ml unsalted chicken broth", "100 g cooked rice noodles", "1 tbsp sliced ginger", "¼ onion, sliced", "50 g bean sprouts", "2 tsp lime juice", "½ tsp fish sauce", "Star anise, cinnamon stick, basil, cilantro, chili"], "steps": ["Toast the ginger, onion, star anise and cinnamon in a dry pot for 2 minutes, then add broth and the whole chicken breast. Simmer 15 minutes.", "Remove the chicken and slice thinly. Strain the broth and stir in fish sauce.", "Put noodles in a bowl, top with chicken, pour over the hot broth, and add sprouts, herbs and lime."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": true}, {"id": "turkey-meatballs", "type": "eat-in", "title": "Turkey meatballs with zucchini noodles", "desc": "Lean meatballs simmered in a garlicky tomato sauce over zucchini noodles.", "minutes": 30, "calories": 350, "protein": 52, "fat": 9.0, "carbs": 20, "fiber": 6, "sodium": 290, "source": "estimated", "cuisine": "Italian", "ingredients": ["6 oz 99% lean ground turkey", "2 tbsp egg white", "¾ cup no-salt-added diced tomatoes", "¼ onion, finely diced", "1 clove garlic", "1 tsp olive oil", "1 medium zucchini, spiralized", "1 tsp grated Parmesan", "Dried oregano, basil, black pepper"], "ingredientsMetric": ["170 g 99% lean ground turkey", "2 tbsp egg white", "200 g no-salt-added diced tomatoes", "¼ onion, finely diced", "1 clove garlic", "1 tsp olive oil", "1 medium zucchini, spiralized", "1 tsp grated Parmesan", "Dried oregano, basil, black pepper"], "steps": ["Mix turkey, egg white, half the garlic, oregano and pepper; roll into 8 meatballs.", "Brown the meatballs in the oil for 5 minutes. Add onion, remaining garlic and tomatoes; cover and simmer 12 minutes.", "Toss the zucchini noodles in the hot sauce for 1 minute. Serve with basil and the Parmesan."], "vegetarian": false, "vegan": false, "glutenFree": true, "dairyFree": false}];
@@ -498,7 +511,9 @@ const PH = {
   pasta: U("1621996346565-e3dbc646d9a9"), pizza: U("1565299624946-b28f40a0ae38"), sushi: U("1553621042-f6e147245754"),
   padthai: U("1559314809-0d155014e29e"), curry: U("1585937421612-70a008356fbe"), bbq: U("1529193591184-b1d58069ecdd"),
   burger: U("1568901346375-23c9450c58cd"), sandwich: U("1528735602780-2552fd46c7af"), steak: U("1600891964092-4316c288032e"),
-  ramen: U("1569718212165-3a8278d5f624"), pancakes: U("1533089860892-a7c6f0a88666"), restaurant: U("1517248135467-4c7edcad34c4")
+  ramen: U("1569718212165-3a8278d5f624"), pancakes: U("1533089860892-a7c6f0a88666"), restaurant: U("1517248135467-4c7edcad34c4"),
+  pizza2: U("1513104890138-7c749659a591"), burger2: U("1550547660-d9450f859349"), sushi2: U("1579871494447-9811cf80d66c"),
+  pasta2: U("1473093295043-cdd812d0e601"), restaurant2: U("1555396273-367ea4eb4db5"), restaurant3: U("1414235077428-338989a2e8c0")
 };
 /* [photo, backup] for each home recipe */
 const RECIPE_IMG = {
@@ -519,19 +534,37 @@ const CUISINE_IMG = {
   breakfast:["pancakes","dining"], healthy:["vegbowl","bowl"], other:["restaurant","dining"]
 };
 const CHAIN_IMG = { "Chipotle": ["vegbowl","bowl"], "Chick-fil-A": ["chicken","dining"] };
+
+/* Several stock photos per cuisine; each restaurant gets one based on its id, so neighbours rarely match. */
+const CUISINE_POOL = {
+  seafood:["fish","fishplate","salmon"], mexican:["tacos","tacos2"], italian:["pasta","pasta2","plated"], pizza:["pizza","pizza2"],
+  chinese:["asiandish","stirfry"], japanese:["sushi","sushi2","ramen"], thai:["padthai","bowl"], indian:["curry","plated"],
+  mediterranean:["salad","vegbowl","bowl"], bbq:["bbq","grill"], american:["dining","burger2","plated","restaurant2"], burger:["burger","burger2"],
+  chicken:["chicken","salad"], sandwich:["sandwich","restaurant2"], steak:["steak","grill"], asian:["ramen","asiandish","stirfry"],
+  breakfast:["pancakes","breakfast"], healthy:["vegbowl","salad","bowl"], other:["restaurant","restaurant2","restaurant3","dining"]
+};
+function hashStr(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
 function photoFor(m){
   let pair;
   if (m.image) pair = [m.image, m.type === "eat-in" ? PH.bowl : PH.dining];
-  else if (m.group) pair = (CUISINE_IMG[m.group] || CUISINE_IMG.other).map(k => PH[k]);
+  else if (m.group){
+    const pool = CUISINE_POOL[m.group] || CUISINE_POOL.other, k = PH[pool[hashStr(m.id) % pool.length]];
+    const fb = PH[(CUISINE_IMG[m.group] || CUISINE_IMG.other)[1]];
+    pair = m.photo ? [m.photo, k] : [k, fb];
+  }
   else if (m.type === "eat-in") pair = (RECIPE_IMG[m.id] || ["bowl","salmon"]).map(k => PH[k]);
   else pair = (CHAIN_IMG[m.venue] || ["dining","restaurant"]).map(k => PH[k]);
   return pair;
 }
-const imgTag = (m, alt) => { const [src, fb] = photoFor(m); return `<img src="${esc(src)}" data-fb="${esc(fb)}" alt="${esc(alt)}" loading="lazy" decoding="async">`; };
+const imgTag = (m, alt) => {
+  const [src, fb] = photoFor(m);
+  const logo = m.photo && m.photoKind === "logo" && src === m.photo;
+  return `<img src="${esc(src)}" data-fb="${esc(fb)}" alt="${esc(alt)}"${logo ? ' class="logo"' : ""} loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+};
 document.addEventListener("error", e => {
   const img = e.target;
   if (!(img instanceof HTMLImageElement) || !img.dataset) return;
-  if (img.dataset.fb && img.src !== img.dataset.fb){ const fb = img.dataset.fb; img.dataset.fb = ""; img.src = fb; }
+  if (img.dataset.fb && img.src !== img.dataset.fb){ const fb = img.dataset.fb; img.dataset.fb = ""; img.classList.remove("logo"); img.src = fb; }
   else { img.parentElement && img.parentElement.classList.add("noimg"); img.remove(); }
 }, true);
 
@@ -549,7 +582,7 @@ const state = {
   favs: new Set(store.get("favs", [])),
   list: store.get("list", []),
   imported: store.get("imported", []),
-  loc: store.get("loc", DEFAULT_LOC),
+  loc: null, /* always starts blank: the user types or shares their location */
   radius: store.get("radius", 5),
   places: [], placesKey: "", loading: false, placesShown: 30, query: "", cuisine: "all", recipeCuisine: "all",
   region: store.get("region", null) || detectRegion()
@@ -716,7 +749,7 @@ function placeCard(p){
   return `<article class="card place">
     <button class="media" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}">
       ${imgTag(p, c.label + " food")}
-      <span class="tags"><span class="tag n">${esc(c.label)}</span></span>
+      <span class="tags"><span class="tag n">${esc(c.label)}</span>${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}</span>
       <span class="lb">${icon("pin")}${p.dist.toFixed(1)} mi</span>
     </button>
     <div class="body">
@@ -733,7 +766,7 @@ function placeCard(p){
 const empty = (title, body) => `<div class="empty"><b>${esc(title)}</b>${esc(body)}</div>`;
 
 function allEatIn(){ return [...state.imported.filter(m => m.type === "eat-in"), ...RECIPES].map(localize); }
-function inUS(){ return !state.loc.country || state.loc.country === "us"; }
+function inUS(){ return !!state.loc && state.loc.country === "us"; }
 function chainPicks(){
   const picks = [];
   if (!inUS()) return picks; /* published numbers are for US menus; recipes and portions differ in other countries */
@@ -746,7 +779,7 @@ function chainPicks(){
   return picks;
 }
 function importedDineOut(){
-  return state.imported.filter(m => m.type === "dine-out").map(m => ({ ...m, dist: (m.lat != null && m.lon != null) ? miles(state.loc, m) : null }))
+  return state.imported.filter(m => m.type === "dine-out").map(m => ({ ...m, dist: (state.loc && m.lat != null && m.lon != null) ? miles(state.loc, m) : null }))
     .filter(m => m.dist == null || m.dist <= state.radius);
 }
 function matchesQuery(m){
@@ -761,6 +794,7 @@ function render(){
   $("#modeEatIn").setAttribute("aria-pressed", eat);
   $("#modeDineOut").setAttribute("aria-pressed", !eat);
   $("#locSection").hidden = eat;
+  $("#searchWrap").hidden = false;
   $("#hero").classList.toggle("compact", !eat);
   document.body.classList.toggle("dine", !eat);
   $("#unitsWrap").hidden = !eat;
@@ -782,6 +816,12 @@ function render(){
   }
 
   // Dine out
+  if (!state.loc){
+    $("#count").innerHTML = "Where are you eating tonight?";
+    $("#searchWrap").hidden = true;
+    out.innerHTML = `<div class="loc-prompt">${icon("pin")}<div><b>Enter your location to see restaurants</b><span>Type a town, city or postcode in the box above and pick it from the list, or tap ${icon("locate")} to use where you are now.</span></div></div>`;
+    return;
+  }
   const rawPicks = [...chainPicks(), ...importedDineOut()];
   const picks = rawPicks.filter(passes).filter(matchesQuery);
   const places = state.places.filter(p => state.cuisine === "all" || p.group === state.cuisine)
@@ -853,6 +893,7 @@ function scrollToResults(){
   window.scrollTo({ top, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 }
 async function loadPlaces(force, scroll){
+  if (!state.loc){ render(); return; }
   const key = `${state.loc.lat.toFixed(3)},${state.loc.lon.toFixed(3)},${state.radius}`;
   if (!force && key === state.placesKey && state.places.length) { render(); if (scroll) scrollToResults(); return; }
   const cache = store.get("places", null);
@@ -888,15 +929,59 @@ async function loadPlaces(force, scroll){
     return { id: el.type[0] + el.id, name: t.name, brand: t.brand || "", lat, lon, dist: miles(state.loc, { lat, lon }),
       group: groupFor(cuisine, t.amenity), cuisineRaw: cuisine.join(" "), addr,
       website: /^https?:\/\//.test(t.website || t["contact:website"] || "") ? (t.website || t["contact:website"]) : "",
-      phone: t.phone || t["contact:phone"] || "", hours: t.opening_hours || "" };
+      phone: t.phone || t["contact:phone"] || "", hours: t.opening_hours || "",
+      ...photoFromTags(t), wd: t.wikidata || "", brandWd: t["brand:wikidata"] || "" };
   }).filter(p => p && p.dist <= state.radius + 0.05)
     .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => a.dist - b.dist);
   state.placesKey = key; state.placesShown = 30; state.cuisine = "all";
   store.set("places", { key, ts: Date.now(), places: state.places });
+  enrichPhotos();
   setStatus(state.places.length ? "" : `No restaurants are mapped within ${state.radius} mi. Try a wider radius.`);
   render();
   if (scroll) scrollToResults();
+}
+
+
+/* ---------- Real restaurant photos (free sources only) ----------
+   1) A photo mapped to the restaurant in OpenStreetMap (image / wikimedia_commons tags).
+   2) The restaurant's own Wikidata entry (notable places), then its brand's (chains): photo first, else logo.
+   Everything else keeps a varied stock photo of its cuisine. */
+const commonsFile = name => "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(String(name).replace(/^File:/i, "").replace(/ /g, "_")) + "?width=800";
+const commonsPage = name => "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(String(name).replace(/^File:/i, "").replace(/ /g, "_"));
+function photoFromTags(t){
+  const c = t.wikimedia_commons || "";
+  if (/^File:/i.test(c)) return { photo: commonsFile(c), photoKind: "photo", photoCredit: commonsPage(c) };
+  const img = t.image || "";
+  const m = img.match(/commons\.wikimedia\.org\/wiki\/(File:[^?#]+)/i);
+  if (m) { const f = decodeURIComponent(m[1]); return { photo: commonsFile(f), photoKind: "photo", photoCredit: commonsPage(f) }; }
+  if (/^https:\/\/\S+\.(jpe?g|png|webp)(\?.*)?$/i.test(img)) return { photo: img, photoKind: "photo", photoCredit: "" };
+  return {};
+}
+const wdCache = store.get("wd", {});
+async function enrichPhotos(){
+  const need = new Set();
+  state.places.forEach(p => { if (!p.photo){ if (p.wd && !(p.wd in wdCache)) need.add(p.wd); if (p.brandWd && !(p.brandWd in wdCache)) need.add(p.brandWd); } });
+  const ids = [...need].filter(id => /^Q\d+$/.test(id));
+  for (let i = 0; i < ids.length; i += 50){
+    try {
+      const url = "https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims&format=json&origin=*&ids=" + ids.slice(i, i + 50).join("|");
+      const data = await fetchJSON(url, {}, 15000);
+      Object.entries(data.entities || {}).forEach(([id, ent]) => {
+        const val = p => ent.claims?.[p]?.[0]?.mainsnak?.datavalue?.value;
+        wdCache[id] = { img: val("P18") || "", logo: val("P154") || "" };
+      });
+    } catch { /* offline or busy: keep stock photos */ }
+  }
+  store.set("wd", wdCache);
+  let changed = false;
+  state.places.forEach(p => {
+    if (p.photo) return;
+    const own = wdCache[p.wd], brand = wdCache[p.brandWd];
+    const pick = (own && own.img && ["photo", own.img]) || (brand && brand.img && ["photo", brand.img]) || (own && own.logo && ["logo", own.logo]) || (brand && brand.logo && ["logo", brand.logo]);
+    if (pick){ p.photoKind = pick[0]; p.photo = commonsFile(pick[1]); p.photoCredit = commonsPage(pick[1]); p.photoFromBrand = !(own && (own.img || own.logo)); changed = true; }
+  });
+  if (changed && state.mode === "dine-out") render();
 }
 
 /* ---------- Sheets ---------- */
@@ -972,10 +1057,11 @@ function openPlace(id){
   if (chain && inUS()) body += `<div class="tipbox o">This chain publishes nutrition. See <b>Dishes with published nutrition</b> for picks with real numbers.</div>`;
   body += tipsFor(p.group);
   body += `<div class="actions">
-    <button class="btn" data-maps="${esc(mapsUrl(p.name, p.lat, p.lon, p.addr))}">${icon("pin")}Navigate in Google Maps</button>
+    <button class="btn orange" data-maps="${esc(mapsUrl(p.name, p.lat, p.lon, p.addr))}">${icon("ext")}See photos &amp; reviews</button>
+    <button class="btn" data-maps="${esc("https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lon)}">${icon("nav")}Directions</button>
     ${p.website ? `<button class="btn ghost" data-url="${esc(p.website)}">${icon("ext")}Website &amp; menu</button>` : ""}
     ${p.phone ? `<a class="btn ghost" href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}</div>
-    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. The photo shows this type of food, not this restaurant.</p></div>`;
+    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant.")) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">Photo credit &amp; license</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>See photos &amp; reviews</b> for its real photos on Google Maps."}</p></div>`;
   openSheet(body);
 }
 function openInfo(){
@@ -1064,7 +1150,7 @@ function wheelSVG(items){
 function decide(){
   const pool = surprisePool();
   if (!pool.length){
-    toast(state.mode === "eat-in" ? "Nothing matches your filters yet — try turning one off" : "Find places first, then spin the wheel");
+    toast(state.mode === "eat-in" ? "Nothing matches your filters yet — try turning one off" : (state.loc ? "No places match — try a wider radius or fewer filters" : "Enter your location first, then spin the wheel"));
     return;
   }
   wheel.items = shuffle(pool.slice()).slice(0, 12);
@@ -1117,7 +1203,7 @@ function showWinner(w){
 function setMode(mode){
   state.mode = mode; store.set("mode", mode); state.query = ""; $("#search").value = "";
   render();
-  if (mode === "dine-out") loadPlaces(false);
+  if (mode === "dine-out"){ if (state.loc) loadPlaces(false); else $("#locInput").focus(); }
   else setStatus("");
 }
 
@@ -1187,7 +1273,7 @@ function closeAC(){ ac.items = []; ac.active = -1; $("#acList").hidden = true; $
 function chooseAC(i){
   const p = ac.items[i]; if (!p) return;
   closeAC();
-  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; store.set("loc", state.loc);
+  state.loc = { label: p.label, lat: p.lat, lon: p.lon, country: p.country }; 
   $("#locInput").value = p.label; $("#locInput").blur();
   loadPlaces(true, true);
 }
@@ -1208,11 +1294,12 @@ $("#locInput").addEventListener("keydown", e => {
   if (e.key === "ArrowDown"){ e.preventDefault(); ac.active = (ac.active + 1) % ac.items.length; renderAC(ac.lastQ); }
   else if (e.key === "ArrowUp"){ e.preventDefault(); ac.active = (ac.active - 1 + ac.items.length) % ac.items.length; renderAC(ac.lastQ); }
   else if (e.key === "Escape"){ e.stopPropagation(); closeAC(); }
+  else if (e.key === "Enter"){ e.preventDefault(); chooseAC(Math.max(0, ac.active)); }
 });
-$("#locInput").addEventListener("focus", e => { if (e.target.value === state.loc.label) e.target.select(); });
+$("#locInput").addEventListener("focus", e => { if (state.loc && e.target.value === state.loc.label) e.target.select(); });
 $("#acList").addEventListener("mousedown", e => e.preventDefault()); /* keep focus so the tap registers */
 $("#acList").addEventListener("click", e => { const li = e.target.closest("[data-ac]"); if (li) chooseAC(Number(li.dataset.ac)); });
-document.addEventListener("click", e => { if (!e.target.closest(".ac-wrap")) closeAC(); });
+document.addEventListener("click", e => { if (!e.target.closest(".ac-wrap") && !e.target.closest("#locGo")) closeAC(); });
 
 $("#locForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -1221,9 +1308,9 @@ $("#locForm").addEventListener("submit", async e => {
   closeAC();
   const go = $("#locGo"); go.disabled = true;
   try {
-    if (q.toLowerCase() !== state.loc.label.toLowerCase()){
+    if (!state.loc || q.toLowerCase() !== state.loc.label.toLowerCase()){
       setStatus("Looking up that location…", "load");
-      state.loc = await geocode(q); store.set("loc", state.loc); $("#locInput").value = state.loc.label;
+      state.loc = await geocode(q); $("#locInput").value = state.loc.label;
     }
     await loadPlaces(true, true);
   } catch (err){ setStatus(err.message && !/^HTTP|abort/i.test(err.message) ? err.message : "Couldn’t look up that location. Check your connection and try again.", "err"); }
@@ -1235,7 +1322,7 @@ $("#gpsBtn").addEventListener("click", () => {
   navigator.geolocation.getCurrentPosition(async pos => {
     const { latitude: lat, longitude: lon } = pos.coords;
     const where = await reverseGeocode(lat, lon);
-    state.loc = { lat, lon, label: where.label, country: where.country }; store.set("loc", state.loc);
+    state.loc = { lat, lon, label: where.label, country: where.country }; 
     $("#locInput").value = state.loc.label; loadPlaces(true, true);
   }, err => setStatus(err.code === 1 ? "Location access is off. Allow it in your browser settings, or type a city or ZIP." : "Couldn’t get your location. Type a city or ZIP instead.", "err"),
   { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
@@ -1285,10 +1372,11 @@ $("#importFile").addEventListener("change", e => {
 
 /* ---------- Boot ---------- */
 $("#ver").textContent = VERSION;
-$("#locInput").value = state.loc.label;
+$("#locInput").value = "";
+store.del("loc"); store.del("places"); /* locations are no longer remembered */
 updateListCount();
 render();
-if (state.mode === "dine-out") loadPlaces(false);
+if (state.mode === "dine-out" && state.loc) loadPlaces(false);
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
 </script>
 </body>

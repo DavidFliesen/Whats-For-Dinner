@@ -1,6 +1,14 @@
-# What’s 4 Dinner? — Version 2.4.0
+# What’s 4 Dinner? — Version 2.5.0
+An ARTEZIQ app.
 
-## What’s new in 2.4.0
+## What’s new in 2.5.0
+- **Location starts blank** with a prompt to type a town/city/postcode or use GPS. Locations aren’t remembered between visits.
+- **Real restaurant photos where free sources have them**: a photo mapped to the restaurant in OpenStreetMap, or from Wikidata/Wikimedia Commons (the place itself, else its chain — photo first, then logo). Cards are tagged “Real photo”, “Chain photo” or “Logo”, with credit/license links in the popup.
+- Restaurants without a real photo get a varied cuisine photo (picked per restaurant) so neighbours rarely look identical.
+- New **See photos & reviews** button opens the restaurant on Google Maps; **Directions** is separate.
+- Credited to **ARTEZIQ**.
+
+## 2.4.0
 - **Location suggestions as you type** (after 3 letters), worldwide — e.g. “Portste” offers Portstewart, Northern Ireland. Uses Photon (OpenStreetMap data, no API key). Arrow keys + Enter work; Enter picks the top suggestion.
 - **Dine Out fits on screen**: the hero shrinks to a slim Eat In / Dine Out bar in Dine Out, the empty chain section is hidden, and the page scrolls to the results after every search.
 - **International recipes**: 6 new dishes (Indian chicken tikka, Moroccan tagine, Thai larb, Irish cod with champ, Vietnamese pho-style soup, Italian turkey meatballs) — 21 total — with a cuisine filter.
