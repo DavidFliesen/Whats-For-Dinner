@@ -231,6 +231,28 @@ dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:14.5px}
 .src{font-size:12.5px;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(88px + var(--sab));transform:translateX(-50%);z-index:60;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;font-size:14px;max-width:calc(100% - 36px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
 .toast[hidden]{display:none}
+
+/* Surprise Me wheel */
+.wheel-wrap{position:relative;width:min(340px,82vw);aspect-ratio:1;margin:18px auto 8px}
+.wheel{width:100%;height:100%;border-radius:50%;box-shadow:0 12px 30px rgba(15,23,42,.25),0 0 0 8px #fff,0 0 0 10px var(--line);transition:transform 4.6s cubic-bezier(.12,.72,.08,1)}
+.wheel svg{width:100%;height:100%;display:block}
+.wheel text{font:700 10.5px var(--font);fill:#fff}
+.pointer{position:absolute;left:50%;top:-14px;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--orange);filter:drop-shadow(0 3px 3px rgba(0,0,0,.3));z-index:2}
+.hub{position:absolute;inset:0;margin:auto;width:52px;height:52px;border-radius:50%;background:#fff;border:4px solid var(--navy);display:grid;place-items:center;color:var(--orange);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hub svg.i{width:24px;height:24px}
+@media (prefers-reduced-motion:reduce){.wheel{transition-duration:.8s}}
+.spin-cta{display:flex;justify-content:center;margin:16px 0 4px}
+.spin-cta[hidden]{display:none}
+.spin-cta .btn{min-width:220px}
+.winner{margin-top:16px;border:2px solid var(--orange);border-radius:20px;overflow:hidden;background:#fff;animation:up .25s ease-out}
+.winner .w-media{position:relative;height:150px;background:linear-gradient(135deg,#1E293B,#0F172A)}
+.winner .w-media img{width:100%;height:100%;object-fit:cover}
+.winner .w-media::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0) 65%)}
+.winner .w-cap{position:absolute;z-index:2;left:16px;right:16px;bottom:12px;color:#fff}
+.winner .w-cap .k{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange-400)}
+.winner .w-cap b{display:block;font-size:20px;line-height:1.2;font-weight:800}
+.winner .actions{padding:0 16px 16px;margin-top:14px}
+.wheel-sub{color:var(--muted);font-size:14px;margin:0;padding-right:48px}
 </style>
 </head>
 <body>
@@ -263,7 +285,7 @@ dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:14.5px}
   <div class="wrap">
     <a class="logo" href="./" aria-label="What’s 4 Dinner? home"><img src="./assets/logo.png" alt="What’s 4 Dinner?" width="656" height="402"></a>
     <div class="hdr-actions">
-      <button class="pill-btn hot desk" id="decideTop"><svg class="i"><use href="#i-spark"/></svg>Decide For Me</button>
+      <button class="pill-btn hot desk" id="decideTop"><svg class="i"><use href="#i-spark"/></svg>Surprise Me</button>
       <button class="pill-btn" id="importTop"><svg class="i"><use href="#i-file"/></svg><span class="desk">Import JSON</span><span class="mobile">Import</span></button>
       <button class="icon-btn" id="listBtn" aria-label="Shopping list"><svg class="i"><use href="#i-list"/></svg><span class="badge" id="listCount" hidden>0</span></button>
     </div>
@@ -333,7 +355,7 @@ dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:14.5px}
   </section>
 </main>
 
-<button class="btn orange fab mobile" id="decideBtn"><svg class="i"><use href="#i-spark"/></svg>Decide for me</button>
+<button class="btn orange fab mobile" id="decideBtn"><svg class="i"><use href="#i-spark"/></svg>Surprise Me</button>
 
 <footer class="foot">
   <div class="wrap">
@@ -354,7 +376,7 @@ dl.crit dd{margin:2px 0 0;color:var(--muted);font-size:14.5px}
 
 <script>
 "use strict";
-const VERSION = "2.1.0";
+const VERSION = "2.2.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 const DEFAULT_LOC = { label: "Summerville, SC", lat: 33.0185, lon: -80.1756 };
 
@@ -784,6 +806,7 @@ function closeSheet(fromPop){
   if ($("#sheet").hidden) return;
   $("#sheet").hidden = true;
   document.body.style.overflow = "";
+  wheel.spinning = false;
   if (lastFocus && lastFocus.focus) lastFocus.focus();
   if (!fromPop && history.state && history.state.sheet) history.back();
 }
@@ -898,16 +921,90 @@ function updateListCount(){
   const n = state.list.filter(i => !i.done).length, b = $("#listCount");
   b.textContent = n; b.hidden = n === 0;
 }
-function decide(){
+/* ---------- Surprise Me wheel ---------- */
+const WHEEL_COLORS = ["#F97316", "#0F172A", "#FB923C", "#1E293B", "#EA580C", "#334155"];
+const wheel = { items: [], rot: 0, spinning: false };
+function surprisePool(){
   let pool;
-  if (state.mode === "eat-in") pool = allEatIn().filter(passes).filter(matchesQuery).map(m => ["m", m.id]);
+  if (state.mode === "eat-in") pool = allEatIn().filter(passes).filter(matchesQuery).map(m => ({ kind: "m", id: m.id, label: m.title, item: m }));
   else {
-    pool = [...chainPicks(), ...importedDineOut()].filter(passes).map(m => ["m", m.id]);
-    if (!state.filters.has("saved")) pool = pool.concat(state.places.filter(p => state.cuisine === "all" || p.group === state.cuisine).slice(0, 40).map(p => ["p", p.id]));
+    pool = [...chainPicks(), ...importedDineOut()].filter(passes).filter(matchesQuery).map(m => ({ kind: "m", id: m.id, label: (m.venue ? m.venue + ": " : "") + m.title, item: m }));
+    if (!state.filters.has("saved")) pool = pool.concat(state.places
+      .filter(p => state.cuisine === "all" || p.group === state.cuisine)
+      .filter(p => !state.query || (p.name + " " + p.cuisineRaw).toLowerCase().includes(state.query))
+      .slice(0, 40).map(p => ({ kind: "p", id: p.id, label: p.name, item: p })));
   }
-  if (!pool.length){ toast(state.mode === "eat-in" ? "Nothing matches your filters yet" : "Find places first, then I’ll pick one"); return; }
-  const [kind, id] = pool[Math.floor(Math.random() * pool.length)];
-  kind === "m" ? openMeal(id) : openPlace(id);
+  return pool;
+}
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function wheelSVG(items){
+  const n = items.length, cx = 150, cy = 150, r = 148, seg = 360 / n;
+  const pt = a => { const rad = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; };
+  const short = s => { s = s.replace(/^(Simple|Lemon-poached|Pineapple-lime|Sheet-pan) /i, ""); return s.length > 15 ? s.slice(0, 14).trim() + "…" : s; };
+  let out = "";
+  items.forEach((it, i) => {
+    let color = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    if (i === n - 1 && n > 1 && color === WHEEL_COLORS[0]) color = "#10B981";
+    const a0 = i * seg, a1 = (i + 1) * seg, [x0, y0] = pt(a0), [x1, y1] = pt(a1);
+    out += n === 1 ? `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>`
+      : `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${seg > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${color}" stroke="#fff" stroke-width="1.5"/>`;
+    const mid = a0 + seg / 2;
+    out += `<text x="${cx + r - 14}" y="${cy}" text-anchor="end" dominant-baseline="middle" transform="rotate(${(mid - 90).toFixed(2)} ${cx} ${cy})">${esc(short(it.label))}</text>`;
+  });
+  return `<svg viewBox="0 0 300 300" aria-hidden="true">${out}</svg>`;
+}
+function decide(){
+  const pool = surprisePool();
+  if (!pool.length){
+    toast(state.mode === "eat-in" ? "Nothing matches your filters yet — try turning one off" : "Find places first, then spin the wheel");
+    return;
+  }
+  wheel.items = shuffle(pool.slice()).slice(0, 12);
+  wheel.rot = 0; wheel.spinning = false;
+  const what = state.mode === "eat-in" ? "recipe" : "option";
+  openSheet(`<div class="m-plain" style="padding-bottom:26px">
+    <h2 id="sheetTitle">Surprise Me</h2>
+    <p class="wheel-sub">${pool.length > 12 ? `12 random picks from ${pool.length} ${what}s` : `${pool.length} ${what}${pool.length === 1 ? "" : "s"}`} that match your filters. Spin to choose tonight’s dinner.</p>
+    <div class="wheel-wrap">
+      <div class="pointer" aria-hidden="true"></div>
+      <div class="wheel" id="wheel">${wheelSVG(wheel.items)}</div>
+      <div class="hub" aria-hidden="true">${icon("spark")}</div>
+    </div>
+    <div class="spin-cta"><button class="btn orange" id="spinBtn">${icon("spark")}Spin the wheel</button></div>
+    <div id="winner" aria-live="polite"></div>
+  </div>`);
+}
+function spinWheel(){
+  if (wheel.spinning || !wheel.items.length) return;
+  const el = $("#wheel"); if (!el) return;
+  wheel.spinning = true;
+  $("#spinBtn").disabled = true; $("#winner").innerHTML = "";
+  const n = wheel.items.length, seg = 360 / n, pick = Math.floor(Math.random() * n);
+  const center = pick * seg + seg / 2 + (Math.random() - .5) * seg * 0.6;
+  const target = (((-center) % 360) + 360) % 360;
+  const base = wheel.rot + 360 * 6;
+  wheel.rot = base + ((target - (base % 360)) + 360) % 360;
+  const done = () => {
+    el.removeEventListener("transitionend", done);
+    wheel.spinning = false;
+    showWinner(wheel.items[pick]);
+  };
+  el.addEventListener("transitionend", done);
+  requestAnimationFrame(() => { el.style.transform = `rotate(${wheel.rot}deg)`; });
+}
+function showWinner(w){
+  if (navigator.vibrate) navigator.vibrate(40);
+  const m = w.item;
+  const kick = w.kind === "p" ? `${CUISINE[m.group].label} · ${m.dist.toFixed(1)} mi` : (m.type === "eat-in" ? "Home-cooked recipe" : esc(m.venue));
+  const title = w.kind === "p" ? m.name : m.title;
+  $("#winner").innerHTML = `<div class="winner">
+    <div class="w-media">${imgTag(m, title)}<div class="w-cap"><div class="k">${kick}</div><b>${esc(title)}</b></div></div>
+    <div class="actions">
+      <button class="btn" data-${w.kind === "p" ? "place" : "open"}="${esc(w.id)}">${icon("check")}Let’s eat this</button>
+      <button class="btn ghost" id="spinAgain">${icon("spark")}Spin again</button>
+    </div></div>`;
+  const b = $("#spinBtn"); if (b){ b.disabled = false; b.closest(".spin-cta").hidden = true; }
+  $("#winner").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function setMode(mode){
   state.mode = mode; store.set("mode", mode); state.query = ""; $("#search").value = "";
@@ -959,7 +1056,7 @@ $("#gpsBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],#moreBtn,#importBtn,#clearImport,#shareList,#clearDone");
+  const t = e.target.closest("[data-open],[data-place],[data-fav],[data-maps],[data-url],[data-addlist],[data-cuisine],#moreBtn,#importBtn,#clearImport,#shareList,#clearDone,#spinBtn,#spinAgain");
   if (!t) return;
   if (t.dataset.fav){ e.stopPropagation(); toggleFav(t.dataset.fav); }
   else if (t.dataset.open) openMeal(t.dataset.open);
@@ -968,6 +1065,7 @@ document.addEventListener("click", e => {
   else if (t.dataset.url) window.open(t.dataset.url, "_blank", "noopener,noreferrer");
   else if (t.dataset.addlist) addToList(t.dataset.addlist);
   else if (t.dataset.cuisine){ state.cuisine = t.dataset.cuisine; state.placesShown = 30; render(); }
+  else if (t.id === "spinBtn" || t.id === "spinAgain") spinWheel();
   else if (t.id === "moreBtn"){ state.placesShown += 30; render(); }
   else if (t.id === "importBtn") $("#importFile").click();
   else if (t.id === "clearImport"){ state.imported = []; store.set("imported", []); closeSheet(); render(); toast("Imported meals removed"); }

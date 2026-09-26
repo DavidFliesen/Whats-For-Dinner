@@ -1,6 +1,10 @@
-# What’s 4 Dinner? — Version 2.1.0
+# What’s 4 Dinner? — Version 2.2.0
 
-## What’s new in 2.1.0
+## What’s new in 2.2.0
+- **Surprise Me wheel**: the header button (and floating button on phones) opens a spinning wheel built from the meals or restaurants that match your current mode, filters and search. Up to 12 random picks per wheel; the pointer lands on the winner, which you can open or spin again.
+
+## 2.1.0
+
 - Restored the original look: white page, navy hero card with Eat In / Dine Out switch, colored filter pills, Plus Jakarta Sans.
 - Every recipe, restaurant dish and restaurant has a food photo. Tapping the photo, title or button opens the detail popup (photo header, pinned close button).
 - Photos have automatic backups: if one fails to load, a similar photo is swapped in.
