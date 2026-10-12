@@ -498,7 +498,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "2.9.3";
+const VERSION = "3.0.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -616,6 +616,7 @@ function hashStr(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 +
 function photoFor(m){
   let pair;
   if (m.image) pair = [m.image, m.type === "eat-in" ? PH.bowl : PH.dining];
+  else if (m.photoKey && PH[m.photoKey]) pair = [PH[m.photoKey], PH.bowl];
   else if (m.group){
     const pool = CUISINE_POOL[m.group] || CUISINE_POOL.other, k = PH[pool[hashStr(m.id) % pool.length]];
     const fb = PH[(CUISINE_IMG[m.group] || CUISINE_IMG.other)[1]];
@@ -667,7 +668,7 @@ const state = {
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const icon = (n, cls = "i") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
-const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+const num = v => { if (v === null || v === undefined || v === "") return null; const n = Number(v); return Number.isFinite(n) ? n : null; };
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
 function miles(a, b){
   const R = 3958.8, r = x => x * Math.PI / 180;
@@ -755,6 +756,7 @@ function metricText(s){
 function localize(m){
   if (m.type !== "eat-in") return m;
   const ings = state.region === "us" || !m.ingredientsMetric ? (m.ingredients || []) : m.ingredientsMetric;
+  m = { ...m, usUnitsOnly: state.region !== "us" && !m.ingredientsMetric && !!(m.ingredients || []).length };
   return { ...m, title: words(m.title), desc: words(m.desc), ingredients: ings.map(words),
     steps: (m.steps || []).map(s => words(metricText(s))), _orig: [m.title, m.desc, ...(m.ingredients || [])].join(" ") };
 }
@@ -796,7 +798,7 @@ function tagsFor(m){
 }
 function recipeCard(m){
   const fav = state.favs.has(m.id);
-  const kicker = m.type === "eat-in" ? (m.imported ? "Imported recipe" : (m.cuisine ? esc(m.cuisine) + " · Home-cooked" : "Home-cooked recipe")) : esc(m.venue || "Restaurant pick");
+  const kicker = m.type === "eat-in" ? (m.imported ? "Imported recipe" : [m.cuisine ? esc(m.cuisine) : "", m.course === "side" ? "Side dish" : m.course === "light" ? "Light bite" : "Home-cooked", m.collection === "nhlbi" ? "NIH" : ""].filter(Boolean).join(" · ")) : esc(m.venue || "Restaurant pick");
   const c = checks(m);
   const lb = m.type === "eat-in" ? (m.minutes ? `${icon("clock")}${m.minutes} mins` : "") : (m.dist != null ? `${icon("pin")}${m.dist.toFixed(1)} mi` : "Dine Out");
   const diet = dietTags(m);
@@ -826,7 +828,7 @@ function placeCard(p){
   return `<article class="card place">
     <button class="media" data-place="${esc(p.id)}" aria-label="Open ${esc(p.name)}">
       ${imgTag(p, c.label + " food")}
-      <span class="tags"><span class="tag n">${esc(cuisinesOf(p)[0] ? czLabel(cuisinesOf(p)[0]) : c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}${p.pack && p.pack.picks.length ? `<span class="tag p">Menu picks</span>` : ""}</span>
+      <span class="tags"><span class="tag n">${esc(cuisinesOf(p)[0] ? czLabel(cuisinesOf(p)[0]) : c.label)}</span>${p.delivery === "yes" ? `<span class="tag a">Delivers</span>` : ""}${p.takeaway === "yes" ? `<span class="tag b">${takeWord()}</span>` : ""}${p.photo ? `<span class="tag real">${p.photoKind === "logo" ? "Logo" : (p.photoFromBrand ? "Chain photo" : "Real photo")}</span>` : ""}${p.pack && p.pack.picks.length ? `<span class="tag p">Healthier picks</span>` : ""}</span>
       <span class="lb">${icon("pin")}${p.dist.toFixed(1)} mi</span>
     </button>
     <div class="body">
@@ -843,7 +845,56 @@ function placeCard(p){
 }
 const empty = (title, body) => `<div class="empty"><b>${esc(title)}</b>${esc(body)}</div>`;
 
-function allEatIn(){ return [...state.imported.filter(m => m.type === "eat-in"), ...RECIPES].map(localize); }
+/* ---------- Recipe library (data/recipes/) ----------
+   Recipes live in data files so the library can keep growing without touching the app.
+   data/recipes/index.json lists each collection; every file is a list of recipes with
+   per-serving nutrition and a source credit. Built-in recipes are the offline fallback. */
+const library = { recipes: [], collections: [], loaded: false };
+function cleanRecipe(r, col){
+  if (!r || !r.id || !r.title) return null;
+  const n = v => (v === null || v === undefined || v === "") ? null : (Number.isFinite(+v) ? +v : null);
+  const src = r.source && typeof r.source === "object" ? r.source : {};
+  return {
+    id: String(r.id).slice(0, 60), type: "eat-in", title: String(r.title).slice(0, 120), desc: String(r.desc || "").slice(0, 240),
+    cuisine: String(r.cuisine || "").slice(0, 40), course: ["side", "light"].includes(r.course) ? r.course : "main",
+    minutes: n(r.minutes), servings: n(r.servings), servingSize: String(r.servingSize || "").slice(0, 80),
+    calories: n(r.calories), protein: n(r.protein), sodium: n(r.sodium), fat: n(r.fat), satFat: n(r.satFat), carbs: n(r.carbs), fiber: n(r.fiber),
+    vegetarian: !!(r.vegetarian || r.vegan), vegan: !!r.vegan, glutenFree: !!r.glutenFree, dairyFree: !!r.dairyFree, fried: !!r.fried,
+    ingredients: Array.isArray(r.ingredients) ? r.ingredients.map(String).slice(0, 40) : [],
+    ingredientsMetric: Array.isArray(r.ingredientsMetric) ? r.ingredientsMetric.map(String).slice(0, 40) : null,
+    steps: Array.isArray(r.steps) ? r.steps.map(String).slice(0, 20) : [],
+    photoKey: typeof r.photo === "string" && /^[a-z0-9]+$/.test(r.photo) ? r.photo : "",
+    image: cleanUrl(r.image),
+    collection: col ? col.id : "", published: col ? !!col.publishedNutrition : false,
+    sourceName: String(src.name || (col && col.credit) || "").slice(0, 120), sourceBook: String(src.book || "").slice(0, 120), sourceUrl: cleanUrl(src.url)
+  };
+}
+async function loadRecipeLibrary(){
+  try {
+    const r = await fetch("./data/recipes/index.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const idx = await r.json();
+    const cols = Array.isArray(idx.collections) ? idx.collections : [];
+    const seen = new Set(RECIPES.map(x => x.id));
+    for (const col of cols){
+      try {
+        const res = await fetch("./" + String(col.file || "").replace(/^\.?\//, ""), { cache: "no-cache" });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const list = (Array.isArray(data) ? data : data.recipes || []).map(x => cleanRecipe(x, col)).filter(x => x && !seen.has(x.id) && seen.add(x.id));
+        library.recipes.push(...list);
+        library.collections.push({ id: col.id, name: col.name, count: list.length, url: cleanUrl(col.url) });
+      } catch {}
+    }
+  } catch {}
+  library.loaded = true;
+  if (state.mode === "eat-in") render();
+}
+function allEatIn(){ return [...state.imported.filter(m => m.type === "eat-in"), ...RECIPES, ...library.recipes].map(localize); }
+function moreLikeThis(title){
+  const q = encodeURIComponent(title.replace(/\(.*?\)/g, "").trim());
+  return [["Food Network", "https://www.foodnetwork.com/search/" + q + "-"], ["Allrecipes", "https://www.allrecipes.com/search?q=" + q], ["BBC Good Food", "https://www.bbcgoodfood.com/search?q=" + q]];
+}
 function inUS(){ return !!state.loc && state.loc.country === "us"; }
 function chainPicks(){
   const picks = [];
@@ -1057,7 +1108,10 @@ const packs = { index: null, loaded: {} };
 async function loadAreaIndex(){
   if (packs.index) return packs.index;
   let areas = [];
-  try { const r = await fetch("./data/areas/index.json", { cache: "no-cache" }); if (r.ok) areas = (await r.json()).areas || []; } catch {}
+  /* index.json = areas built by the notebook; researched.json = areas researched by hand. Both are optional. */
+  for (const f of ["index.json", "researched.json"]){
+    try { const r = await fetch("./data/areas/" + f, { cache: "no-cache" }); if (r.ok) areas = areas.concat((await r.json()).areas || []); } catch {}
+  }
   const local = store.get("localPacks", {});
   Object.values(local).forEach(pk => { if (pk && pk.area) areas = areas.filter(a => a.id !== pk.area.id).concat([{ ...pk.area, local: true }]); });
   packs.index = areas;
@@ -1078,18 +1132,32 @@ async function getPack(area){
 const cleanUrl = u => /^https:\/\//i.test(u || "") ? u : "";
 async function applyAreaPack(){
   await loadAreaIndex();
-  const area = areaFor(state.loc);
-  state.area = area ? { id: area.id, name: area.name, generated: area.generated || "" } : null;
-  if (!area) return;
-  const pack = await getPack(area); if (!pack) return;
+  /* Several data files can cover the same place (e.g. notebook research + hand research); all of them apply. */
+  const areas = state.loc && packs.index ? packs.index.filter(a => a.center && miles(state.loc, { lat: a.center[0], lon: a.center[1] }) <= (a.radius_mi || 20)) : [];
+  state.area = areas.length ? { id: areas[0].id, name: areas[0].name, generated: areas[0].generated || "" } : null;
+  for (const area of areas){
+    const pack = await getPack(area); if (pack) applyOnePack(pack);
+  }
+}
+function applyOnePack(pack){
+  /* Entries are keyed by OpenStreetMap id (notebook) or carry a name + location (researched by hand),
+     so either kind attaches to the right restaurant. */
+  const key = s => normName(String(s || "").replace(/['’]/g, "")).replace(/\b(the|restaurant|of charleston|charleston)\b/g, "").replace(/\s+/g, " ").trim();
+  const byName = {};
+  Object.values(pack.places).forEach(d => { if (d) [d.name, ...(Array.isArray(d.aliases) ? d.aliases : [])].filter(Boolean).forEach(n => (byName[key(n)] = byName[key(n)] || []).push(d)); });
+  const findEntry = p => pack.places[p.id] || (byName[key(p.name)] || []).find(d =>
+    num(d.lat) === null || num(d.lon) === null || miles(p, { lat: +d.lat, lon: +d.lon }) <= 0.5);
   state.places.forEach(p => {
-    const d = pack.places[p.id]; if (!d) return;
+    const d = findEntry(p); if (!d) return;
     const picks = Array.isArray(d.picks) ? d.picks.filter(x => x && x.dish).slice(0, 6).map(x => ({
       dish: String(x.dish).slice(0, 120), note: String(x.note || "").slice(0, 200),
       fits: Array.isArray(x.fits) ? x.fits.filter(f => FILTER_NAME[f]) : [] })) : [];
-    p.packCuisines = Array.isArray(d.cuisines) ? d.cuisines.map(String).filter(k => /^[a-z][a-z_-]{1,24}$/.test(k)).slice(0, 5) : [];
+    const cz = Array.isArray(d.cuisines) ? d.cuisines.map(String).filter(k => /^[a-z][a-z_-]{1,24}$/.test(k)).slice(0, 5) : [];
+    p.packCuisines = [...new Set([...(p.packCuisines || []), ...cz])];
     p._cz = null;
-    p.pack = { picks, menuUrl: cleanUrl(d.menuUrl), website: cleanUrl(d.website), checked: String(d.checked || pack.generated || "").slice(0, 10) };
+    if (p.pack && p.pack.picks.length && !picks.length) return; /* keep richer data from an earlier file */
+    p.pack = { picks, menuUrl: cleanUrl(d.menuUrl), website: cleanUrl(d.website), checked: String(d.checked || pack.generated || "").slice(0, 10),
+      sourceName: String(d.sourceName || "").slice(0, 80), sourceUrl: cleanUrl(d.sourceUrl) };
     const photo = cleanUrl(d.photo);
     if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true; }
   });
@@ -1413,17 +1481,20 @@ function openMeal(id){
     .filter(f => num(f[1]) !== null).map(f => `<div><span>${f[0]}</span><b>${esc(f[1])}${f[2]}</b></div>`).join("");
   const src = m.source === "published"
     ? `Nutrition published by ${esc(m.venue)}${m.sourceUrl ? ` (<a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener">see their numbers</a>)` : ""}. Checked September 2026 — menus change, so confirm before ordering.`
-    : (m.imported ? "Imported estimate. Treat these numbers as approximate." : "Estimated per serving from USDA FoodData Central values for the amounts listed. Brands vary — check your labels, especially broth, beans and shrimp.");
+    : m.imported ? "Imported estimate. Treat these numbers as approximate."
+    : m.collection ? `Recipe and per-serving nutrition from ${esc(m.sourceName)}${m.sourceBook ? `, <i>${esc(m.sourceBook)}</i>` : ""}. Steps are summarized; ${m.sourceUrl ? `<a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener">see the original recipe</a>` : "see the original recipe"} for full detail.${[m.protein, m.carbs, m.fiber].some(v => num(v) === null) ? " Some nutrients weren’t published for this recipe, so they aren’t shown or used by the filters." : ""}`
+    : "Estimated per serving from USDA FoodData Central values for the amounts listed. Brands vary — check your labels, especially broth, beans and shrimp.";
   const kick = m.type === "eat-in" ? (m.cuisine ? esc(m.cuisine) + " recipe" : "Recipe") + (m.minutes ? ` · ${m.minutes} mins` : "") : esc(m.venue) + (m.dist != null ? ` · ${m.dist.toFixed(1)} mi away` : "");
   let body = `<div class="m-hero">${imgTag(m, m.title)}<div class="cap"><div class="k">${kick}</div><h2 id="sheetTitle">${esc(m.title)}</h2></div></div>
     <div class="m-body">${m.desc ? `<p style="color:var(--muted)">${esc(m.desc)}</p>` : ""}
     <div class="facts">${facts}</div>${pills(m)}`;
   if (m.type === "eat-in"){
-    if (m.ingredients?.length) body += `<h3>Ingredients (1 serving)</h3><ul class="ing">${m.ingredients.map(i => `<li>${icon("check")}<span>${esc(i)}</span></li>`).join("")}</ul>`;
+    if (m.ingredients?.length) body += `<h3>Ingredients (${m.servings ? `makes ${m.servings} servings${m.servingSize ? ` of ${esc(m.servingSize)}` : ""}` : "1 serving"})</h3>${m.servings ? `<p class="src" style="margin-top:-4px">Nutrition above is per serving.${m.usUnitsOnly ? " This recipe uses US cup and ounce measurements." : ""}</p>` : ""}<ul class="ing">${m.ingredients.map(i => `<li>${icon("check")}<span>${esc(i)}</span></li>`).join("")}</ul>`;
     if (m.steps?.length) body += `<h3>Instructions</h3><div class="steps-box"><ol class="steps">${m.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>`;
     body += `<div class="actions">
       <button class="btn" data-addlist="${esc(m.id)}">${icon("plus")}Add to shopping list</button>
-      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>`;
+      <button class="btn ghost" data-fav="${esc(m.id)}" aria-pressed="${state.favs.has(m.id)}">${icon("heart")}${state.favs.has(m.id) ? "Saved" : "Save"}</button></div>
+      <h3>More recipes like this</h3><div class="link-row">${moreLikeThis(m.title).map(([n, u]) => `<button class="btn ghost" data-url="${esc(u)}">${icon("search")}${esc(n)}</button>`).join("")}</div>`;
   } else {
     if (m.order) body += `<h3>Order modification</h3><div class="tipbox">“${esc(m.order)}”</div>`;
     const place = state.places.find(p => p.id === m.placeId);
@@ -1446,8 +1517,11 @@ function openPlace(id){
     const act = [...state.filters].filter(f => FILTER_NAME[f]);
     const score = x => act.filter(f => x.fits.includes(f)).length;
     const picks = p.pack.picks.slice().sort((a, b) => score(b) - score(a));
-    body += `<h3>From their menu</h3><div class="picks">${picks.map(x => `<div class="pick"><b>${esc(x.dish)}</b>${x.note ? `<span>${esc(x.note)}</span>` : ""}${x.fits.length ? `<div class="fits">${x.fits.map(f => `<span${act.includes(f) ? ' class="on"' : ""}>${icon("check")}${esc(FILTER_NAME[f])}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>
-      <p class="src">Dish names are copied word-for-word from the menu on their website${p.pack.checked ? ` (checked ${esc(p.pack.checked)})` : ""}, chosen by an AI reading the descriptions. The tags are a best guess from those descriptions, not measured nutrition. Menus change, so confirm when you order.${p.pack.menuUrl ? ` <a href="${esc(p.pack.menuUrl)}" target="_blank" rel="noopener">See their full menu</a>` : ""}</p>`;
+    const fromSource = !!p.pack.sourceName;
+    body += `<h3>${fromSource ? "Known for (healthier picks)" : "From their menu"}</h3><div class="picks">${picks.map(x => `<div class="pick"><b>${esc(x.dish)}</b>${x.note ? `<span>${esc(x.note)}</span>` : ""}${x.fits.length ? `<div class="fits">${x.fits.map(f => `<span${act.includes(f) ? ' class="on"' : ""}>${icon("check")}${esc(FILTER_NAME[f])}</span>`).join("")}</div>` : ""}</div>`).join("")}</div>
+      <p class="src">${fromSource
+        ? `Dishes this restaurant is known for, as reported by ${p.pack.sourceUrl ? `<a href="${esc(p.pack.sourceUrl)}" target="_blank" rel="noopener">${esc(p.pack.sourceName)}</a>` : esc(p.pack.sourceName)}${p.pack.checked ? ` (checked ${esc(p.pack.checked)})` : ""}, with the lighter options picked out. The tags are a best guess, not measured nutrition. Menus change, so ask what’s on today.`
+        : `Dish names are copied word-for-word from the menu on their website${p.pack.checked ? ` (checked ${esc(p.pack.checked)})` : ""}, chosen by an AI reading the descriptions. The tags are a best guess from those descriptions, not measured nutrition. Menus change, so confirm when you order.`}${p.pack.menuUrl ? ` <a href="${esc(p.pack.menuUrl)}" target="_blank" rel="noopener">See their full menu</a>` : ""}</p>`;
   }
   body += tipsFor(p.group);
   const reg = cuisinesOf(p).find(k => REGION_TIPS[k]);
@@ -1472,8 +1546,10 @@ function openInfo(){
       <dt>GLP-1 friendly</dt><dd>At least ${LIMITS.glp1Protein} g protein, no more than ${LIMITS.glp1Fat} g fat, ${LIMITS.glp1Cal} calories or less, and nothing fried. These follow common guidance for people on GLP-1 medications: smaller, lean, protein-first meals that are easier on the stomach. Your care team’s advice comes first.</dd>
       <dt>Under 25 min</dt><dd>Total time for home recipes.</dd>
     </dl>
+    <h3>Recipe sources</h3>
+    <p>${RECIPES.length} recipes by What’s 4 Dinner?, with nutrition estimated from USDA FoodData Central.${library.collections.map(c => ` ${c.count} from ${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a>` : esc(c.name)}, with the nutrition they publish.`).join("")}</p>
     <h3>Where the numbers come from</h3>
-    <p>Home recipes are estimated from USDA FoodData Central values for the exact amounts listed. Restaurant dishes only get numbers when the restaurant publishes them.</p>
+    <p>Our own recipes are estimated from USDA FoodData Central values for the exact amounts listed. Library recipes use the nutrition their source publishes. Restaurant dishes only get numbers when the restaurant publishes them.</p>
     <h3>How restaurants are matched</h3>
     <p>Most restaurants don’t publish nutrition, so filters match places by their type of food, whether they’re fast food, and diet tags on OpenStreetMap. In researched areas${(packs.index || []).length ? ` (${(packs.index || []).map(a => esc(a.name)).join(", ")})` : ""}, dishes taken word-for-word from a restaurant’s own online menu count too.</p>
     <h3>Import JSON</h3>
@@ -1820,6 +1896,7 @@ $("#locInput").value = state.loc ? state.loc.label : "";
 store.set("fv", 2); store.set("filters", [...state.filters]);
 updateListCount();
 render();
+loadRecipeLibrary();
 if (state.mode === "dine-out" && state.loc) loadPlaces(false);
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
 </script>

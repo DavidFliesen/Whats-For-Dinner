@@ -1,5 +1,13 @@
-# What’s 4 Dinner? — Version 2.9.3
+# What’s 4 Dinner? — Version 3.0.0
 An ARTEZIQ app.
+
+## What’s new in 3.0.0
+- **Growing data library.** Recipes and restaurant research now live in data files under `data/` (see `data/README.md`), so new collections can be added without changing the app.
+- **27 NIH heart-healthy recipes** (`data/recipes/nhlbi.json`) with NIH’s published per-serving nutrition, cuisine, servings and a link to each original — including Southern, Creole, Cajun, Latino, Filipino, Vietnamese, Hawaiian and Native American dishes. Eat In now has 48 recipes.
+- Recipe details show servings and serving size, credit the source, and add **More recipes like this** links to Food Network, Allrecipes and BBC Good Food (links only; nothing copied).
+- Missing nutrients are hidden and ignored by filters instead of showing as zero.
+- **Researched restaurants** (`data/areas/researched.json`): a first set of Charleston-area Gullah Geechee and soul food restaurants with healthier picks and cited sources. Hand-researched entries match restaurants by name, and several data files can cover the same area (notebook + research combine).
+- “How we check these” lists the recipe sources.
 
 ## Changes in 2.9.3
 - Shopping list has a third button, **Clear all**, next to Share list and Clear checked. It asks for a second tap (“Tap to confirm”, within 3 seconds) so a list isn’t wiped by accident.
