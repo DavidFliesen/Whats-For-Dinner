@@ -498,7 +498,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "3.0.0";
+const VERSION = "3.0.1";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -1010,11 +1010,26 @@ function placeLabel(a = {}, fallback = "Current location"){
     : (a.state || a.region || a.country || "");
   return [town, region !== town ? region : ""].filter(Boolean).join(", ");
 }
+/* Name the TOWN you're in, never a tiny neighbourhood or map locality: outside town limits OpenStreetMap
+   often only has a small named place (e.g. "Pinehill") nearby, which isn't how anyone describes where they are. */
 async function reverseGeocode(lat, lon){
+  /* 1) The nearest city or town (Photon's city layer covers cities, towns and villages). */
   try {
-    const r = await fetchJSON(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&lat=${lat}&lon=${lon}`, { headers: { "Accept-Language": "en" } }, 10000);
+    const r = await fetchJSON(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lon}&layer=city&radius=25&limit=1&lang=en`, {}, 10000);
+    const f = (r.features || [])[0];
+    if (f){
+      const p = f.properties || {}, cc = (p.countrycode || "").toLowerCase();
+      const town = p.name || p.city;
+      const region = cc === "us" ? (US_STATES[p.state] || p.state || "") : (p.state || p.country || "");
+      if (town) return { label: [town, region !== town ? region : ""].filter(Boolean).join(", "), country: cc };
+    }
+  } catch {}
+  /* 2) Fallback: city level from Nominatim — town/city/village, else the county. */
+  try {
+    const r = await fetchJSON(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&lat=${lat}&lon=${lon}`, { headers: { "Accept-Language": "en" } }, 10000);
     const a = r.address || {};
-    return { label: placeLabel(a), country: (a.country_code || "").toLowerCase() };
+    const town = a.city || a.town || a.village || a.municipality || a.county;
+    return { label: placeLabel({ ...a, hamlet: undefined, suburb: undefined, neighbourhood: undefined, city: town }), country: (a.country_code || "").toLowerCase() };
   } catch { return { label: "Current location", country: "" }; }
 }
 function groupFor(cuisine, amenity){
@@ -1824,12 +1839,16 @@ $("#gpsBtn").addEventListener("click", () => {
   if (!navigator.geolocation){ setStatus("This browser can’t share your location. Type a city or ZIP instead.", "err"); return; }
   setStatus("Getting your location…", "load");
   navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude: lat, longitude: lon } = pos.coords;
+    const { latitude: lat, longitude: lon, accuracy } = pos.coords;
+    setStatus("Finding your town…", "load");
     const where = await reverseGeocode(lat, lon);
     state.loc = { lat, lon, label: where.label, country: where.country }; store.set("loc", state.loc); resetCuisinesForNewPlace();
-    $("#locInput").value = state.loc.label; loadPlaces(true, true);
+    $("#locInput").value = state.loc.label;
+    await loadPlaces(true, true);
+    /* Wi-Fi-only devices (most iPads) can be miles off. Say so instead of silently using a wrong spot. */
+    if (accuracy > 3000) setStatus(`Your device gave an approximate location (within about ${Math.round(accuracy / 1609)} mi). If ${state.loc.label} isn’t right, type your town instead.`, "err");
   }, err => setStatus(err.code === 1 ? "Location access is off. Allow it in your browser settings, or type a city or ZIP." : "Couldn’t get your location. Type a city or ZIP instead.", "err"),
-  { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
+  { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
 });
 
 document.addEventListener("click", e => {

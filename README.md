@@ -1,5 +1,9 @@
-# What’s 4 Dinner? — Version 3.0.0
+# What’s 4 Dinner? — Version 3.0.1
 An ARTEZIQ app.
+
+## Fixes in 3.0.1
+- **GPS names your town, not a tiny map locality.** “Use my current location” now names the nearest city or town (e.g. Summerville, SC) instead of a small named place like “Pinehill” that OpenStreetMap has outside town limits. Falls back to the county if no town is found.
+- Asks the device for its precise location (instead of accepting a 5-minute-old, rough one), and if the device only gives an approximate fix (common on Wi-Fi-only iPads), says how far off it may be and suggests typing the town.
 
 ## What’s new in 3.0.0
 - **Growing data library.** Recipes and restaurant research now live in data files under `data/` (see `data/README.md`), so new collections can be added without changing the app.
