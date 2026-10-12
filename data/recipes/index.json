@@ -1,0 +1,14 @@
+{
+ "version": 1,
+ "updated": "2026-10-12",
+ "collections": [
+  {
+   "id": "nhlbi",
+   "name": "NIH Heart-Healthy Recipes",
+   "file": "data/recipes/nhlbi.json",
+   "url": "https://www.nhlbi.nih.gov/health/heart-healthy-living/healthy-foods/healthy-eating-recipes",
+   "credit": "NIH National Heart, Lung, and Blood Institute",
+   "publishedNutrition": true
+  }
+ ]
+}
