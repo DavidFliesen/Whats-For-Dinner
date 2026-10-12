@@ -1,0 +1,219 @@
+{
+ "version": 1,
+ "area": {
+  "id": "charleston-researched",
+  "name": "Charleston area (researched)",
+  "center": [
+   32.9,
+   -80.05
+  ],
+  "radius_mi": 30,
+  "file": "data/areas/charleston-researched.json",
+  "generated": "2026-10-12"
+ },
+ "generated": "2026-10-12",
+ "places": {
+  "berthas-kitchen": {
+   "name": "Bertha's Kitchen",
+   "aliases": [
+    "Berthas Kitchen"
+   ],
+   "address": "2332 Meeting Street Rd, North Charleston, SC",
+   "cuisines": [
+    "gullah",
+    "soul"
+   ],
+   "picks": [
+    {
+     "dish": "Okra soup",
+     "note": "Tomato-and-okra soup; ask for a cup with a side of greens",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Stewed greens",
+     "note": "Ask whether they're cooked with smoked meat if you're watching sodium",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Lima beans",
+     "note": "Served with smoked turkey necks; pair with a vegetable side",
+     "fits": []
+    },
+    {
+     "dish": "Fish specials",
+     "note": "Ask for it baked or grilled if available, otherwise share a fried portion",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "Charleston City Paper",
+   "sourceUrl": "https://charlestoncitypaper.com/top-5-soul-food-restaurants-in-charleston/",
+   "checked": "2026-10-12"
+  },
+  "hannibals-kitchen": {
+   "name": "Hannibal's Kitchen",
+   "aliases": [
+    "Hannibals Kitchen"
+   ],
+   "address": "16 Blake St, Charleston, SC",
+   "cuisines": [
+    "gullah",
+    "soul",
+    "seafood"
+   ],
+   "picks": [
+    {
+     "dish": "Okra soup",
+     "note": "A light, vegetable-forward choice",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Collards",
+     "note": "Ask about smoked meat if you're watching sodium",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Crab rice",
+     "note": "A signature dish — rich and salty, so keep it to a small portion",
+     "fits": []
+    }
+   ],
+   "sourceName": "Charleston City Paper / AFAR",
+   "sourceUrl": "https://charlestoncitypaper.com/top-5-soul-food-restaurants-in-charleston/",
+   "checked": "2026-10-12"
+  },
+  "my-three-sons": {
+   "name": "My Three Sons of Charleston",
+   "aliases": [
+    "My Three Sons"
+   ],
+   "address": "North Charleston, SC",
+   "cuisines": [
+    "gullah",
+    "soul",
+    "seafood"
+   ],
+   "picks": [
+    {
+     "dish": "Okra soup",
+     "note": "The lightest of their signatures",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Gullah rice",
+     "note": "Made with tilapia and shrimp (and sausage) — share it or take half home",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "AFAR",
+   "sourceUrl": "https://www.afar.com/magazine/the-cuisine-that-seasoned-charleston-is-finally-getting-its-due",
+   "checked": "2026-10-12"
+  },
+  "daves-carry-out": {
+   "name": "Dave's Carry-Out",
+   "aliases": [
+    "Daves Carry Out",
+    "Dave's Carryout"
+   ],
+   "address": "42-C Morris St, Charleston, SC",
+   "cuisines": [
+    "soul",
+    "seafood"
+   ],
+   "picks": [
+    {
+     "dish": "Lima beans",
+     "note": "A filling vegetable side",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Red beans and rice",
+     "note": "Hearty — pair with a vegetable rather than fries",
+     "fits": []
+    }
+   ],
+   "sourceName": "Charleston City Paper",
+   "sourceUrl": "https://charlestoncitypaper.com/top-5-soul-food-restaurants-in-charleston/",
+   "checked": "2026-10-12"
+  },
+  "eastside-soul": {
+   "name": "Eastside Soul",
+   "address": "46 America St, Charleston, SC",
+   "cuisines": [
+    "soul"
+   ],
+   "picks": [
+    {
+     "dish": "Collard greens",
+     "note": "Ask about smoked meat if you're watching sodium",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Lima beans",
+     "note": "A filling vegetable side",
+     "fits": [
+      "lowCal"
+     ]
+    }
+   ],
+   "sourceName": "Charleston City Paper",
+   "sourceUrl": "https://charlestoncitypaper.com/top-5-soul-food-restaurants-in-charleston/",
+   "checked": "2026-10-12"
+  },
+  "nanas-uptown": {
+   "name": "Nana's Uptown",
+   "aliases": [
+    "Nana's Seafood & Soul",
+    "Nanas Seafood and Soul"
+   ],
+   "address": "5117 Dorchester Rd, North Charleston, SC",
+   "cuisines": [
+    "soul",
+    "seafood"
+   ],
+   "picks": [
+    {
+     "dish": "Crab legs with garlic shrimp",
+     "note": "Lean shellfish — go easy on the butter",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Scallops",
+     "note": "Ask for them grilled or broiled",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Flounder",
+     "note": "Ask for it broiled instead of fried",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "Charleston City Paper",
+   "sourceUrl": "https://charlestoncitypaper.com/top-5-soul-food-restaurants-in-charleston/",
+   "checked": "2026-10-12"
+  }
+ }
+}

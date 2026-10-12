@@ -1,0 +1,17 @@
+{
+ "version": 1,
+ "updated": "2026-10-12",
+ "areas": [
+  {
+   "id": "charleston-researched",
+   "name": "Charleston area (researched)",
+   "center": [
+    32.9,
+    -80.05
+   ],
+   "radius_mi": 30,
+   "file": "data/areas/charleston-researched.json",
+   "generated": "2026-10-12"
+  }
+ ]
+}
