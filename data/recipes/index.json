@@ -9,6 +9,13 @@
    "url": "https://www.nhlbi.nih.gov/health/heart-healthy-living/healthy-foods/healthy-eating-recipes",
    "credit": "NIH National Heart, Lung, and Blood Institute",
    "publishedNutrition": true
+  },
+  {
+   "id": "w4d-world",
+   "name": "What's 4 Dinner? World Kitchen",
+   "file": "data/recipes/w4d-world.json",
+   "credit": "What's 4 Dinner? kitchen",
+   "publishedNutrition": false
   }
  ]
 }
