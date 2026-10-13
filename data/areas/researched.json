@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-12",
+ "updated": "2026-10-13",
  "areas": [
   {
    "id": "charleston-researched",
@@ -12,6 +12,17 @@
    "radius_mi": 30,
    "file": "data/areas/charleston-researched.json",
    "generated": "2026-10-12"
+  },
+  {
+   "id": "north-coast-derry-researched",
+   "name": "North Coast & Derry~Londonderry (researched)",
+   "center": [
+    55.1,
+    -6.85
+   ],
+   "radius_mi": 35,
+   "file": "data/areas/north-coast-derry-researched.json",
+   "generated": "2026-10-13"
   }
  ]
 }

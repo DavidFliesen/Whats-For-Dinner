@@ -1,0 +1,1101 @@
+{
+ "version": 1,
+ "area": {
+  "id": "north-coast-derry-researched",
+  "name": "North Coast & Derry~Londonderry (researched)",
+  "center": [
+   55.1,
+   -6.85
+  ],
+  "radius_mi": 35,
+  "file": "data/areas/north-coast-derry-researched.json",
+  "generated": "2026-10-13"
+ },
+ "generated": "2026-10-13",
+ "note": "Venue photos, addresses and coordinates from the official tourism listings (Visit Causeway Coast and Glens, Visit Derry, Discover Northern Ireland) or the venue's own site, credited and linked on each restaurant. Picks are copied from the venue's published menu where available, otherwise from cited reviews.",
+ "places": {
+  "harrys-shack": {
+   "name": "Harry's Shack",
+   "lat": 55.17062,
+   "lon": -6.72754,
+   "address": "Portstewart Strand, Portstewart BT55 7PG",
+   "cuisines": [
+    "seafood",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Harrys Shack"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F94431736_2884251385035541_8117311335571652608_n_1142029019.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/harrys-shack-p709691",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/harrys-shack-p709691",
+   "picks": [
+    {
+     "dish": "Mussels",
+     "note": "Steamed in a big pot — ask for the bread on the side",
+     "fits": [
+      "highProtein",
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Hake",
+     "note": "Pan-crisped, with a light tomato and bean stew; skip the saffron aioli to lighten it",
+     "fits": [
+      "highProtein",
+      "glp1"
+     ]
+    },
+    {
+     "dish": "Carlingford Oysters",
+     "note": "With Tabasco and lemon — very light",
+     "fits": [
+      "lowCal",
+      "glutenFree",
+      "dairyFree"
+     ]
+    }
+   ],
+   "sourceName": "Gastro Gays and Ireland Before You Die reviews",
+   "sourceUrl": "https://gastrogays.com/harrys-shack"
+  },
+  "eighteen-ninety-four": {
+   "name": "Eighteen Ninety Four",
+   "lat": 55.17154,
+   "lon": -6.72484,
+   "address": "117 Strand Road, Portstewart BT55 7PG",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "1894",
+    "Eighteen Ninety Four Restaurant",
+    "Portstewart Golf Club"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FEighteen_Ninety_Four_1828942784.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/eighteen-ninety-four-p915601",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.eighteenninetyfour.com",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/eighteen-ninety-four-p915601",
+   "menuUrl": "https://eighteenninetyfour.com/menus/"
+  },
+  "amici": {
+   "name": "Amici Ristorante",
+   "lat": 55.17154,
+   "lon": -6.72484,
+   "address": "Portstewart Golf Club, 117 Strand Road, Portstewart BT55 7PG",
+   "cuisines": [
+    "italian"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Amici"
+   ],
+   "photo": "https://www.portstewartgc.co.uk/wp-content/uploads/sites/9498/2025/01/amici_building.jpeg",
+   "photoSource": "https://www.portstewartgc.co.uk/amici",
+   "photoCreditName": "Portstewart Golf Club",
+   "website": "http://amiciportstewart.squarespace.com/",
+   "listing": "https://www.portstewartgc.co.uk/amici"
+  },
+  "anchor-bar": {
+   "name": "Anchor Bar",
+   "lat": 55.18278,
+   "lon": -6.7186,
+   "address": "86-87 The Promenade, Portstewart BT55 7AG",
+   "cuisines": [
+    "pub",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Anchor",
+    "The Anchor Bar",
+    "Anchorage Inn",
+    "Anchorage Bistro",
+    "Anchor Bar Complex"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F4C184691FE38AF8BAD946AE67C7C74A183B91418.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/anchor-bar-complex-p681521",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://theanchorcomplex.co.uk/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/anchor-bar-complex-p681521"
+  },
+  "cromore-halt": {
+   "name": "Cromore Halt",
+   "lat": 55.18269,
+   "lon": -6.69716,
+   "address": "158 Station Road, Portstewart BT55 7PU",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Cromore Halt Inn",
+    "Cromore Halt Restaurant"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F4B7743A460FE7B27C7C9D2405823583A624B5399.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/cromore-halt-restaurant-p682041",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://cromorehalt.co.uk/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/cromore-halt-restaurant-p682041",
+   "picks": [
+    {
+     "dish": "Roast Cod",
+     "note": "Fried bacon, cabbage & peas with a lemon & chive sauce — ask for the bacon and sauce on the side",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Herb Crushed Salmon",
+     "note": "Asparagus wrapped in Parma ham, sun-dried tomato & roast pepper cream — have the cream on the side",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Chargrilled Chicken Breast (Peppered or Plain)",
+     "note": "Choose plain, skip the pepper sauce, and add a side salad",
+     "fits": [
+      "highProtein",
+      "glp1",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "Soup of the Day",
+     "note": "With a crusty roll — a light option",
+     "fits": [
+      "lowCal"
+     ]
+    }
+   ],
+   "menuUrl": "https://cromorehalt.co.uk/bistro-menu"
+  },
+  "lir": {
+   "name": "LIR Seafood",
+   "lat": 55.1395,
+   "lon": -6.675,
+   "address": "The Marina, 64A Portstewart Road, Coleraine BT52 1EY",
+   "cuisines": [
+    "seafood"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Lir",
+    "Lir Seafood Restaurant",
+    "LIR"
+   ],
+   "website": "https://lirseafood.com/",
+   "picks": [
+    {
+     "dish": "Pan-Fried Cod",
+     "note": "Served with confit chicken leg and boulangère potato — ask for extra greens",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Hake Kiev",
+     "note": "A house signature — rich, so share a side salad",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "Ireland Before You Die and Ireland Guide",
+   "sourceUrl": "https://ireland-guide.com/establishment/lir-seafood-.14875.html"
+  },
+  "elliots-bistro": {
+   "name": "Elliot's Bistro",
+   "lat": 55.126,
+   "lon": -6.6554,
+   "address": "Lodge Hotel, Lodge Road, Coleraine BT52 1NF",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Elliots Bistro",
+    "The Lodge Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FElliot_s_Bistro_At_The_Lodge_Hotel_1018145733.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/elliots-bistro-p687411",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.thelodgehotel.com/dining/elliots-bistro",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/elliots-bistro-p687411"
+  },
+  "sandpiper": {
+   "name": "Sandpiper Bistro Bar",
+   "lat": 55.12129,
+   "lon": -6.67182,
+   "address": "3 Riverside Park North, Coleraine BT51 3GE",
+   "cuisines": [
+    "pub"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Sandpiper",
+    "The Sandpiper"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2Fsandpiper_-_june_2025_-_small_res-229-min_384796904.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/sandpiper-bistro-bar-p1021751",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://sandpiperbistro.bar/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/sandpiper-bistro-bar-p1021751"
+  },
+  "brown-trout": {
+   "name": "Brown Trout Golf & Country Inn",
+   "lat": 55.03717,
+   "lon": -6.60313,
+   "address": "209-213 Agivey Road, Aghadowey BT51 4AD",
+   "cuisines": [
+    "irish",
+    "pub"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Brown Trout Inn",
+    "The Brown Trout",
+    "Brown Trout Golf and Country Inn"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FMcAleese_room_886463243.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/brown-trout-golf-and-country-inn-restaurant-p682351",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "http://www.browntroutinn.com",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/brown-trout-golf-and-country-inn-restaurant-p682351",
+   "picks": [
+    {
+     "dish": "Soups",
+     "note": "Homemade, with wheaten bread — keep the butter light",
+     "fits": [
+      "lowCal"
+     ]
+    },
+    {
+     "dish": "Braised beef",
+     "note": "Lean, slow-cooked — ask for vegetables instead of chips",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "Visit Causeway Coast and Glens",
+   "sourceUrl": "https://www.visitcausewaycoastandglens.com/food-and-drink/brown-trout-golf-and-country-inn-restaurant-p682351"
+  },
+  "ramore-wine-bar": {
+   "name": "Ramore Wine Bar",
+   "lat": 55.20802,
+   "lon": -6.65829,
+   "address": "1 The Harbour, Portrush BT56 8DF",
+   "cuisines": [
+    "irish",
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Ramore",
+    "Ramore Restaurant",
+    "The Ramore"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FF0BBE1F54EA3A19632603884D095B5BD9AC2951C.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.ramorerestaurant.com/restaurant/wine-bar/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481",
+   "picks": [
+    {
+     "dish": "GRILLED SALMON",
+     "note": "Roast tomato and padron pepper — ask for the thermidor cream on the side",
+     "fits": [
+      "highProtein",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "GRILLED SEABASS",
+     "note": "Two fillets with roast tomato and padron pepper — sauce on the side",
+     "fits": [
+      "highProtein",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "RAMORE FAMOUS HOUSE SALADS",
+     "note": "Choose the chicken breast, salmon or seabass version",
+     "fits": [
+      "highProtein",
+      "glp1"
+     ]
+    },
+    {
+     "dish": "RUMP STEAK (6OZ)",
+     "note": "The smaller steak, with tomato and padron peppers — skip the pepper sauce",
+     "fits": [
+      "highProtein",
+      "glutenFree"
+     ]
+    }
+   ],
+   "menuUrl": "https://www.ramorerestaurant.com/wp-content/uploads/2022/05/Winebar-evening-menu-January-2.pdf"
+  },
+  "mermaid": {
+   "name": "Mermaid",
+   "lat": 55.20802,
+   "lon": -6.65829,
+   "address": "Ramore, 1 The Harbour, Portrush BT56 8DF",
+   "cuisines": [
+    "seafood"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Mermaid Kitchen",
+    "Mermaid Kitchen & Bar",
+    "Mermaid Kitchen and Bar"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FF0BBE1F54EA3A19632603884D095B5BD9AC2951C.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.ramorerestaurant.com/restaurant/mermaid/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481",
+   "picks": [
+    {
+     "dish": "FISH OF THE DAY",
+     "note": "Ask for it grilled, with seasonal veg",
+     "fits": [
+      "highProtein",
+      "glp1"
+     ]
+    },
+    {
+     "dish": "MERMAID ROAST COD",
+     "note": "Comes with patatas bravas and chorizo aioli — swap the bravas for seasonal veg",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "CHICKEN BREAST",
+     "note": "From the grill — pick seasonal veg or a house salad on the side",
+     "fits": [
+      "highProtein",
+      "glp1",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "ROCKET + PARMESAN SALAD",
+     "note": "A light side or starter",
+     "fits": [
+      "vegetarian",
+      "lowCal"
+     ]
+    }
+   ],
+   "menuUrl": "https://www.ramorerestaurant.com/wp-content/uploads/2022/05/Mermaid-Relaunch-Menu-2.pdf"
+  },
+  "harbour-bar": {
+   "name": "Harbour Bar & Bistro",
+   "lat": 55.20802,
+   "lon": -6.65829,
+   "address": "The Harbour, Portrush BT56 8DF",
+   "cuisines": [
+    "pub",
+    "irish",
+    "grill"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Harbour Bistro",
+    "The Harbour Bar",
+    "Harbour Bar"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FF0BBE1F54EA3A19632603884D095B5BD9AC2951C.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.ramorerestaurant.com/restaurant/harbour-bistro/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/ramore-restaurant-p697481"
+  },
+  "babushka": {
+   "name": "Babushka Kitchen Cafe",
+   "lat": 55.20575,
+   "lon": -6.65628,
+   "address": "South Pier, Portrush BT56 8FN",
+   "cuisines": [
+    "cafe"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Babushka",
+    "Babushka Kitchen Café"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2Fbabushka-pop-up-natural-wine-night_48618480188_o_1892635960.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/babushka-kitchen-cafe-p1007071",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "http://www.babushkakitchencafe.co.uk",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/babushka-kitchen-cafe-p1007071"
+  },
+  "nemesis": {
+   "name": "Nemesis Asian Fusion",
+   "lat": 55.207,
+   "lon": -6.65369,
+   "address": "The Marcus, 39-41 Main Street, Portrush BT56 8BL",
+   "cuisines": [
+    "asian"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Nemesis",
+    "The Marcus"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2Fandras_-_marcus_-_23rd_june_-_reception_bar_food_evening_shots_-_small_res-307_1173062631.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/nemesis-asian-fusion-p1009051",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.marcusportrush.com/dining",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/nemesis-asian-fusion-p1009051"
+  },
+  "red-sail-room": {
+   "name": "Red Sail Room",
+   "lat": 55.2076,
+   "lon": -6.65466,
+   "address": "Portrush Adelphi, 67-71 Main Street, Portrush BT56 8BN",
+   "cuisines": [
+    "italian"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Portrush Adelphi",
+    "The Red Sail Room"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F31_RESTAURANT_0589_113425932.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/red-sail-room-p1028341",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://marineandlawn.com/portrushadelphi/red-sail-room/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/red-sail-room-p1028341"
+  },
+  "port-kitchen": {
+   "name": "The Port Kitchen & Bar",
+   "lat": 55.20753,
+   "lon": -6.65411,
+   "address": "Portrush Atlantic Hotel, 73 Main Street, Portrush BT56 8BN",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Port Kitchen",
+    "The Port Kitchen and Bar",
+    "Portrush Atlantic Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FA023FF17418B35100FD0DA70EA20B9F95DE6A3B0.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-port-kitchen-and-bar-p687421",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "http://www.portrushatlantic.com/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-port-kitchen-and-bar-p687421"
+  },
+  "the-tides": {
+   "name": "The Tides",
+   "lat": 55.2005,
+   "lon": -6.689,
+   "address": "21 Ballyreagh Road, Portrush BT56 8LR",
+   "cuisines": [
+    "seafood",
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Tides Portrush",
+    "Tides"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FImage_5_2140557761.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-tides-portrush-p865581",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://thetidesportrush.com/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-tides-portrush-p865581"
+  },
+  "follow-coast": {
+   "name": "Follow Coast",
+   "lat": 55.20732,
+   "lon": -6.65393,
+   "address": "31 Main Street, Portrush BT56 8BL",
+   "cuisines": [
+    "cafe"
+   ],
+   "checked": "2026-10-13",
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FFollow_Coast_98_1__943072362.jpeg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/follow-coast-p969701",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/follow-coast-p969701"
+  },
+  "bushmills-inn": {
+   "name": "The Bushmills Inn",
+   "lat": 55.20712,
+   "lon": -6.52387,
+   "address": "9 Dunluce Road, Bushmills BT57 8QG",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Bushmills Inn",
+    "Bushmills Inn Restaurant",
+    "Bushmills Inn Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FBFFC598FB21D4C02419BAEF25AAC137E4B2C9B23.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/bushmills-inn-restaurant-p681341",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.bushmillsinn.com/restaurant-and-bar",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/bushmills-inn-restaurant-p681341",
+   "picks": [
+    {
+     "dish": "Walter Ewing's whiskey cured fillet of salmon",
+     "note": "With crab beignet, shellfish blanquette and sea purslane",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Fillet of cod and scallops Rockefeller",
+     "note": "Braised baby fennel, spinach and bacon",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Tandoori scallops",
+     "note": "Starter with pickled mango and carrot salad — ask for the mayonnaise on the side",
+     "fits": [
+      "highProtein",
+      "lowCal",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "Asparagus and Parma ham",
+     "note": "Soft poached egg — skip the Bearnaise for a lighter starter",
+     "fits": [
+      "lowCal",
+      "glutenFree"
+     ]
+    },
+    {
+     "dish": "Crispy fried Dukkah spiced cauliflower steak (v)",
+     "note": "Pistachio, pomegranate and baba ghanoush",
+     "fits": [
+      "vegetarian"
+     ]
+    }
+   ],
+   "menuUrl": "https://bushmillsinn.com/dinner-menu"
+  },
+  "tartine": {
+   "name": "Tartine at the Distillers Arms",
+   "lat": 55.20325,
+   "lon": -6.5223,
+   "address": "140 Main Street, Bushmills BT57 8QE",
+   "cuisines": [
+    "irish",
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Tartine",
+    "Distillers Arms",
+    "The Distillers Arms"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F48D1ECDB36F5B0E27F7DC6722282AD9A847E4C83.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/tartine-at-distillers-arms-p681651",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/tartine-at-distillers-arms-p681651"
+  },
+  "bushmills-townhouse": {
+   "name": "Bushmills Townhouse",
+   "lat": 55.20679,
+   "lon": -6.52372,
+   "address": "45 Main Street, Bushmills BT57 8QA",
+   "cuisines": [
+    "italian",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Bushmills Townhouse Restaurant",
+    "The Townhouse"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FIMG_5495_468174163.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/bushmills-townhouse-restaurant-p909801",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://bushmillstownhouse.com/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/bushmills-townhouse-restaurant-p909801"
+  },
+  "bistro-courthouse": {
+   "name": "Bistro at the Courthouse",
+   "lat": 55.20549,
+   "lon": -6.52349,
+   "address": "75 Main Street, Bushmills BT57 8QD",
+   "cuisines": [
+    "irish",
+    "cafe"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Courthouse",
+    "Courthouse Bistro"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F20241011_101514_0__1254234702.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/bistro-at-the-courthouse-p969691",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "http://www.bistroatthecourthouse.com",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/bistro-at-the-courthouse-p969691"
+  },
+  "porthole": {
+   "name": "The Porthole Bar & Restaurant",
+   "lat": 55.21562,
+   "lon": -6.54481,
+   "address": "Bayview Hotel, 2 Bayhead Road, Portballintrae BT57 8RZ",
+   "cuisines": [
+    "seafood",
+    "pub"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Porthole",
+    "The Porthole",
+    "Bayview Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F20600A753F741E2637FF05BBF32863E8BF1780F1.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-porthole-bar-and-restaurant-p885081",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://bayviewhotelni.com/bar-restaurant/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-porthole-bar-and-restaurant-p885081"
+  },
+  "carrick-a-rede-bar": {
+   "name": "Carrick-a-Rede Bar & Restaurant",
+   "lat": 55.23665,
+   "lon": -6.35709,
+   "address": "21 Main Street, Ballintoy BT54 6LX",
+   "cuisines": [
+    "pub",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Carrick-a-Rede Bar",
+    "Carrick A Rede Bar"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F300001872_562039762376196_4998484855937638235_n_769303441.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/carrick-a-rede-bar-and-restaurant-p825061",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/carrick-a-rede-bar-and-restaurant-p825061"
+  },
+  "marconis": {
+   "name": "Marconi's Bar & Bistro",
+   "lat": 55.20521,
+   "lon": -6.23996,
+   "address": "Marine Hotel, 1-3 North Street, Ballycastle BT54 6BN",
+   "cuisines": [
+    "seafood",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Marconis",
+    "Marine Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F27_964242360.png&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/marconis-bar-and-bistro-at-the-marine-hotel-p687341",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://marinehotelballycastle.com/marconis/",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/marconis-bar-and-bistro-at-the-marine-hotel-p687341",
+   "picks": [
+    {
+     "dish": "Fillet of salmon with mussels",
+     "note": "A seafood-focused bistro favourite",
+     "fits": [
+      "highProtein",
+      "glp1"
+     ]
+    }
+   ],
+   "sourceName": "Visit Causeway Coast and Glens",
+   "sourceUrl": "https://www.visitcausewaycoastandglens.com/food-and-drink/marconis-bar-and-bistro-at-the-marine-hotel-p687341"
+  },
+  "the-lookout": {
+   "name": "The Lookout Bar and Restaurant",
+   "lat": 55.19374,
+   "lon": -6.2418,
+   "address": "Salthouse Hotel, 39 Dunamallaght Road, Ballycastle BT54 6PF",
+   "cuisines": [
+    "italian"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Lookout",
+    "Lookout",
+    "Salthouse Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2FBanner_2_1387609873.png&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-lookout-bar-and-restaurant-p925521",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.thesalthousehotel.com/lookout-bar-and-restaurant.html",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/the-lookout-bar-and-restaurant-p925521"
+  },
+  "leaping-hound": {
+   "name": "The Leaping Hound",
+   "lat": 55.04002,
+   "lon": -6.95641,
+   "address": "Roe Valley Resort, 10 Lisnakilly Road, Limavady BT49 9FB",
+   "cuisines": [
+    "pub"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Leaping Hound",
+    "Roe Valley Resort"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F8_21__454931947.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/leaping-hound-at-roe-valley-resort-p1085051",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.roevalleyresort.com/the-leaping-hound.html",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/leaping-hound-at-roe-valley-resort-p1085051"
+  },
+  "fratelli-limavady": {
+   "name": "Fratelli",
+   "lat": 55.03903,
+   "lon": -6.95505,
+   "address": "Roe Valley Resort, 10 Lisnakilly Road, Limavady BT49 9FB",
+   "cuisines": [
+    "italian"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Fratelli at Roe Valley Resort",
+    "Fratelli Limavady"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/causewaycoast/imageresizer/?image=%2Fdmsimgs%2F16_314205187.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitcausewaycoastandglens.com/food-and-drink/fratelli-at-roe-valley-resort-p761011",
+   "photoCreditName": "Visit Causeway Coast and Glens",
+   "website": "https://www.roevalleyresort.com/fratelli.html",
+   "listing": "https://www.visitcausewaycoastandglens.com/food-and-drink/fratelli-at-roe-valley-resort-p761011"
+  },
+  "browns-in-town": {
+   "name": "Browns in Town",
+   "lat": 54.99907,
+   "lon": -7.32198,
+   "address": "21 Strand Road, Derry~Londonderry BT48 7BJ",
+   "cuisines": [
+    "irish",
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Browns",
+    "Browns In Town"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FBrowns_In_Town_-_LF_Brand_2012517374.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/browns-in-town-p707531",
+   "photoCreditName": "Visit Derry",
+   "website": "http://www.brownsintown.com",
+   "listing": "https://www.visitderry.com/food-and-drink/browns-in-town-p707531",
+   "menuUrl": "https://brownsintown.com/menus/"
+  },
+  "browns-bonds-hill": {
+   "name": "Browns Bonds Hill",
+   "lat": 54.99324,
+   "lon": -7.31186,
+   "address": "1 Bonds Hill, Waterside, Derry~Londonderry BT47 6DW",
+   "cuisines": [
+    "irish",
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Browns",
+    "Browns Restaurant",
+    "Browns Bonds Hill Restaurant"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FBrowns_Bonds_Hill_-_LF_Brand_2085379378.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/browns-bonds-hill-p686681",
+   "photoCreditName": "Visit Derry",
+   "website": "http://brownsbondshill.com",
+   "listing": "https://www.visitderry.com/food-and-drink/browns-bonds-hill-p686681",
+   "menuUrl": "https://brownsbondshill.com/menus/"
+  },
+  "fitzroys": {
+   "name": "Fitzroy's",
+   "lat": 54.99431,
+   "lon": -7.31929,
+   "address": "2-4 Bridge Street, Derry~Londonderry BT48 6JZ",
+   "cuisines": [
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Fitzroys",
+    "Fitzroys Restaurant"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FUntitled_design_10__501429238.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/fitzroys-p755491",
+   "photoCreditName": "Visit Derry",
+   "website": "https://www.fitzroysrestaurant.com/",
+   "listing": "https://www.visitderry.com/food-and-drink/fitzroys-p755491"
+  },
+  "walled-city-brewery": {
+   "name": "Walled City Brewery",
+   "lat": 54.99787,
+   "lon": -7.31076,
+   "address": "70 Ebrington Square, Derry~Londonderry BT47 6FA",
+   "cuisines": [
+    "pub",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Taproom at Walled City Brewery"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FWCB_-_LF_Brand_419978957.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/walled-city-brewery-p710301",
+   "photoCreditName": "Visit Derry",
+   "website": "http://www.walledcitybrewery.com",
+   "listing": "https://www.visitderry.com/food-and-drink/walled-city-brewery-p710301",
+   "picks": [
+    {
+     "dish": "Greencastle Fish of the Day",
+     "note": "Recently pan-roasted plaice with potato, samphire and sea vegetables — ask for the pancetta on the side",
+     "fits": [
+      "highProtein",
+      "glp1"
+     ]
+    },
+    {
+     "dish": "McAtamney's Ribeye on the bone",
+     "note": "A big steak — share it, or have it with salad instead of chips",
+     "fits": [
+      "highProtein",
+      "glutenFree"
+     ]
+    }
+   ],
+   "sourceName": "Visit Derry and The Irish News",
+   "sourceUrl": "https://www.irishnews.com/lifestyle/foodanddrink/2021/10/02/news/eating-out-walled-city-brewery-has-derry-s-perfect-plaice--2461670/"
+  },
+  "cedar": {
+   "name": "Cedar — A Taste of Lebanon",
+   "lat": 54.99324,
+   "lon": -7.31975,
+   "address": "32 Carlisle Road, Derry~Londonderry BT48 8PH",
+   "cuisines": [
+    "lebanese",
+    "middle_eastern"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Cedar",
+    "Cedar A Taste of Lebanon",
+    "Cedar Lebanese Restaurant"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2F6559D36A27AB372C8F2D074FB508318D82EF63A6.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/cedar-a-taste-of-lebanon-p705121",
+   "photoCreditName": "Visit Derry",
+   "listing": "https://www.visitderry.com/food-and-drink/cedar-a-taste-of-lebanon-p705121",
+   "picks": [
+    {
+     "dish": "Fattoush",
+     "note": "Crisp Lebanese salad with herbs",
+     "fits": [
+      "vegetarian",
+      "lowCal",
+      "dairyFree"
+     ]
+    },
+    {
+     "dish": "Munjadra",
+     "note": "Spiced lentils with crispy onion",
+     "fits": [
+      "vegetarian",
+      "dairyFree"
+     ]
+    },
+    {
+     "dish": "Lamb Shawarma",
+     "note": "With rice and cabbage — pair with fattoush instead of extra bread",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "The Irish News",
+   "sourceUrl": "https://ie.irishnews.com/life/food-drink/cedar-isnt-just-for-christmas-this-lebanese-restaurant-is-special-any-time-of-the-year-OZWYO45TCBHHXL7D4Y7V6HLGYQ/"
+  },
+  "oak-room": {
+   "name": "The Oak Room",
+   "lat": 54.99859,
+   "lon": -7.3111,
+   "address": "Ebrington Hotel, Ebrington Square, Derry~Londonderry BT47 6FA",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Oak Room Restaurant",
+    "Oakroom",
+    "Ebrington Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FOak_Room_Resized_1_680777946.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/oak-room-restaurant-ebrington-hotel-p957231",
+   "photoCreditName": "Visit Derry",
+   "website": "https://theebringtonhotel.com/eat-drink/oakroom-restaurant/",
+   "listing": "https://www.visitderry.com/food-and-drink/oak-room-restaurant-ebrington-hotel-p957231"
+  },
+  "the-exchange": {
+   "name": "The Exchange Restaurant & Wine Bar",
+   "lat": 54.99924,
+   "lon": -7.32054,
+   "address": "Exchange House, Queens Quay, Derry~Londonderry BT48 7AY",
+   "cuisines": [
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Exchange",
+    "Exchange Restaurant",
+    "Exchange"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FExchange-Part-2-11-scaled_8238112.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/the-exchange-restaurant-and-wine-bar-p682481",
+   "photoCreditName": "Visit Derry",
+   "website": "https://exchangerestaurant.com/",
+   "listing": "https://www.visitderry.com/food-and-drink/the-exchange-restaurant-and-wine-bar-p682481"
+  },
+  "thompsons": {
+   "name": "Thompson's on the River",
+   "lat": 55.00148,
+   "lon": -7.32134,
+   "address": "City Hotel, Queens Quay, Derry~Londonderry BT48 7AS",
+   "cuisines": [
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Thompsons",
+    "Thompson's Restaurant",
+    "Thompsons on the River",
+    "City Hotel"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FDSC06331_1870558298.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/thompsons-restaurant-p686901",
+   "photoCreditName": "Visit Derry",
+   "website": "https://www.cityhotelderry.com/dining/thompsons",
+   "listing": "https://www.visitderry.com/food-and-drink/thompsons-restaurant-p686901"
+  },
+  "the-grill-everglades": {
+   "name": "The Grill at the Everglades",
+   "lat": 54.98173,
+   "lon": -7.33751,
+   "address": "Everglades Hotel, Prehen Road, Derry~Londonderry BT47 2NH",
+   "cuisines": [
+    "irish",
+    "grill"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "The Grill Restaurant",
+    "Everglades Hotel",
+    "The Grill"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2F15_348616246.png&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/the-grill-restaurant-at-the-everglades-hotel-p682251",
+   "photoCreditName": "Visit Derry",
+   "website": "http://www.hastingshotels.com/everglades-hotel/grill.html",
+   "listing": "https://www.visitderry.com/food-and-drink/the-grill-restaurant-at-the-everglades-hotel-p682251"
+  },
+  "badgers": {
+   "name": "Badgers Bar & Restaurant",
+   "lat": 54.99524,
+   "lon": -7.31898,
+   "address": "16-18 Orchard Street, Derry~Londonderry BT48 6EG",
+   "cuisines": [
+    "pub",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Badgers",
+    "Badgers Bar"
+   ],
+   "photo": "https://eu-assets.simpleview-europe.com/derry/imageresizer/?image=%2Fdmsimgs%2FCOMPETITION_11__1532987789.jpg&action=OpenGraph",
+   "photoSource": "https://www.visitderry.com/food-and-drink/badgers-bar-and-restaurant-p682001",
+   "photoCreditName": "Visit Derry",
+   "listing": "https://www.visitderry.com/food-and-drink/badgers-bar-and-restaurant-p682001"
+  },
+  "quaywest": {
+   "name": "Quaywest",
+   "lat": 55.0005,
+   "lon": -7.3215,
+   "address": "28 Boating Club Lane, Derry~Londonderry BT48 7QB",
+   "cuisines": [
+    "european"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Quaywest Wine Bar",
+    "Quaywest Wine Bar & Restaurant",
+    "Quay West"
+   ],
+   "photo": "https://assets.simpleviewinc.com/simpleview/image/fetch/c_limit,h_1200,q_75,w_1200/https://irelanddmsmedia.newmindmedia.com/dmsimgs/299204562_10159969642457604_3595428178940123391_n_5523291.jpg",
+   "photoSource": "https://discovernorthernireland.com/food-and-drink/quaywest-wine-bar-and-restaurant-p710241",
+   "photoCreditName": "Discover Northern Ireland",
+   "listing": "https://discovernorthernireland.com/food-and-drink/quaywest-wine-bar-and-restaurant-p710241"
+  },
+  "guapo-derry": {
+   "name": "Guapo",
+   "lat": 55.00129,
+   "lon": -7.3226,
+   "address": "69 Strand Road, Derry~Londonderry BT48 7BW",
+   "cuisines": [
+    "mexican"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Guapo Fresh Mexican",
+    "Guapo Fresh Mexican Derry"
+   ],
+   "picks": [
+    {
+     "dish": "Fajitas",
+     "note": "Load up the peppers and onions; go easy on cheese and sour cream",
+     "fits": [
+      "highProtein"
+     ]
+    },
+    {
+     "dish": "Tacos",
+     "note": "Choose grilled chicken with salsa and guacamole",
+     "fits": [
+      "highProtein"
+     ]
+    }
+   ],
+   "sourceName": "Visit Derry",
+   "sourceUrl": "https://www.visitderry.com/food-and-drink/guapo-fresh-mexican-derry-p710611"
+  },
+  "sooty-olive": {
+   "name": "The Sooty Olive",
+   "lat": 54.9925,
+   "lon": -7.3075,
+   "address": "162 Spencer Road, Waterside, Derry~Londonderry BT47 6AH",
+   "cuisines": [
+    "european",
+    "irish"
+   ],
+   "checked": "2026-10-13",
+   "aliases": [
+    "Sooty Olive",
+    "The Sooty Olive Restaurant and Winebar"
+   ]
+  }
+ }
+}
