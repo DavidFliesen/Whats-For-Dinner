@@ -73,6 +73,25 @@ A researched `address` or `website` is used when the map listing lacks one.
 Cuisine keys include `gullah`, `lowcountry`, `southern`, `soul`, `bbq`, `cajun`, `creole`,
 `seafood`, `irish`, `pub`, plus any OpenStreetMap cuisine value.
 
+## World data: `data/world/`
+
+Built automatically by `pipeline/grow.py` (see `pipeline/README.md`); don't edit by hand.
+`manifest.json` says where the tiles are (`base`) and how far the world build has got.
+Each tile `tiles/{row}/{col}.json` covers 0.25° × 0.25° (row = floor((lat+90)×4), col = floor((lon+180)×4)):
+
+```json
+{"v":1,"built":"2026-10-13","n":2,"src":["osm","overture"],"tile":"580/693","places":[
+ {"o":"n101","n":"Harry's Shack","la":55.17066,"lo":-6.7276,"am":"restaurant","c":["seafood"],
+  "w":"https://…","a":"118 Strand Road, Portstewart","img":"https://…","imgs":"https://… (credit page)",
+  "imgf":"site","imgk":"photo","imgv":"food","pk":[{"d":"Grilled hake…","t":"note","f":["glp1"]}],
+  "mu":"https://… (menu)","chk":"2026-10-13","wc":"2026-10-13"},
+ {"id":"95d57e1379","n":"Shenanigans Thai Kitchen","la":55.184,"lo":-6.71,"am":"restaurant","c":["thai"]}]}
+```
+
+`o` = OpenStreetMap id (matches the app's live search); `id` = places only Overture knows about.
+`imgf` = where the photo came from (`osm`, `wikidata`, `commons`, `site`, `brand`); `imgv` = what the AI photo check saw.
+Licenses: `data/world/LICENSE.md`.
+
 ## Sources and rules
 
 - Use only sources that allow reuse (U.S. government recipes such as NIH/NHLBI, open data such as
@@ -80,3 +99,4 @@ Cuisine keys include `gullah`, `lowcountry`, `southern`, `soul`, `bbq`, `cajun`,
 - Never copy recipe text, photos or menus from commercial sites (Food Network, Allrecipes, etc.).
   The app links out to them with "More recipes like this" instead.
 - Respect `robots.txt`. MyPlate Kitchen currently blocks automated reading, so it isn't included.
+- `data/recipes/w4d-auto*.json` is written by `pipeline/recipes.py`: original recipes, nutrition computed by code.
