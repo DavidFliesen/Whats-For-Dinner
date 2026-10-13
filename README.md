@@ -1,5 +1,16 @@
-# What’s 4 Dinner? — Version 3.1.0
+# What’s 4 Dinner? — Version 3.2.0
 An ARTEZIQ app.
+
+## What’s new in 3.2.0
+- **Self-growing world data.** GitHub Actions now build the restaurant data for the whole world on their own (see `pipeline/README.md`):
+  - Every 2 hours, the next map squares are built, biggest towns first. Each one combines OpenStreetMap and Overture Maps restaurants with photos from Wikidata, Wikimedia Commons and restaurants’ own websites.
+  - With a Claude API key, an AI checks website photos and picks lighter dishes from published menus. Each pick must appear word-for-word on the menu.
+  - Every day, new original recipes are written for the cuisines with the fewest recipes. Nutrition and diet flags are computed by code from USDA values, and a second AI pass reviews each recipe.
+  - Every change is validated before it’s saved, and old areas are rebuilt every 6 months.
+- **The app uses the world data** (`data/world/tiles/`). It adds places the live map lacks, fills in missing photos, websites, addresses and menu picks, and shows saved data when the live map is busy. Hand-researched areas still take priority.
+- **“Ask us to do this town next”** under Dine Out results opens a one-field GitHub request that builds that town within about half an hour.
+- **Eat In puts recipes from your region first**, using your Dine Out town or your device’s region, e.g. “Popular around Summerville” (Southern, Creole, Cajun) or “Popular in the UK”. All recipes still show.
+- Fixed: **Reset Filters** now also clears a cuisine you picked in Eat In. Before, a saved choice like “Irish” stayed on.
 
 ## What’s new in 3.1.0
 - **24 new recipes in a World Kitchen collection** (`data/recipes/w4d-world.json`), each for 2 servings with US and metric amounts:

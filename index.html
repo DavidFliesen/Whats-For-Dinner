@@ -498,7 +498,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "3.1.0";
+const VERSION = "3.2.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -942,9 +942,19 @@ function render(){
   if (eat){
     const all = allEatIn();
     const cuisines = [...new Set(all.map(m => m.cuisine).filter(Boolean))].sort();
-    const list = all.filter(passes).filter(matchesQuery).filter(m => state.recipeCuisine === "all" || m.cuisine === state.recipeCuisine);
+    /* A cuisine picked earlier that no longer exists shouldn't leave the list empty. */
+    if (state.recipeCuisine !== "all" && !cuisines.includes(state.recipeCuisine)) state.recipeCuisine = "all";
+    const home = homeCuisines();
+    const rank = c => { const i = home.order.findIndex(re => re.test(c || "")); return i < 0 ? 99 : i; };
+    const localCz = cuisines.filter(c => rank(c) < 99).sort((a, b) => rank(a) - rank(b));
+    const otherCz = cuisines.filter(c => rank(c) === 99);
+    const list = all.filter(passes).filter(matchesQuery).filter(m => state.recipeCuisine === "all" || m.cuisine === state.recipeCuisine)
+      .map((m, i) => [m, i]).sort((a, b) => rank(a[0].cuisine) - rank(b[0].cuisine) || a[1] - b[1]).map(x => x[0]);
+    const nLocal = list.filter(m => rank(m.cuisine) < 99).length;
     $("#count").innerHTML = `Showing <b>${list.length}</b> recipe${list.length === 1 ? "" : "s"}`;
-    out.innerHTML = `<div class="chips cuisine-chips"><button class="chip" data-rcuisine="all" aria-pressed="${state.recipeCuisine === "all"}">All cuisines</button>${cuisines.map(c => `<button class="chip" data-rcuisine="${esc(c)}" aria-pressed="${state.recipeCuisine === c}">${esc(c)}</button>`).join("")}</div>
+    const czChip = (c, local) => `<button class="chip${local ? " local" : ""}" data-rcuisine="${esc(c)}" aria-pressed="${state.recipeCuisine === c}">${esc(c)}</button>`;
+    out.innerHTML = `${localCz.length ? `<div class="cz-label">${icon("pin")}Popular ${esc(home.where)}</div>` : ""}<div class="chips cuisine-chips"><button class="chip" data-rcuisine="all" aria-pressed="${state.recipeCuisine === "all"}">All cuisines</button>${localCz.map(c => czChip(c, true)).join("")}${otherCz.map(c => czChip(c, false)).join("")}</div>
+      ${state.recipeCuisine === "all" && nLocal && nLocal < list.length ? `<p class="group-note">${nLocal} recipe${nLocal === 1 ? "" : "s"} from cuisines popular ${esc(home.where)} come first.${home.fromLoc ? "" : " Set your town in Dine Out to fine-tune this."}</p>` : ""}
       <div class="grid">${list.length ? list.map(recipeCard).join("") :
       empty("Nothing matches all of those.", state.filters.size ? " Try turning off a filter or two." : " Try a different search.")}</div>`;
     return;
@@ -978,7 +988,8 @@ function render(){
     html += `
       <p class="group-note">Restaurants rarely publish nutrition, so your filters match places by their type of food, whether they’re fast food, and any diet tags on the map. That works in every country. Open one for ordering tips that match your filters.${inUS() ? "" : " Chain nutrition numbers are only shown for US locations, since menus differ by country."}${state.filters.has("delivery") || state.filters.has("takeaway") ? " Delivery and takeout filters only show places tagged that way on OpenStreetMap — many others offer it too, so check the delivery apps in each restaurant’s details." : ""}</p>
       <div class="grid">${placesList.length ? placesList.slice(0, state.placesShown).map(placeCard).join("") : (state.cuisines.size ? empty(`No ${[...state.cuisines].map(czLabel).join(" or ")} places match within ${state.radius} mi.`, state.radius < 20 ? " Try a wider radius, or turn off a filter." : " Try turning off a filter, or pick another cuisine.") : empty("No restaurants match that search.", ""))}</div>
-      ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}`;
+      ${placesList.length > state.placesShown ? `<div class="more"><button class="btn ghost" id="moreBtn">Show more</button></div>` : ""}
+      <p class="group-note" style="margin-top:14px">Missing restaurants, photos or menus here? Our data grows worldwide on its own every day. <a href="${esc(addAreaUrl())}" target="_blank" rel="noopener">Ask us to do ${esc(state.loc.label.split(",")[0])} next</a> (needs a free GitHub account).</p>`;
   }
   out.innerHTML = html;
 }
@@ -1078,6 +1089,13 @@ async function loadPlaces(force, scroll){
   }
   state.loading = false;
   if (!data){
+    const w = await applyWorld(false);
+    if (w.n){
+      state.placesKey = key; state.placesShown = 30;
+      await applyAreaPack(); enrichPhotos();
+      setStatus(`The live restaurant map is busy, so this shows our saved world data${w.built ? ` (updated ${w.built})` : ""}. Tap Find places later for the latest.`, "err");
+      render(); return;
+    }
     if (cache && cache.places?.length){
       state.places = cache.places; state.placesKey = cache.key;
       setStatus("You’re offline or the map service is busy. Showing your last saved search.", "err");
@@ -1108,6 +1126,7 @@ async function loadPlaces(force, scroll){
     .filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a, b) => a.dist - b.dist);
   state.placesKey = key; state.placesShown = 30;
+  await applyWorld(true);
   await applyAreaPack();
   store.set("places", { key, ts: Date.now(), places: state.places });
   enrichPhotos();
@@ -1117,6 +1136,96 @@ async function loadPlaces(force, scroll){
 }
 
 
+
+/* ---------- World data (grown automatically by the GitHub Actions pipeline in pipeline/) ----------
+   The world is split into 0.25° tiles: data/world/tiles/{row}/{col}.json. Each holds the restaurants found
+   in OpenStreetMap and Overture Maps for that square, with any photos, websites and menu picks found so far.
+   Live map results still come first; tiles add places the live map lacks, fill in missing details, and stand in
+   when the live map is busy. Missing tiles are simply skipped. */
+const WORLD_REPO = "https://github.com/DavidFliesen/Whats-For-Dinner";
+const world = { manifest: null, tiles: {} };
+async function worldManifest(){
+  if (world.manifest !== null) return world.manifest;
+  try { const r = await fetch("./data/world/manifest.json", { cache: "no-cache" }); world.manifest = r.ok ? await r.json() : false; } catch { world.manifest = false; }
+  return world.manifest;
+}
+function worldTileKeys(loc, radiusMi){
+  const T = 0.25, dLat = radiusMi / 69, dLon = radiusMi / (69 * Math.max(0.15, Math.cos(loc.lat * Math.PI / 180)));
+  const keys = [];
+  for (let i = Math.floor((loc.lat - dLat + 90) / T); i <= Math.floor((loc.lat + dLat + 90) / T); i++)
+    for (let j = Math.floor((loc.lon - dLon + 180) / T); j <= Math.floor((loc.lon + dLon + 180) / T); j++)
+      keys.push(i + "/" + (((j % 1440) + 1440) % 1440));
+  return keys.slice(0, 20);
+}
+async function loadWorld(loc, radiusMi){
+  const m = await worldManifest(); if (!m) return { entries: [], built: "" };
+  const base = /^(https:\/\/|\.?\/?data\/)/i.test(m.base || "") ? m.base.replace(/\/?$/, "/") : "./data/world/tiles/";
+  const tiles = await Promise.all(worldTileKeys(loc, radiusMi).map(async k => {
+    if (k in world.tiles) return world.tiles[k];
+    try { const r = await fetch(base + k + ".json", { cache: "no-cache" }); world.tiles[k] = r.ok ? await r.json() : null; } catch { return null; }
+    return world.tiles[k];
+  }));
+  const entries = []; let built = "";
+  tiles.forEach(t => { if (!t || !Array.isArray(t.places)) return; if (String(t.built || "") > built) built = String(t.built).slice(0, 10);
+    t.places.forEach(e => { if (e && e.n && Number.isFinite(e.la) && Number.isFinite(e.lo) && miles(loc, { lat: e.la, lon: e.lo }) <= radiusMi + 0.05) entries.push(e); }); });
+  return { entries, built };
+}
+const sameName = (a, b) => { const k = x => normName(String(x || "").replace(/['’]/g, "")).replace(/\b(the|restaurant)\b/g, "").replace(/\s+/g, " ").trim(); const x = k(a), y = k(b); return !!x && !!y && (x === y || x.includes(y) || y.includes(x)); };
+function worldExtras(p, e){
+  if (!p.website && /^https?:\/\//i.test(e.w || "")) p.website = String(e.w);
+  if (!p.addr && e.a) p.addr = String(e.a).slice(0, 160);
+  if (!p.phone && e.p) p.phone = String(e.p).slice(0, 40);
+  if (!p.hours && e.h) p.hours = String(e.h).slice(0, 120);
+  const cz = Array.isArray(e.c) ? e.c.map(String).filter(k => /^[a-z][a-z_-]{1,30}$/.test(k)).slice(0, 4) : [];
+  if (!p.cuisineRaw && cz.length){ p.cuisineRaw = cz.join(" "); p.group = groupFor(cz, p.amenity); p._cz = null; }
+  const img = cleanUrl(e.img);
+  if (img && !p.photo){
+    p.photo = img; p.photoKind = e.imgk === "logo" ? "logo" : "photo"; p.photoCredit = cleanUrl(e.imgs); p.photoWorld = true;
+    p.photoFromSite = e.imgf === "site"; p.photoFromBrand = e.imgf === "brand";
+  }
+  if (Array.isArray(e.pk) && e.pk.length && !(p.pack && p.pack.picks.length)){
+    p.pack = { picks: e.pk.filter(x => x && x.d).slice(0, 6).map(x => ({ dish: String(x.d).slice(0, 120), note: String(x.t || "").slice(0, 200),
+      fits: Array.isArray(x.f) ? x.f.filter(f => FILTER_NAME[f]) : [] })), menuUrl: cleanUrl(e.mu), website: cleanUrl(p.website),
+      checked: String(e.chk || "").slice(0, 10), sourceName: "", sourceUrl: "" };
+  }
+}
+function worldPlace(e){
+  const cz = Array.isArray(e.c) ? e.c.map(String) : [], dt = String(e.dt || "");
+  const yes = f => new RegExp("(^|,)" + f + "(,|$)").test(dt) ? "yes" : undefined;
+  const p = { id: e.o || "w" + e.id, name: String(e.n).slice(0, 120), city: "", fast: e.am === "fast_food", amenity: e.am || "restaurant",
+    diet: { vegetarian: yes("v"), vegan: yes("vg"), gluten_free: yes("gf"), lactose_free: undefined, dairy_free: yes("df") },
+    brand: e.b || "", lat: e.la, lon: e.lo, dist: miles(state.loc, { lat: e.la, lon: e.lo }), group: groupFor([], e.am), cuisineRaw: "", addr: "",
+    website: "", phone: "", hours: "", wd: "", brandWd: "", delivery: e.dl === "yes" || e.dl === "no" ? e.dl : "", takeaway: e.tk === "yes" || e.tk === "no" ? e.tk : "", fromWorld: true };
+  worldExtras(p, e);
+  if (!p.cuisineRaw && cz.length) p.group = groupFor(cz, p.amenity);
+  return p;
+}
+/* live = the live map answered. Returns how many world entries covered this search. */
+async function applyWorld(live){
+  if (!state.loc) return { n: 0, built: "" };
+  let res = { entries: [], built: "" };
+  try { res = await loadWorld(state.loc, state.radius); } catch {}
+  const { entries } = res; if (!entries.length) return { n: 0, built: res.built };
+  if (live){
+    const byId = {}; entries.forEach(e => { if (e.o) byId[e.o] = e; });
+    state.places.forEach(p => { if (byId[p.id]) worldExtras(p, byId[p.id]); });
+    /* Places only Overture knows about (no OpenStreetMap id), unless the live map has them under a similar name. */
+    entries.filter(e => !e.o).forEach(e => {
+      if (state.places.some(p => miles(p, { lat: e.la, lon: e.lo }) <= 0.08 && sameName(p.name, e.n))) return;
+      state.places.push(worldPlace(e));
+    });
+  } else {
+    const seen = new Set();
+    state.places = entries.map(worldPlace).filter(p => { const k = p.name.toLowerCase() + "|" + p.lat.toFixed(4); if (seen.has(k)) return false; seen.add(k); return true; });
+  }
+  state.places.sort((a, b) => a.dist - b.dist);
+  return { n: entries.length, built: res.built };
+}
+function addAreaUrl(){
+  const l = state.loc; if (!l) return WORLD_REPO + "/issues/new?template=add-area.yml";
+  const where = `${l.label} (${l.lat.toFixed(4)}, ${l.lon.toFixed(4)})`;
+  return `${WORLD_REPO}/issues/new?template=add-area.yml&title=${encodeURIComponent("Add area: " + l.label)}&location=${encodeURIComponent(where)}`;
+}
 
 /* ---------- Local area data (built by the Colab notebook, stored in data/areas/) ----------
    For areas that have been researched, restaurants get the main photo from their own website
@@ -1189,7 +1298,7 @@ function applyOnePack(pack){
     if (!p.website && web) p.website = web;
     if (!p.addr && d.address) p.addr = String(d.address).slice(0, 160);
     const photo = cleanUrl(d.photo);
-    if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true;
+    if (photo && (!p.photo || p.photoWorld)){ p.photoWorld = false; p.photoFromBrand = false; p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true;
       p.photoCreditName = String(d.photoCreditName || "").slice(0, 80); }
   });
 }
@@ -1306,6 +1415,170 @@ const NATIONAL = { it:"italian", fr:"french", es:"spanish", pt:"portuguese", gr:
   br:"brazilian", pe:"peruvian", ar:"argentinian", cl:"chilean", co:"colombian", lb:"lebanese", ma:"moroccan", et:"ethiopian", jm:"jamaican",
   ph:"filipino", id:"indonesian", my:"malaysian", sg:"singaporean", ie:"irish", gb:"british", pl:"polish", hu:"hungarian", cz:"czech",
   se:"swedish", no:"norwegian", dk:"danish", fi:"finnish", nl:"dutch", be:"belgian", au:"australian", nz:"new_zealand", za:"south_african", ng:"nigerian", eg:"egyptian", il:"israeli", ir:"persian" };
+/* Recipe cuisines people commonly cook where the user is: from the town they set in Dine Out,
+   otherwise from their device's language region or time zone. Patterns match recipe cuisine labels. */
+const HOME_CUISINES = {
+  ae: ["Middle Eastern", "Lebanese", "Indian"],
+  af: ["Persian"],
+  al: ["Balkan"],
+  ar: ["Argentinian", "Latino", "Italian", "Spanish"],
+  at: ["Austrian", "Italian", "Modern", "German"],
+  au: ["Australian", "Modern", "Italian", "Thai", "Vietnamese", "Greek", "Chinese"],
+  ba: ["Balkan"],
+  bb: ["Trinidadian"],
+  bd: ["Bangladeshi", "Indian"],
+  be: ["Belgian", "French", "Modern"],
+  bg: ["Balkan"],
+  bh: ["Middle Eastern"],
+  bn: ["Malaysian"],
+  bo: ["Bolivian"],
+  br: ["Brazilian", "Latino", "Portuguese"],
+  bt: ["Nepali"],
+  bw: ["South African"],
+  by: ["Russian"],
+  ca: ["Canadian", "American", "French", "Italian", "Chinese", "Indian", "Modern", "Native American", "Jamaican"],
+  ch: ["Swiss", "French", "Italian", "German"],
+  cl: ["Chilean", "Latino", "Peruvian"],
+  cn: ["Chinese", "Asian"],
+  co: ["Colombian", "Latino", "Caribbean"],
+  cr: ["Costa Rican"],
+  cu: ["Cuban", "Caribbean", "Latino"],
+  cy: ["Greek", "Turkish"],
+  cz: ["Czech"],
+  de: ["German", "Turkish", "Italian", "Greek", "Modern"],
+  dk: ["Danish"],
+  do: ["Dominican", "Caribbean", "Latino"],
+  dz: ["Moroccan"],
+  ec: ["Ecuadorian"],
+  eg: ["Egyptian", "Middle Eastern", "Mediterranean"],
+  er: ["Ethiopian"],
+  es: ["Spanish", "Mediterranean", "Latino"],
+  et: ["Ethiopian"],
+  fi: ["Finnish"],
+  fj: ["Pacific Islander", "Indian"],
+  fr: ["French", "Moroccan", "Italian", "Vietnamese"],
+  gb: ["British", "Irish", "Indian", "Scottish", "Welsh", "Italian", "French", "Modern", "Classic", "Jamaican"],
+  ge: ["Georgian"],
+  gh: ["Ghanaian"],
+  gm: ["Senegalese"],
+  gr: ["Greek", "Mediterranean", "Turkish"],
+  gt: ["Guatemalan", "Mexican", "Latino"],
+  gy: ["Trinidadian"],
+  hk: ["Chinese", "Asian"],
+  hn: ["Guatemalan"],
+  hr: ["Balkan"],
+  ht: ["Haitian"],
+  hu: ["Hungarian"],
+  id: ["Indonesian", "Asian"],
+  ie: ["Irish", "Italian", "Indian", "French", "Modern"],
+  il: ["Middle Eastern", "Mediterranean"],
+  in: ["Indian"],
+  iq: ["Iraqi"],
+  ir: ["Persian"],
+  is: ["Icelandic"],
+  it: ["Italian", "Mediterranean"],
+  jm: ["Jamaican", "Caribbean"],
+  jo: ["Lebanese", "Middle Eastern"],
+  jp: ["Japanese", "Korean", "Chinese"],
+  ke: ["Kenyan", "African", "Indian", "Ethiopian"],
+  kg: ["Uzbek"],
+  kh: ["Cambodian"],
+  kr: ["Korean", "Japanese", "Chinese"],
+  kw: ["Middle Eastern"],
+  kz: ["Russian"],
+  la: ["Cambodian"],
+  lb: ["Lebanese", "Middle Eastern"],
+  lk: ["Sri Lankan", "Indian"],
+  ma: ["Moroccan", "Mediterranean"],
+  md: ["Romanian"],
+  me: ["Balkan"],
+  mk: ["Balkan"],
+  ml: ["Senegalese"],
+  mm: ["Burmese"],
+  mn: ["Mongolian"],
+  mo: ["Chinese"],
+  mu: ["Indian"],
+  mx: ["Mexican", "Latino"],
+  my: ["Malaysian", "Asian", "Chinese", "Indian", "Thai"],
+  na: ["South African"],
+  ng: ["Nigerian", "African", "Caribbean"],
+  ni: ["Guatemalan"],
+  nl: ["Dutch", "Indonesian", "Modern", "Italian"],
+  no: ["Norwegian"],
+  np: ["Nepali"],
+  nz: ["New Zealand", "Modern", "Italian", "Thai", "Indian", "Chinese"],
+  om: ["Middle Eastern"],
+  pa: ["Costa Rican"],
+  pe: ["Peruvian", "Latino"],
+  pg: ["Pacific Islander"],
+  ph: ["Filipino", "Asian", "Chinese"],
+  pk: ["Pakistani", "Indian", "Middle Eastern"],
+  pl: ["Polish"],
+  pr: ["Puerto Rican", "Caribbean", "Latino"],
+  ps: ["Middle Eastern"],
+  pt: ["Portuguese", "Spanish", "Mediterranean", "Brazilian"],
+  py: ["Argentinian"],
+  qa: ["Middle Eastern"],
+  ro: ["Romanian"],
+  rs: ["Balkan"],
+  ru: ["Russian"],
+  sa: ["Middle Eastern", "Lebanese"],
+  se: ["Swedish"],
+  sg: ["Singaporean", "Chinese", "Indian", "Asian", "Thai", "Malaysian"],
+  si: ["Balkan"],
+  sk: ["Czech"],
+  sn: ["Senegalese"],
+  sv: ["Guatemalan"],
+  sy: ["Lebanese", "Middle Eastern"],
+  th: ["Thai", "Asian", "Chinese"],
+  tj: ["Uzbek"],
+  tm: ["Uzbek"],
+  tn: ["Moroccan"],
+  to: ["Pacific Islander"],
+  tr: ["Turkish", "Middle Eastern", "Greek", "Lebanese"],
+  tt: ["Trinidadian", "Caribbean", "Indian"],
+  tw: ["Chinese", "Japanese"],
+  tz: ["Kenyan"],
+  ua: ["Ukrainian"],
+  ug: ["Kenyan"],
+  us: ["American", "Southern", "Mexican", "Italian", "Classic", "Modern", "Chinese-American", "Creole|Cajun", "Cuban", "Puerto Rican", "Jamaican", "Native American"],
+  uy: ["Argentinian"],
+  uz: ["Uzbek"],
+  ve: ["Venezuelan"],
+  vn: ["Vietnamese", "Asian", "Chinese"],
+  ws: ["Pacific Islander"],
+  za: ["South African", "African", "Indian", "Modern"],
+  zw: ["South African"]
+};
+const COUNTRY_NAME = { us: "in the US", gb: "in the UK", ie: "in Ireland", au: "in Australia", nz: "in New Zealand", ca: "in Canada", in: "in India", ph: "in the Philippines" };
+const TZ_COUNTRY = { "Europe/London": "gb", "Europe/Belfast": "gb", "Europe/Dublin": "ie", "Europe/Paris": "fr", "Europe/Rome": "it", "Europe/Madrid": "es",
+  "Europe/Lisbon": "pt", "Europe/Athens": "gr", "Europe/Istanbul": "tr", "Europe/Berlin": "de", "Europe/Amsterdam": "nl", "Asia/Tokyo": "jp", "Asia/Seoul": "kr",
+  "Asia/Shanghai": "cn", "Asia/Hong_Kong": "hk", "Asia/Singapore": "sg", "Asia/Bangkok": "th", "Asia/Manila": "ph", "Asia/Kolkata": "in", "Asia/Calcutta": "in",
+  "America/Mexico_City": "mx", "America/Lima": "pe", "America/Jamaica": "jm", "Africa/Addis_Ababa": "et", "Asia/Beirut": "lb", "Australia/Sydney": "au", "Pacific/Auckland": "nz" };
+function homeCuisines(){
+  let cc = "", fromLoc = false, where = "";
+  if (state.loc && state.loc.country){ cc = state.loc.country; fromLoc = true; }
+  if (!cc){ const tag = String((navigator.languages && navigator.languages[0]) || navigator.language || ""); const r = (tag.split("-")[1] || "").toLowerCase(); if (/^[a-z]{2}$/.test(r)) cc = r === "uk" ? "gb" : r; }
+  if (!cc){ try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; cc = TZ_COUNTRY[tz] || (/^America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Detroit|Anchorage)/.test(tz) ? "us" : ""); } catch {} }
+  let list = [...(HOME_CUISINES[cc] || [])];
+  if (fromLoc && cc === "us"){
+    const st = usState();
+    if (US_SOUTH.includes(st)) list = ["Southern", "Creole|Cajun", "Soul", ...list];
+    if (["SC", "GA", "NC", "FL"].includes(st) && state.loc.lat > 30 && state.loc.lon > -82) list = ["Gullah", ...list];
+    if (["LA", "MS"].includes(st)) list = ["Cajun|Creole", ...list];
+    if (["TX", "NM", "AZ", "CA"].includes(st)) list = ["Tex-Mex", "Mexican", ...list];
+    if (st === "HI") list = ["Hawaiian", "Filipino", "Japanese", ...list];
+  }
+  if (fromLoc && cc === "gb" && /northern ireland/i.test(state.loc.label)) list = ["Irish", ...list];
+  if (fromLoc && cc === "gb" && /scotland/i.test(state.loc.label)) list = ["Scottish", ...list];
+  if (fromLoc && cc === "gb" && /wales|cymru/i.test(state.loc.label)) list = ["Welsh", ...list];
+  if (fromLoc){ const town = String(state.loc.label || "").split(",")[0].trim(); where = town ? "around " + town : ""; }
+  if (!where && cc){ try { const n = COUNTRY_NAME[cc] || new Intl.DisplayNames(["en"], { type: "region" }).of(cc.toUpperCase()); if (n && n.toLowerCase() !== cc) where = /^in /.test(n) ? n : "in " + n; } catch {} }
+  if (!where) where = "where you are";
+  const seen = new Set(), order = [];
+  list.forEach(x => { if (!seen.has(x)){ seen.add(x); order.push(new RegExp("^(" + x + ")\\b", "i")); } });
+  return { order, where, fromLoc, cc };
+}
 function usState(){ const m = state.loc && state.loc.country === "us" && /,\s*([A-Z]{2})$/.exec(state.loc.label); return m ? m[1] : ""; }
 /* Which cuisines are local specialties here, and any local names for them. */
 function regionInfo(){
@@ -1584,6 +1857,8 @@ function openInfo(){
     <p>Our own recipes are estimated from USDA FoodData Central values for the exact amounts listed. Library recipes use the nutrition their source publishes. Restaurant dishes only get numbers when the restaurant publishes them.</p>
     <h3>How restaurants are matched</h3>
     <p>Most restaurants don’t publish nutrition, so filters match places by their type of food, whether they’re fast food, and diet tags on OpenStreetMap. In researched areas${(packs.index || []).length ? ` (${(packs.index || []).map(a => esc(a.name)).join(", ")})` : ""}, dishes taken word-for-word from a restaurant’s own online menu count too.</p>
+    <h3>World restaurant data</h3>
+    <p>A program runs on GitHub every few hours, working through the world's towns and cities by population. For each area it collects restaurants from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> (© OpenStreetMap contributors, ODbL) and <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps</a>, photos from Wikimedia Commons, Wikidata and restaurants’ own websites, and has an AI read published menus for lighter dishes. Each AI pick is checked against the menu text before it’s kept. <a href="${esc(addAreaUrl())}" target="_blank" rel="noopener">Ask for an area</a>.</p>
     <h3>Import JSON</h3>
     <p>For testing: load a <code>meals.json</code> file or an area file from the research notebook. Imported data stays on this device.</p>
     <div class="actions">
@@ -1721,7 +1996,7 @@ $("#chips").addEventListener("click", e => {
   store.set("filters", [...state.filters]); render();
 });
 $("#cuisineClear").addEventListener("click", () => setCuisine("*"));
-$("#resetFilters").addEventListener("click", () => { state.filters = new Set(["healthier"]); store.set("filters", ["healthier"]); state.query = ""; $("#search").value = ""; render(); });
+$("#resetFilters").addEventListener("click", () => { state.filters = new Set(["healthier"]); store.set("filters", ["healthier"]); state.recipeCuisine = "all"; store.set("rcuisine", "all"); state.query = ""; $("#search").value = ""; render(); });
 $("#howBtn").addEventListener("click", openInfo);
 $("#decideTop").addEventListener("click", decide);
 $("#listBtn").addEventListener("click", openList);
