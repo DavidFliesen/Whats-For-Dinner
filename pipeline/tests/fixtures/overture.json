@@ -1,0 +1,101 @@
+[
+ {
+  "id": "08f-aaaa-1",
+  "names": {
+   "primary": "Harrys Shack"
+  },
+  "categories": {
+   "primary": "seafood_restaurant",
+   "alternate": [
+    "restaurant"
+   ]
+  },
+  "confidence": 0.95,
+  "bbox": {
+   "xmin": -6.72762,
+   "xmax": -6.72762,
+   "ymin": 55.17068,
+   "ymax": 55.17068
+  },
+  "websites": [
+   "https://harrysshack.example/"
+  ],
+  "phones": [
+   "+44 28 7083 1783"
+  ],
+  "addresses": [
+   {
+    "freeform": "118 Strand Road",
+    "locality": "Portstewart"
+   }
+  ]
+ },
+ {
+  "id": "08f-bbbb-2",
+  "names": {
+   "primary": "Morelli's"
+  },
+  "categories": {
+   "primary": "ice_cream_shop"
+  },
+  "confidence": 0.9,
+  "bbox": {
+   "xmin": -6.716,
+   "xmax": -6.716,
+   "ymin": 55.183,
+   "ymax": 55.183
+  }
+ },
+ {
+  "id": "08f-cccc-3",
+  "names": {
+   "primary": "Shenanigans Thai Kitchen"
+  },
+  "categories": {
+   "primary": "thai_restaurant"
+  },
+  "confidence": 0.82,
+  "bbox": {
+   "xmin": -6.71,
+   "xmax": -6.71,
+   "ymin": 55.184,
+   "ymax": 55.184
+  },
+  "websites": [
+   "https://www.facebook.com/x"
+  ]
+ },
+ {
+  "id": "08f-dddd-4",
+  "names": {
+   "primary": "Low Confidence Diner"
+  },
+  "categories": {
+   "primary": "diner"
+  },
+  "confidence": 0.3,
+  "bbox": {
+   "xmin": -6.7,
+   "xmax": -6.7,
+   "ymin": 55.186,
+   "ymax": 55.186
+  }
+ },
+ {
+  "id": "08f-eeee-5",
+  "names": {
+   "primary": "Closed Grill"
+  },
+  "categories": {
+   "primary": "restaurant"
+  },
+  "confidence": 0.9,
+  "operating_status": "permanently_closed",
+  "bbox": {
+   "xmin": -6.7,
+   "xmax": -6.7,
+   "ymin": 55.187,
+   "ymax": 55.187
+  }
+ }
+]

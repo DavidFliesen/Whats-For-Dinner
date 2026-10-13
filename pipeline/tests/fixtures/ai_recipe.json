@@ -1,0 +1,53 @@
+{
+ "title": "Ulster chicken and barley soup",
+ "desc": "A light, warming broth.",
+ "cuisine": "Irish",
+ "course": "main",
+ "minutes": 50,
+ "servings": 2,
+ "servingSize": "2 bowls",
+ "ingredients": [
+  {
+   "us": "8 oz chicken breast",
+   "metric": "225 g chicken breast",
+   "grams": 225,
+   "food": "chicken"
+  },
+  {
+   "us": "¼ cup pearl barley",
+   "metric": "50 g pearl barley",
+   "grams": 50,
+   "food": "barley"
+  },
+  {
+   "us": "2 carrots",
+   "metric": "2 carrots",
+   "grams": 200,
+   "food": "carrot"
+  },
+  {
+   "us": "1 leek",
+   "metric": "1 leek",
+   "grams": 150,
+   "food": "leek"
+  },
+  {
+   "us": "4 cups low-sodium chicken stock",
+   "metric": "1 litre low-sodium chicken stock",
+   "grams": 1000,
+   "food": "stock"
+  },
+  {
+   "us": "Thyme and pepper",
+   "metric": "Thyme and pepper",
+   "grams": 0,
+   "food": "none"
+  }
+ ],
+ "steps": [
+  "Simmer the barley in the stock for 25 minutes.",
+  "Add the chicken, carrots and leek and simmer 20 minutes until the chicken reaches 165°F.",
+  "Shred the chicken and season."
+ ],
+ "photo": "soup"
+}

@@ -1,0 +1,9 @@
+{
+ "interpreter": "overpass.json",
+ "wikidata\\.org": "wikidata.json",
+ "commons\\.wikimedia\\.org/w/api\\.php": "commons.json",
+ "harrysshack\\.example/menu": "menu.html",
+ "harrysshack\\.example": "harrys.html",
+ "nominatim": "nominatim.json",
+ "api\\.nal\\.usda\\.gov": "fdc.json"
+}

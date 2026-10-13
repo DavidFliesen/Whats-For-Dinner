@@ -1,0 +1,2 @@
+1	Portstewart	Portstewart		55.1813	-6.7276	P	PPL	GB						8000			Europe/London	2024-01-01
+1	Portrush	Portrush		55.2042	-6.6527	P	PPL	GB						6400			Europe/London	2024-01-01

@@ -1,0 +1,16 @@
+{
+ "query": {
+  "geosearch": [
+   {
+    "title": "File:Portrush Fish Bar exterior.jpg",
+    "lat": 55.20065,
+    "lon": -6.68925
+   },
+   {
+    "title": "File:Strand beach Portstewart.jpg",
+    "lat": 55.171,
+    "lon": -6.727
+   }
+  ]
+ }
+}

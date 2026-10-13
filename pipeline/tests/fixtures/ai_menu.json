@@ -1,0 +1,29 @@
+{
+ "picks": [
+  {
+   "dish": "Grilled hake, crushed potatoes, sea herbs",
+   "note": "Simply grilled white fish",
+   "fits": [
+    "glp1",
+    "highProtein",
+    "glutenFree",
+    "madeUpTag"
+   ]
+  },
+  {
+   "dish": "Roast cauliflower, lentils, salsa verde",
+   "note": "Plant-based and filling",
+   "fits": [
+    "vegetarian",
+    "lowCal"
+   ]
+  },
+  {
+   "dish": "Lobster thermidor",
+   "note": "Not on this menu: must be dropped",
+   "fits": [
+    "highProtein"
+   ]
+  }
+ ]
+}

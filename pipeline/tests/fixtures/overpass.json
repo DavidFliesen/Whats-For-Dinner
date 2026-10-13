@@ -1,0 +1,73 @@
+{
+ "elements": [
+  {
+   "type": "node",
+   "id": 101,
+   "lat": 55.17066,
+   "lon": -6.7276,
+   "tags": {
+    "amenity": "restaurant",
+    "name": "Harry's Shack",
+    "cuisine": "seafood",
+    "website": "https://harrysshack.example/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 202,
+   "center": {
+    "lat": 55.2081,
+    "lon": -6.65835
+   },
+   "tags": {
+    "amenity": "restaurant",
+    "name": "Ramore Wine Bar",
+    "wikidata": "Q111",
+    "diet:vegetarian": "yes"
+   }
+  },
+  {
+   "type": "node",
+   "id": 303,
+   "lat": 55.2006,
+   "lon": -6.6892,
+   "tags": {
+    "amenity": "fast_food",
+    "name": "Portrush Fish Bar",
+    "cuisine": "fish_and_chips"
+   }
+  },
+  {
+   "type": "node",
+   "id": 404,
+   "lat": 55.19,
+   "lon": -6.7,
+   "tags": {
+    "amenity": "pub",
+    "name": "Drinks Only Pub"
+   }
+  },
+  {
+   "type": "node",
+   "id": 505,
+   "lat": 55.181,
+   "lon": -6.716,
+   "tags": {
+    "amenity": "fast_food",
+    "name": "McDonald's",
+    "brand": "McDonald's",
+    "brand:wikidata": "Q38076"
+   }
+  },
+  {
+   "type": "node",
+   "id": 606,
+   "lat": 54.99,
+   "lon": -7.32,
+   "tags": {
+    "amenity": "restaurant",
+    "name": "Outside This Tile"
+   }
+  }
+ ]
+}

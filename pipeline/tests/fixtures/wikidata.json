@@ -1,0 +1,30 @@
+{
+ "entities": {
+  "Q111": {
+   "claims": {
+    "P18": [
+     {
+      "mainsnak": {
+       "datavalue": {
+        "value": "Ramore Wine Bar, Portrush.jpg"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Q38076": {
+   "claims": {
+    "P154": [
+     {
+      "mainsnak": {
+       "datavalue": {
+        "value": "McDonald's Golden Arches.svg"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}
