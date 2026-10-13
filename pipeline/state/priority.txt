@@ -1,1 +1,7 @@
-
+# Areas built before the rest of the world queue (lat, lon  # name). Add a line to move a place to the front.
+33.0185, -80.1756   # Summerville, SC
+32.7765, -79.9311   # Charleston, SC
+55.1813, -6.7276    # Portstewart, Northern Ireland
+55.1333, -6.6667    # Coleraine
+55.2042, -6.6527    # Portrush
+54.9966, -7.3086    # Derry~Londonderry
