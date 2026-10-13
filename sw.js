@@ -2,7 +2,7 @@
    App shell: cache-first (works fully offline after first visit).
    Google Fonts, Unsplash and Wikimedia photos: stale-while-revalidate (photos you have seen work offline).
    Map/geocoding APIs: always network (the app keeps its own saved copy of the last search). */
-const VERSION = "3.0.1";
+const VERSION = "3.1.0";
 const SHELL = "w4d-shell-" + VERSION;
 const RUNTIME = "w4d-runtime-" + VERSION;
 const SHELL_FILES = [

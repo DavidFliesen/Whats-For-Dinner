@@ -1,5 +1,17 @@
-# What’s 4 Dinner? — Version 3.0.1
+# What’s 4 Dinner? — Version 3.1.0
 An ARTEZIQ app.
+
+## What’s new in 3.1.0
+- **24 new recipes in a World Kitchen collection** (`data/recipes/w4d-world.json`), each for 2 servings with US and metric amounts:
+  - **Northern Irish & Irish (12):** lean Irish stew, beef and Guinness stew, chicken and leek filo pie, baked salmon with champ and kale, pork tenderloin with colcannon and Bramley apple, lighter seafood chowder, mussels in Armagh cider, lighter Ulster fry, chicken-sausage coddle, boxty with smoked salmon, hake with crushed potatoes and peas, and vegetable and pearl barley broth.
+  - **Around the world (12):** Japanese miso salmon, Korean bibimbap, Greek cod plaki, Spanish shrimp and chickpea stew, Turkish red lentil soup, Lebanese chicken shawarma bowl, Mexican fish Veracruz, Peruvian chicken with salsa criolla, Jamaican jerk chicken with rice and peas, Ethiopian misir wot, Chinese steamed fish with ginger and scallion, and Indian chana masala.
+  - Nutrition is estimated per serving from USDA FoodData Central values, and the recipe page says so.
+- **North Coast and Derry~Londonderry restaurants researched** (`data/areas/north-coast-derry-researched.json`). 41 places across Portstewart, Coleraine, Portrush, Bushmills, Portballintrae, Ballintoy, Ballycastle, Limavady and Derry~Londonderry:
+  - 38 have real photos from their official tourism listings (Visit Causeway Coast and Glens, Visit Derry, Discover Northern Ireland), credited with a link.
+  - 11 have healthier picks taken from their own menus or reviews.
+  - All have addresses, and most have websites.
+- **Smarter matching.** Researched places now match map listings whose names differ a little (e.g. “1894” or “Harry’s Shack Portstewart”). A match needs a shared distinctive word within about 250 m, and town names don’t count. Researched addresses and websites fill gaps in the map data.
+- More UK food names (beef mince, cornflour, plain flour, swede, pak choi, tinned, semi-skimmed milk, back bacon).
 
 ## Fixes in 3.0.1
 - **GPS names your town, not a tiny map locality.** “Use my current location” now names the nearest city or town (e.g. Summerville, SC) instead of a small named place like “Pinehill” that OpenStreetMap has outside town limits. Falls back to the county if no town is found.

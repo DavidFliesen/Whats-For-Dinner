@@ -498,7 +498,7 @@ body.dine .cuisine-bar{padding-top:12px}
 
 <script>
 "use strict";
-const VERSION = "3.0.1";
+const VERSION = "3.1.0";
 const LIMITS = { cal: 450, sodium: 500, protein: 30, glp1Protein: 25, glp1Fat: 15, glp1Cal: 500, quickMin: 25 };
 
 /* Home recipes. Nutrition is computed per serving from USDA FoodData Central values for the listed amounts. */
@@ -733,7 +733,9 @@ const GLOSSARY = [
   [/\bcilantro\b/gi, "coriander"], [/\bshrimp tacos\b/gi, "prawn tacos"], [/\bshrimp and\b/gi, "prawn and"], [/\bshrimp\b/gi, "prawns"],
   [/\bbroccolini\b/gi, "Tenderstem broccoli"], [/\bromaine\b/gi, "cos lettuce"], [/\bred bell pepper\b/gi, "red pepper"], [/\bbell pepper\b/gi, "pepper"],
   [/\bground turkey\b/gi, "turkey mince"], [/\bparchment\b/gi, "baking paper"], [/\bthe broiler\b/gi, "the grill"], [/\bbroil\b/gi, "grill"],
-  [/\bskim milk\b/gi, "skimmed milk"], [/\bnonfat\b/gi, "fat-free"], [/\bsheet-pan\b/gi, "traybake"], [/\bsheet pan\b/gi, "baking tray"]
+  [/\bskim milk\b/gi, "skimmed milk"], [/\bnonfat\b/gi, "fat-free"], [/\bsheet-pan\b/gi, "traybake"], [/\bsheet pan\b/gi, "baking tray"],
+  [/\b95% lean ground beef\b/gi, "5%-fat beef mince"], [/\bground beef\b/gi, "beef mince"], [/\bcornstarch\b/gi, "cornflour"], [/\ball-purpose flour\b/gi, "plain flour"],
+  [/\brutabaga\b/gi, "swede"], [/\bbok choy\b/gi, "pak choi"], [/\bcanned\b/gi, "tinned"], [/\b2% milk\b/gi, "semi-skimmed milk"], [/\bCanadian bacon\b/gi, "back bacon"]
 ];
 function words(s){
   if (state.region !== "uk" || !s) return s;
@@ -883,7 +885,7 @@ async function loadRecipeLibrary(){
         const data = await res.json();
         const list = (Array.isArray(data) ? data : data.recipes || []).map(x => cleanRecipe(x, col)).filter(x => x && !seen.has(x.id) && seen.add(x.id));
         library.recipes.push(...list);
-        library.collections.push({ id: col.id, name: col.name, count: list.length, url: cleanUrl(col.url) });
+        library.collections.push({ id: col.id, name: col.name, count: list.length, url: cleanUrl(col.url), published: !!col.publishedNutrition });
       } catch {}
     }
   } catch {}
@@ -1160,8 +1162,18 @@ function applyOnePack(pack){
   const key = s => normName(String(s || "").replace(/['’]/g, "")).replace(/\b(the|restaurant|of charleston|charleston)\b/g, "").replace(/\s+/g, " ").trim();
   const byName = {};
   Object.values(pack.places).forEach(d => { if (d) [d.name, ...(Array.isArray(d.aliases) ? d.aliases : [])].filter(Boolean).forEach(n => (byName[key(n)] = byName[key(n)] || []).push(d)); });
+  /* Names on the map often differ a little ("1894" vs "Eighteen Ninety Four", "Harrys Shack"), so a researched
+     entry also matches a restaurant within ~250 m that shares a distinctive word. */
+  const GENERIC = /^(the|and|restaurant|restaurants|hotel|bar|bars|bistro|kitchen|cafe|grill|house|inn|room|pub|eatery|lounge|tavern|wine|food|street|city|coast|harbour|harbor|golf|country|club|fish|chips|seafood|pizza|chinese|indian|takeaway|portrush|portstewart|derry|londonderry|coleraine|bushmills|ballycastle|limavady|charleston|summerville)$/;
+  const sig = s => new Set(key(s).split(" ").filter(w => w.length >= 4 && !GENERIC.test(w)));
+  const entries = Object.values(pack.places).filter(d => d && num(d.lat) !== null && num(d.lon) !== null);
+  const near = p => entries.map(d => ({ d, mi: miles(p, { lat: +d.lat, lon: +d.lon }) })).filter(x => x.mi <= 0.16).sort((a, b) => a.mi - b.mi);
   const findEntry = p => pack.places[p.id] || (byName[key(p.name)] || []).find(d =>
-    num(d.lat) === null || num(d.lon) === null || miles(p, { lat: +d.lat, lon: +d.lon }) <= 0.5);
+    num(d.lat) === null || num(d.lon) === null || miles(p, { lat: +d.lat, lon: +d.lon }) <= 0.5) || (() => {
+      const mine = sig(p.name), cands = near(p);
+      const hit = cands.find(x => [x.d.name, ...(Array.isArray(x.d.aliases) ? x.d.aliases : [])].some(n => [...sig(n)].some(w => mine.has(w))));
+      return hit ? hit.d : null;
+    })();
   state.places.forEach(p => {
     const d = findEntry(p); if (!d) return;
     const picks = Array.isArray(d.picks) ? d.picks.filter(x => x && x.dish).slice(0, 6).map(x => ({
@@ -1173,8 +1185,12 @@ function applyOnePack(pack){
     if (p.pack && p.pack.picks.length && !picks.length) return; /* keep richer data from an earlier file */
     p.pack = { picks, menuUrl: cleanUrl(d.menuUrl), website: cleanUrl(d.website), checked: String(d.checked || pack.generated || "").slice(0, 10),
       sourceName: String(d.sourceName || "").slice(0, 80), sourceUrl: cleanUrl(d.sourceUrl) };
+    const web = /^https?:\/\//i.test(d.website || "") ? String(d.website) : "";
+    if (!p.website && web) p.website = web;
+    if (!p.addr && d.address) p.addr = String(d.address).slice(0, 160);
     const photo = cleanUrl(d.photo);
-    if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true; }
+    if (photo && !p.photo){ p.photo = photo; p.photoKind = "photo"; p.photoCredit = cleanUrl(d.photoSource) || p.pack.website; p.photoFromSite = true;
+      p.photoCreditName = String(d.photoCreditName || "").slice(0, 80); }
   });
 }
 
@@ -1497,6 +1513,7 @@ function openMeal(id){
   const src = m.source === "published"
     ? `Nutrition published by ${esc(m.venue)}${m.sourceUrl ? ` (<a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener">see their numbers</a>)` : ""}. Checked September 2026 — menus change, so confirm before ordering.`
     : m.imported ? "Imported estimate. Treat these numbers as approximate."
+    : m.collection && !m.published ? `Our own recipe. Nutrition is estimated per serving from USDA FoodData Central values for the amounts listed; brands vary, so check your labels (especially stock, bacon, smoked fish and sauces).`
     : m.collection ? `Recipe and per-serving nutrition from ${esc(m.sourceName)}${m.sourceBook ? `, <i>${esc(m.sourceBook)}</i>` : ""}. Steps are summarized; ${m.sourceUrl ? `<a href="${esc(m.sourceUrl)}" target="_blank" rel="noopener">see the original recipe</a>` : "see the original recipe"} for full detail.${[m.protein, m.carbs, m.fiber].some(v => num(v) === null) ? " Some nutrients weren’t published for this recipe, so they aren’t shown or used by the filters." : ""}`
     : "Estimated per serving from USDA FoodData Central values for the amounts listed. Brands vary — check your labels, especially broth, beans and shrimp.";
   const kick = m.type === "eat-in" ? (m.cuisine ? esc(m.cuisine) + " recipe" : "Recipe") + (m.minutes ? ` · ${m.minutes} mins` : "") : esc(m.venue) + (m.dist != null ? ` · ${m.dist.toFixed(1)} mi away` : "");
@@ -1548,7 +1565,7 @@ function openPlace(id){
     ${p.website ? `<button class="btn ghost" data-url="${esc(p.website)}">${icon("ext")}Website &amp; menu</button>` : ""}
     ${p.phone ? `<a class="btn ghost" href="tel:${esc(p.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}</div>
     ${linksBlock(p.name, p.lat, p.lon, p.addr, townOf(p), p.website)}
-    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromSite ? "Photo from the restaurant’s own website." : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant."))) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">${p.photoFromSite ? "Visit their website" : "Photo credit &amp; license"}</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>Google Maps</b> above for its real photos."}</p></div>`;
+    <p class="note">Listing from OpenStreetMap; details can be out of date, so call ahead to confirm hours. ${p.photo ? (p.photoKind === "logo" ? "Logo from Wikimedia Commons." : (p.photoFromSite ? (p.photoCreditName ? `Photo from the restaurant’s listing on ${esc(p.photoCreditName)}.` : "Photo from the restaurant’s own website.") : (p.photoFromBrand ? "Photo of this chain (may be a different branch)." : "Photo of this restaurant."))) + (p.photoCredit ? ` <a href="${esc(p.photoCredit)}" target="_blank" rel="noopener">${p.photoFromSite ? (p.photoCreditName ? "See the listing" : "Visit their website") : "Photo credit &amp; license"}</a>` : "") : "No photo of this restaurant is available for free, so this is a typical dish of its cuisine. Tap <b>Google Maps</b> above for its real photos."}</p></div>`;
   openSheet(body);
 }
 function openInfo(){
@@ -1562,7 +1579,7 @@ function openInfo(){
       <dt>Under 25 min</dt><dd>Total time for home recipes.</dd>
     </dl>
     <h3>Recipe sources</h3>
-    <p>${RECIPES.length} recipes by What’s 4 Dinner?, with nutrition estimated from USDA FoodData Central.${library.collections.map(c => ` ${c.count} from ${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a>` : esc(c.name)}, with the nutrition they publish.`).join("")}</p>
+    <p>${RECIPES.length} recipes by What’s 4 Dinner?, with nutrition estimated from USDA FoodData Central.${library.collections.map(c => ` ${c.count} from ${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a>` : esc(c.name)}${c.published ? ", with the nutrition they publish" : ", our own recipes with nutrition estimated the same way"}.`).join("")}</p>
     <h3>Where the numbers come from</h3>
     <p>Our own recipes are estimated from USDA FoodData Central values for the exact amounts listed. Library recipes use the nutrition their source publishes. Restaurant dishes only get numbers when the restaurant publishes them.</p>
     <h3>How restaurants are matched</h3>
