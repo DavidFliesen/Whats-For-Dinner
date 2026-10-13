@@ -1,0 +1,5 @@
+requests>=2.31
+overturemaps>=1.0
+pyarrow>=15
+anthropic>=0.40
+pypdf>=4.0

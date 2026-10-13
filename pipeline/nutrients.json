@@ -1,0 +1,2257 @@
+{
+"about": "Per 100 g (liquids per 100 ml): kcal, protein g, fat g, carbs g, fiber g, sodium mg. Approximate USDA FoodData Central (SR Legacy/Foundation) values. Flags: m meat, f fish/seafood, d dairy, e egg, g gluten, h honey.",
+"columns": [
+"kcal",
+"protein",
+"fat",
+"carbs",
+"fiber",
+"sodium"
+],
+"foods": {
+"lamb": {
+"name": "lean lamb leg",
+"per100": [
+134,
+20.5,
+5.3,
+0,
+0,
+66
+],
+"flags": "m"
+},
+"beef": {
+"name": "lean stewing beef",
+"per100": [
+130,
+21.5,
+4.5,
+0,
+0,
+62
+],
+"flags": "m"
+},
+"beefmince": {
+"name": "5%-fat beef mince / 95% lean ground beef",
+"per100": [
+137,
+21.4,
+5,
+0,
+0,
+66
+],
+"flags": "m"
+},
+"chicken": {
+"name": "skinless chicken breast",
+"per100": [
+120,
+22.5,
+2.6,
+0,
+0,
+45
+],
+"flags": "m"
+},
+"thigh": {
+"name": "skinless boneless chicken thigh",
+"per100": [
+120,
+19.7,
+4.1,
+0,
+0,
+90
+],
+"flags": "m"
+},
+"pork": {
+"name": "pork tenderloin / lean pork",
+"per100": [
+120,
+21,
+3.5,
+0,
+0,
+52
+],
+"flags": "m"
+},
+"salmon": {
+"name": "salmon fillet",
+"per100": [
+180,
+20,
+11,
+0,
+0,
+50
+],
+"flags": "f"
+},
+"cod": {
+"name": "cod or other lean white fish",
+"per100": [
+82,
+17.8,
+0.7,
+0,
+0,
+54
+],
+"flags": "f"
+},
+"hake": {
+"name": "hake",
+"per100": [
+86,
+18.3,
+1.0,
+0,
+0,
+70
+],
+"flags": "f"
+},
+"smokedhaddock": {
+"name": "smoked haddock",
+"per100": [
+116,
+25.2,
+1.0,
+0,
+0,
+763
+],
+"flags": "f"
+},
+"mussels": {
+"name": "mussel meat (weigh without shells)",
+"per100": [
+86,
+11.9,
+2.2,
+3.7,
+0,
+286
+],
+"flags": "f"
+},
+"prawns": {
+"name": "raw shrimp/prawns, peeled",
+"per100": [
+85,
+20.1,
+0.5,
+0,
+0,
+119
+],
+"flags": "f"
+},
+"smokedsalmon": {
+"name": "smoked salmon",
+"per100": [
+117,
+18.3,
+4.3,
+0,
+0,
+780
+],
+"flags": "f"
+},
+"chsausage": {
+"name": "lean chicken sausages",
+"per100": [
+140,
+15,
+7,
+4,
+0,
+650
+],
+"flags": "mg"
+},
+"bacon": {
+"name": "lean back bacon / Canadian bacon",
+"per100": [
+129,
+17,
+5.9,
+1.7,
+0,
+1100
+],
+"flags": "m"
+},
+"egg": {
+"name": "whole egg",
+"per100": [
+143,
+12.6,
+9.5,
+0.7,
+0,
+142
+],
+"flags": "e"
+},
+"potato": {
+"name": "potato",
+"per100": [
+77,
+2.0,
+0.1,
+17.5,
+2.2,
+6
+],
+"flags": ""
+},
+"carrot": {
+"name": "carrot",
+"per100": [
+41,
+0.9,
+0.2,
+9.6,
+2.8,
+69
+],
+"flags": ""
+},
+"onion": {
+"name": "onion or shallot",
+"per100": [
+40,
+1.1,
+0.1,
+9.3,
+1.7,
+4
+],
+"flags": ""
+},
+"leek": {
+"name": "leek",
+"per100": [
+61,
+1.5,
+0.3,
+14.2,
+1.8,
+20
+],
+"flags": ""
+},
+"celery": {
+"name": "celery",
+"per100": [
+16,
+0.7,
+0.2,
+3,
+1.6,
+80
+],
+"flags": ""
+},
+"cabbage": {
+"name": "green cabbage",
+"per100": [
+25,
+1.3,
+0.1,
+5.8,
+2.5,
+18
+],
+"flags": ""
+},
+"kale": {
+"name": "kale",
+"per100": [
+35,
+2.9,
+1.5,
+4.4,
+4.1,
+53
+],
+"flags": ""
+},
+"scallion": {
+"name": "scallions",
+"per100": [
+32,
+1.8,
+0.2,
+7.3,
+2.6,
+16
+],
+"flags": ""
+},
+"peas": {
+"name": "green peas (frozen)",
+"per100": [
+77,
+5.2,
+0.4,
+13.6,
+4.5,
+70
+],
+"flags": ""
+},
+"mushroom": {
+"name": "mushrooms",
+"per100": [
+22,
+3.1,
+0.3,
+3.3,
+1,
+5
+],
+"flags": ""
+},
+"tomato": {
+"name": "fresh tomato",
+"per100": [
+18,
+0.9,
+0.2,
+3.9,
+1.2,
+5
+],
+"flags": ""
+},
+"cantomato": {
+"name": "canned tomatoes, no salt added",
+"per100": [
+21,
+1,
+0.2,
+4.5,
+1.2,
+12
+],
+"flags": ""
+},
+"tomatopaste": {
+"name": "tomato paste",
+"per100": [
+82,
+4.3,
+0.5,
+18.9,
+4.1,
+59
+],
+"flags": ""
+},
+"pepper": {
+"name": "bell pepper",
+"per100": [
+31,
+1,
+0.3,
+6,
+2.1,
+4
+],
+"flags": ""
+},
+"garlic": {
+"name": "garlic",
+"per100": [
+149,
+6.4,
+0.5,
+33,
+2.1,
+17
+],
+"flags": ""
+},
+"ginger": {
+"name": "fresh ginger",
+"per100": [
+80,
+1.8,
+0.8,
+18,
+2,
+13
+],
+"flags": ""
+},
+"chili": {
+"name": "fresh chili",
+"per100": [
+40,
+1.9,
+0.4,
+9,
+1.5,
+9
+],
+"flags": ""
+},
+"lemon": {
+"name": "lemon juice",
+"per100": [
+22,
+0.4,
+0.2,
+6.9,
+0.3,
+1
+],
+"flags": ""
+},
+"lime": {
+"name": "lime juice",
+"per100": [
+25,
+0.4,
+0.1,
+8.4,
+0.4,
+2
+],
+"flags": ""
+},
+"oil": {
+"name": "any cooking oil (olive, rapeseed, sesame, coconut)",
+"per100": [
+884,
+0,
+100,
+0,
+0,
+0
+],
+"flags": ""
+},
+"butter": {
+"name": "unsalted butter",
+"per100": [
+717,
+0.9,
+81,
+0.1,
+0,
+11
+],
+"flags": "d"
+},
+"milk": {
+"name": "2% / semi-skimmed milk",
+"per100": [
+50,
+3.3,
+2,
+4.8,
+0,
+44
+],
+"flags": "d"
+},
+"buttermilk": {
+"name": "low-fat buttermilk",
+"per100": [
+40,
+3.3,
+0.9,
+4.8,
+0,
+105
+],
+"flags": "d"
+},
+"yogurt": {
+"name": "nonfat Greek yogurt",
+"per100": [
+59,
+10.3,
+0.4,
+3.6,
+0,
+36
+],
+"flags": "d"
+},
+"cremefraiche": {
+"name": "light crème fraîche / sour cream",
+"per100": [
+162,
+2.7,
+15,
+4.5,
+0,
+40
+],
+"flags": "d"
+},
+"flour": {
+"name": "all-purpose / plain flour",
+"per100": [
+364,
+10.3,
+1,
+76.3,
+2.7,
+2
+],
+"flags": "g"
+},
+"cornstarch": {
+"name": "cornstarch / cornflour",
+"per100": [
+381,
+0.3,
+0.1,
+91,
+0.9,
+9
+],
+"flags": ""
+},
+"bakingpowder": {
+"name": "baking powder",
+"per100": [
+53,
+0,
+0,
+28,
+0.2,
+10600
+],
+"flags": ""
+},
+"filo": {
+"name": "filo pastry",
+"per100": [
+299,
+7.1,
+6,
+52.6,
+1.9,
+483
+],
+"flags": "g"
+},
+"barley": {
+"name": "pearl barley, dry",
+"per100": [
+352,
+9.9,
+1.2,
+77.7,
+15.6,
+9
+],
+"flags": "g"
+},
+"quinoa": {
+"name": "quinoa, dry",
+"per100": [
+368,
+14.1,
+6.1,
+64.2,
+7,
+5
+],
+"flags": ""
+},
+"brownrice": {
+"name": "brown rice, dry",
+"per100": [
+370,
+7.9,
+2.9,
+77.2,
+3.5,
+7
+],
+"flags": ""
+},
+"rice": {
+"name": "white rice, dry",
+"per100": [
+360,
+6.6,
+0.6,
+79,
+1.3,
+5
+],
+"flags": ""
+},
+"bulgur": {
+"name": "bulgur wheat, dry",
+"per100": [
+342,
+12.3,
+1.3,
+75.9,
+12.5,
+17
+],
+"flags": "g"
+},
+"lentils": {
+"name": "red lentils, dry",
+"per100": [
+358,
+23.9,
+2.2,
+63.1,
+10.8,
+7
+],
+"flags": ""
+},
+"chickpeas": {
+"name": "chickpeas, cooked or canned no-salt, drained",
+"per100": [
+164,
+8.9,
+2.6,
+27.4,
+7.6,
+7
+],
+"flags": ""
+},
+"beans": {
+"name": "kidney/butter beans, cooked or canned no-salt, drained",
+"per100": [
+127,
+8.7,
+0.5,
+22.8,
+6.4,
+2
+],
+"flags": ""
+},
+"stock": {
+"name": "low-sodium chicken or beef stock",
+"per100": [
+6,
+0.6,
+0.2,
+0.4,
+0,
+60
+],
+"flags": "m"
+},
+"vegstock": {
+"name": "low-sodium vegetable or fish stock",
+"per100": [
+6,
+0.2,
+0.1,
+1.2,
+0,
+60
+],
+"flags": ""
+},
+"stout": {
+"name": "stout beer",
+"per100": [
+35,
+0.3,
+0,
+3,
+0,
+4
+],
+"flags": "g"
+},
+"cider": {
+"name": "dry cider",
+"per100": [
+45,
+0,
+0,
+3.5,
+0,
+4
+],
+"flags": ""
+},
+"wine": {
+"name": "wine (cooking)",
+"per100": [
+82,
+0.1,
+0,
+2.6,
+0,
+5
+],
+"flags": ""
+},
+"apple": {
+"name": "apple",
+"per100": [
+52,
+0.3,
+0.2,
+13.8,
+2.4,
+1
+],
+"flags": ""
+},
+"mustard": {
+"name": "mustard (Dijon or wholegrain)",
+"per100": [
+66,
+4.4,
+4,
+5.8,
+3.3,
+1135
+],
+"flags": ""
+},
+"soy": {
+"name": "reduced-sodium soy sauce",
+"per100": [
+57,
+8.1,
+0.1,
+4.9,
+0.8,
+3330
+],
+"flags": "g"
+},
+"miso": {
+"name": "miso paste",
+"per100": [
+198,
+12.8,
+6,
+26.5,
+5.4,
+3728
+],
+"flags": "g"
+},
+"honey": {
+"name": "honey",
+"per100": [
+304,
+0.3,
+0,
+82.4,
+0.2,
+4
+],
+"flags": "h"
+},
+"gochujang": {
+"name": "gochujang",
+"per100": [
+196,
+4.5,
+1.5,
+42,
+2,
+2500
+],
+"flags": "g"
+},
+"spinach": {
+"name": "spinach",
+"per100": [
+23,
+2.9,
+0.4,
+3.6,
+2.2,
+79
+],
+"flags": ""
+},
+"sprouts": {
+"name": "bean sprouts",
+"per100": [
+30,
+3,
+0.2,
+5.9,
+1.8,
+6
+],
+"flags": ""
+},
+"zucchini": {
+"name": "zucchini / courgette",
+"per100": [
+17,
+1.2,
+0.3,
+3.1,
+1,
+8
+],
+"flags": ""
+},
+"pakchoi": {
+"name": "bok choy / pak choi",
+"per100": [
+13,
+1.5,
+0.2,
+2.2,
+1,
+65
+],
+"flags": ""
+},
+"sodabread": {
+"name": "wholemeal soda bread",
+"per100": [
+223,
+8.5,
+2.5,
+41,
+5.5,
+410
+],
+"flags": "gd"
+},
+"bakedbeans": {
+"name": "reduced-sugar, reduced-salt baked beans",
+"per100": [
+73,
+4.7,
+0.3,
+12,
+3.8,
+200
+],
+"flags": ""
+},
+"olives": {
+"name": "olives",
+"per100": [
+145,
+1,
+15,
+3.8,
+3.3,
+1556
+],
+"flags": ""
+},
+"capers": {
+"name": "capers",
+"per100": [
+23,
+2.4,
+0.9,
+4.9,
+3.2,
+2348
+],
+"flags": ""
+},
+"tahini": {
+"name": "tahini",
+"per100": [
+595,
+17,
+53.8,
+21.2,
+9.3,
+115
+],
+"flags": ""
+},
+"cucumber": {
+"name": "cucumber",
+"per100": [
+15,
+0.7,
+0.1,
+3.6,
+0.5,
+2
+],
+"flags": ""
+},
+"coconutmilk": {
+"name": "light coconut milk",
+"per100": [
+74,
+0.5,
+7,
+2,
+0,
+30
+],
+"flags": ""
+},
+"avocado": {
+"name": "avocado",
+"per100": [
+160,
+2,
+14.7,
+8.5,
+6.7,
+7
+],
+"flags": ""
+},
+"greenbeans": {
+"name": "green beans",
+"per100": [
+31,
+1.8,
+0.2,
+7,
+2.7,
+6
+],
+"flags": ""
+},
+"swede": {
+"name": "rutabaga / swede / turnip",
+"per100": [
+38,
+1.1,
+0.2,
+8.6,
+2.3,
+12
+],
+"flags": ""
+},
+"leaves": {
+"name": "salad leaves / lettuce",
+"per100": [
+17,
+1.4,
+0.3,
+3.3,
+1.6,
+25
+],
+"flags": ""
+},
+"salt": {
+"name": "table salt",
+"per100": [
+0,
+0,
+0,
+0,
+0,
+38758
+],
+"flags": ""
+},
+"none": {
+"name": "herbs, spices, water (no nutrition counted)",
+"per100": [
+0,
+0,
+0,
+0,
+0,
+0
+],
+"flags": ""
+},
+"turkey": {
+"name": "turkey breast",
+"per100": [
+114,
+23.7,
+1.5,
+0,
+0,
+52
+],
+"flags": "m"
+},
+"turkeymince": {
+"name": "93% lean ground turkey / turkey mince",
+"per100": [
+150,
+18.7,
+8.3,
+0,
+0,
+69
+],
+"flags": "m"
+},
+"duck": {
+"name": "skinless duck breast",
+"per100": [
+123,
+19.9,
+4.3,
+0,
+0,
+74
+],
+"flags": "m"
+},
+"lambmince": {
+"name": "lean lamb mince",
+"per100": [
+180,
+20,
+10,
+0,
+0,
+70
+],
+"flags": "m"
+},
+"porkmince": {
+"name": "lean pork mince",
+"per100": [
+160,
+20,
+8.5,
+0,
+0,
+60
+],
+"flags": "m"
+},
+"steak": {
+"name": "lean sirloin steak, trimmed",
+"per100": [
+140,
+22.4,
+5.6,
+0,
+0,
+57
+],
+"flags": "m"
+},
+"chorizo": {
+"name": "chorizo",
+"per100": [
+455,
+24,
+38,
+2,
+0,
+1235
+],
+"flags": "m"
+},
+"ham": {
+"name": "lean ham",
+"per100": [
+120,
+19,
+4,
+1.5,
+0,
+1200
+],
+"flags": "m"
+},
+"tunacan": {
+"name": "canned tuna in water, drained",
+"per100": [
+116,
+25.5,
+0.8,
+0,
+0,
+247
+],
+"flags": "f"
+},
+"tuna": {
+"name": "fresh tuna",
+"per100": [
+109,
+24.4,
+0.5,
+0,
+0,
+45
+],
+"flags": "f"
+},
+"sardines": {
+"name": "canned sardines, drained",
+"per100": [
+208,
+24.6,
+11.5,
+0,
+0,
+307
+],
+"flags": "f"
+},
+"mackerel": {
+"name": "mackerel",
+"per100": [
+205,
+18.6,
+13.9,
+0,
+0,
+90
+],
+"flags": "f"
+},
+"tilapia": {
+"name": "tilapia",
+"per100": [
+96,
+20,
+1.7,
+0,
+0,
+52
+],
+"flags": "f"
+},
+"trout": {
+"name": "trout",
+"per100": [
+141,
+19.9,
+6.2,
+0,
+0,
+52
+],
+"flags": "f"
+},
+"scallops": {
+"name": "scallops",
+"per100": [
+69,
+12,
+0.5,
+3.2,
+0,
+392
+],
+"flags": "f"
+},
+"squid": {
+"name": "squid",
+"per100": [
+92,
+15.6,
+1.4,
+3.1,
+0,
+44
+],
+"flags": "f"
+},
+"crab": {
+"name": "crab meat",
+"per100": [
+87,
+18.1,
+1.1,
+0,
+0,
+293
+],
+"flags": "f"
+},
+"anchovy": {
+"name": "anchovy fillets in oil",
+"per100": [
+210,
+28.9,
+9.7,
+0,
+0,
+3668
+],
+"flags": "f"
+},
+"fishsauce": {
+"name": "fish sauce",
+"per100": [
+35,
+5.1,
+0,
+3.6,
+0,
+7851
+],
+"flags": "f"
+},
+"oystersauce": {
+"name": "oyster sauce",
+"per100": [
+51,
+1.4,
+0.3,
+10.9,
+0.3,
+2733
+],
+"flags": "f"
+},
+"tofu": {
+"name": "firm tofu",
+"per100": [
+144,
+17.3,
+8.7,
+2.8,
+2.3,
+14
+],
+"flags": ""
+},
+"tempeh": {
+"name": "tempeh",
+"per100": [
+192,
+20.3,
+10.8,
+7.6,
+0,
+9
+],
+"flags": ""
+},
+"edamame": {
+"name": "shelled edamame",
+"per100": [
+121,
+11.9,
+5.2,
+8.9,
+5.2,
+6
+],
+"flags": ""
+},
+"blackbeans": {
+"name": "black beans, cooked/canned no-salt, drained",
+"per100": [
+132,
+8.9,
+0.5,
+23.7,
+8.7,
+1
+],
+"flags": ""
+},
+"pinto": {
+"name": "pinto beans, cooked/canned no-salt",
+"per100": [
+143,
+9,
+0.7,
+26.2,
+9,
+1
+],
+"flags": ""
+},
+"whitebeans": {
+"name": "white/cannellini beans, cooked/canned no-salt",
+"per100": [
+139,
+9.7,
+0.4,
+25,
+6.3,
+6
+],
+"flags": ""
+},
+"greenlentils": {
+"name": "green or brown lentils, dry",
+"per100": [
+352,
+24.6,
+1.1,
+63.4,
+10.7,
+6
+],
+"flags": ""
+},
+"splitpeas": {
+"name": "split peas, dry",
+"per100": [
+341,
+24.6,
+1.2,
+60.4,
+25.5,
+15
+],
+"flags": ""
+},
+"couscous": {
+"name": "couscous, dry",
+"per100": [
+376,
+12.8,
+0.6,
+77.4,
+5,
+10
+],
+"flags": "g"
+},
+"pastaww": {
+"name": "whole-wheat pasta, dry",
+"per100": [
+352,
+13.9,
+2.5,
+75,
+9.2,
+8
+],
+"flags": "g"
+},
+"pasta": {
+"name": "pasta, dry",
+"per100": [
+371,
+13,
+1.5,
+74.7,
+3.2,
+6
+],
+"flags": "g"
+},
+"ricenoodles": {
+"name": "rice noodles, dry",
+"per100": [
+364,
+6,
+0.6,
+80,
+1.6,
+182
+],
+"flags": ""
+},
+"soba": {
+"name": "soba noodles, dry",
+"per100": [
+336,
+14.4,
+0.7,
+74.6,
+0,
+792
+],
+"flags": "g"
+},
+"eggnoodles": {
+"name": "egg noodles, dry",
+"per100": [
+384,
+14.2,
+4.4,
+71.3,
+3.3,
+21
+],
+"flags": "ge"
+},
+"oats": {
+"name": "rolled oats",
+"per100": [
+379,
+13.2,
+6.5,
+67.7,
+10.1,
+6
+],
+"flags": "g"
+},
+"polenta": {
+"name": "cornmeal / polenta, dry",
+"per100": [
+370,
+8.1,
+3.6,
+79.5,
+7.3,
+35
+],
+"flags": ""
+},
+"corntortilla": {
+"name": "corn tortilla",
+"per100": [
+218,
+5.7,
+2.9,
+44.6,
+6.3,
+45
+],
+"flags": ""
+},
+"flourtortilla": {
+"name": "whole-wheat flour tortilla",
+"per100": [
+297,
+8.9,
+7.7,
+48,
+6.6,
+640
+],
+"flags": "g"
+},
+"bread": {
+"name": "whole-wheat bread",
+"per100": [
+252,
+12.5,
+3.5,
+42.7,
+6,
+450
+],
+"flags": "g"
+},
+"pita": {
+"name": "whole-wheat pita",
+"per100": [
+266,
+9.8,
+2.6,
+55,
+7.4,
+527
+],
+"flags": "g"
+},
+"panko": {
+"name": "panko breadcrumbs",
+"per100": [
+395,
+13,
+5,
+72,
+4,
+400
+],
+"flags": "g"
+},
+"millet": {
+"name": "millet, dry",
+"per100": [
+378,
+11,
+4.2,
+72.9,
+8.5,
+5
+],
+"flags": ""
+},
+"buckwheat": {
+"name": "buckwheat groats, dry",
+"per100": [
+343,
+13.3,
+3.4,
+71.5,
+10,
+1
+],
+"flags": ""
+},
+"farro": {
+"name": "farro, dry",
+"per100": [
+338,
+15,
+2.5,
+67,
+10.7,
+8
+],
+"flags": "g"
+},
+"wholemealflour": {
+"name": "whole-wheat / wholemeal flour",
+"per100": [
+340,
+13.2,
+2.5,
+72,
+10.7,
+2
+],
+"flags": "g"
+},
+"chickpeaflour": {
+"name": "chickpea (gram) flour",
+"per100": [
+387,
+22.4,
+6.7,
+57.8,
+10.8,
+64
+],
+"flags": ""
+},
+"teff": {
+"name": "teff flour",
+"per100": [
+366,
+12.2,
+3.7,
+70.7,
+12.2,
+9
+],
+"flags": ""
+},
+"sweetpotato": {
+"name": "sweet potato",
+"per100": [
+86,
+1.6,
+0.1,
+20,
+3,
+55
+],
+"flags": ""
+},
+"yam": {
+"name": "yam",
+"per100": [
+118,
+1.5,
+0.2,
+27.9,
+4.1,
+9
+],
+"flags": ""
+},
+"plantain": {
+"name": "plantain",
+"per100": [
+122,
+1.3,
+0.4,
+31.9,
+2.3,
+4
+],
+"flags": ""
+},
+"cassava": {
+"name": "cassava",
+"per100": [
+160,
+1.4,
+0.3,
+38.1,
+1.8,
+14
+],
+"flags": ""
+},
+"broccoli": {
+"name": "broccoli",
+"per100": [
+34,
+2.8,
+0.4,
+6.6,
+2.6,
+33
+],
+"flags": ""
+},
+"cauliflower": {
+"name": "cauliflower",
+"per100": [
+25,
+1.9,
+0.3,
+5,
+2,
+30
+],
+"flags": ""
+},
+"asparagus": {
+"name": "asparagus",
+"per100": [
+20,
+2.2,
+0.1,
+3.9,
+2.1,
+2
+],
+"flags": ""
+},
+"eggplant": {
+"name": "eggplant / aubergine",
+"per100": [
+25,
+1,
+0.2,
+5.9,
+3,
+2
+],
+"flags": ""
+},
+"okra": {
+"name": "okra",
+"per100": [
+33,
+1.9,
+0.2,
+7.5,
+3.2,
+7
+],
+"flags": ""
+},
+"squash": {
+"name": "butternut squash or pumpkin",
+"per100": [
+45,
+1,
+0.1,
+11.7,
+2,
+4
+],
+"flags": ""
+},
+"beetroot": {
+"name": "beetroot",
+"per100": [
+43,
+1.6,
+0.2,
+9.6,
+2.8,
+78
+],
+"flags": ""
+},
+"parsnip": {
+"name": "parsnip",
+"per100": [
+75,
+1.2,
+0.3,
+18,
+4.9,
+10
+],
+"flags": ""
+},
+"brussels": {
+"name": "Brussels sprouts",
+"per100": [
+43,
+3.4,
+0.3,
+9,
+3.8,
+25
+],
+"flags": ""
+},
+"collards": {
+"name": "collard greens",
+"per100": [
+32,
+3,
+0.6,
+5.4,
+4,
+17
+],
+"flags": ""
+},
+"chard": {
+"name": "Swiss chard",
+"per100": [
+19,
+1.8,
+0.2,
+3.7,
+1.6,
+213
+],
+"flags": ""
+},
+"corn": {
+"name": "sweetcorn kernels",
+"per100": [
+86,
+3.3,
+1.4,
+19,
+2,
+15
+],
+"flags": ""
+},
+"fennel": {
+"name": "fennel",
+"per100": [
+31,
+1.2,
+0.2,
+7.3,
+3.1,
+52
+],
+"flags": ""
+},
+"radish": {
+"name": "radish",
+"per100": [
+16,
+0.7,
+0.1,
+3.4,
+1.6,
+39
+],
+"flags": ""
+},
+"snowpeas": {
+"name": "snow peas / mangetout",
+"per100": [
+42,
+2.8,
+0.2,
+7.6,
+2.6,
+4
+],
+"flags": ""
+},
+"napa": {
+"name": "napa / Chinese cabbage",
+"per100": [
+16,
+1.2,
+0.2,
+3.2,
+1.2,
+9
+],
+"flags": ""
+},
+"redcabbage": {
+"name": "red cabbage",
+"per100": [
+31,
+1.4,
+0.2,
+7.4,
+2.1,
+27
+],
+"flags": ""
+},
+"orange": {
+"name": "orange",
+"per100": [
+47,
+0.9,
+0.1,
+11.8,
+2.4,
+0
+],
+"flags": ""
+},
+"mango": {
+"name": "mango",
+"per100": [
+60,
+0.8,
+0.4,
+15,
+1.6,
+1
+],
+"flags": ""
+},
+"pineapple": {
+"name": "pineapple",
+"per100": [
+50,
+0.5,
+0.1,
+13.1,
+1.4,
+1
+],
+"flags": ""
+},
+"raisins": {
+"name": "raisins",
+"per100": [
+299,
+3.1,
+0.5,
+79.2,
+3.7,
+11
+],
+"flags": ""
+},
+"dates": {
+"name": "dates",
+"per100": [
+282,
+2.5,
+0.4,
+75,
+8,
+2
+],
+"flags": ""
+},
+"coconutmilkfull": {
+"name": "full-fat coconut milk",
+"per100": [
+230,
+2.3,
+23.8,
+5.5,
+2.2,
+15
+],
+"flags": ""
+},
+"almonds": {
+"name": "almonds",
+"per100": [
+579,
+21.2,
+49.9,
+21.6,
+12.5,
+1
+],
+"flags": ""
+},
+"peanuts": {
+"name": "unsalted peanuts",
+"per100": [
+567,
+25.8,
+49.2,
+16.1,
+8.5,
+18
+],
+"flags": ""
+},
+"peanutbutter": {
+"name": "natural unsalted peanut butter",
+"per100": [
+588,
+25,
+50,
+20,
+6,
+17
+],
+"flags": ""
+},
+"cashews": {
+"name": "cashews",
+"per100": [
+553,
+18.2,
+43.9,
+30.2,
+3.3,
+12
+],
+"flags": ""
+},
+"walnuts": {
+"name": "walnuts",
+"per100": [
+654,
+15.2,
+65.2,
+13.7,
+6.7,
+2
+],
+"flags": ""
+},
+"sesame": {
+"name": "sesame seeds",
+"per100": [
+573,
+17.7,
+49.7,
+23.4,
+11.8,
+11
+],
+"flags": ""
+},
+"pinenuts": {
+"name": "pine nuts",
+"per100": [
+673,
+13.7,
+68.4,
+13.1,
+3.7,
+2
+],
+"flags": ""
+},
+"pumpkinseeds": {
+"name": "pumpkin seeds",
+"per100": [
+559,
+30.2,
+49,
+10.7,
+6,
+7
+],
+"flags": ""
+},
+"ghee": {
+"name": "ghee",
+"per100": [
+876,
+0.3,
+99.5,
+0,
+0,
+2
+],
+"flags": "d"
+},
+"skimmilk": {
+"name": "skim / skimmed milk",
+"per100": [
+34,
+3.4,
+0.1,
+5,
+0,
+42
+],
+"flags": "d"
+},
+"soymilk": {
+"name": "unsweetened soy milk",
+"per100": [
+33,
+2.9,
+1.6,
+1.2,
+0.4,
+47
+],
+"flags": ""
+},
+"plainyogurt": {
+"name": "plain low-fat yogurt",
+"per100": [
+63,
+5.3,
+1.6,
+7,
+0,
+70
+],
+"flags": "d"
+},
+"feta": {
+"name": "feta",
+"per100": [
+265,
+14.2,
+21.3,
+3.9,
+0,
+1116
+],
+"flags": "d"
+},
+"parmesan": {
+"name": "parmesan",
+"per100": [
+392,
+35.8,
+25.8,
+3.2,
+0,
+1602
+],
+"flags": "d"
+},
+"mozzarella": {
+"name": "part-skim mozzarella",
+"per100": [
+254,
+24.3,
+15.9,
+2.8,
+0,
+619
+],
+"flags": "d"
+},
+"cheddar": {
+"name": "reduced-fat cheddar",
+"per100": [
+280,
+27,
+17,
+3,
+0,
+700
+],
+"flags": "d"
+},
+"ricotta": {
+"name": "part-skim ricotta",
+"per100": [
+138,
+11.4,
+7.9,
+5.1,
+0,
+99
+],
+"flags": "d"
+},
+"cottage": {
+"name": "low-fat cottage cheese",
+"per100": [
+81,
+10.5,
+2.3,
+4.3,
+0,
+308
+],
+"flags": "d"
+},
+"paneer": {
+"name": "paneer",
+"per100": [
+296,
+21.4,
+22,
+3.6,
+0,
+22
+],
+"flags": "d"
+},
+"creamcheese": {
+"name": "light cream cheese",
+"per100": [
+201,
+7.9,
+15.3,
+8.1,
+0,
+470
+],
+"flags": "d"
+},
+"eggwhite": {
+"name": "egg white",
+"per100": [
+52,
+10.9,
+0.2,
+0.7,
+0,
+166
+],
+"flags": "e"
+},
+"maple": {
+"name": "maple syrup",
+"per100": [
+260,
+0,
+0.1,
+67,
+0,
+12
+],
+"flags": ""
+},
+"sugar": {
+"name": "sugar",
+"per100": [
+387,
+0,
+0,
+100,
+0,
+1
+],
+"flags": ""
+},
+"tamari": {
+"name": "reduced-sodium tamari (gluten-free)",
+"per100": [
+60,
+10.5,
+0.1,
+5.6,
+0.8,
+3000
+],
+"flags": ""
+},
+"hoisin": {
+"name": "hoisin sauce",
+"per100": [
+220,
+3.3,
+3.4,
+44,
+2.8,
+1615
+],
+"flags": "g"
+},
+"sriracha": {
+"name": "sriracha",
+"per100": [
+93,
+1.9,
+0.9,
+19,
+2.2,
+2124
+],
+"flags": ""
+},
+"curryPaste": {
+"name": "Thai curry paste",
+"per100": [
+120,
+2,
+6,
+13,
+4,
+3000
+],
+"flags": "f"
+},
+"salsa": {
+"name": "jarred salsa",
+"per100": [
+36,
+1.5,
+0.2,
+6.6,
+1.9,
+430
+],
+"flags": ""
+},
+"vinegar": {
+"name": "vinegar (wine, rice, cider)",
+"per100": [
+19,
+0,
+0,
+0.3,
+0,
+8
+],
+"flags": ""
+},
+"balsamic": {
+"name": "balsamic vinegar",
+"per100": [
+88,
+0.5,
+0,
+17,
+0,
+23
+],
+"flags": ""
+},
+"harissa": {
+"name": "harissa paste",
+"per100": [
+140,
+3,
+9,
+12,
+6,
+1500
+],
+"flags": ""
+},
+"chipotle": {
+"name": "chipotle in adobo",
+"per100": [
+80,
+2,
+4,
+10,
+4,
+1300
+],
+"flags": ""
+}
+}
+}
